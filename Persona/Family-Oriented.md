@@ -1,10 +1,10 @@
 # Preston Thorne - The Family-Oriented User
 
 ## Persona
-    **Name:** Preston Thorne
-    **Occupation:** Financial analyst
-    **Home Life:** Married with 3 kids (ages 3, 6, and 11)
-    **Technology:** 
+    Name: Preston Thorne
+    Occupation: Financial analyst
+    Home Life: Married with 3 kids (ages 3, 6, and 11)
+    Technology: 
     * Preston primarily uses a personal laptop and his work desktop computer. 
     * He primarily only uses his phone to add quick ideas on the go. 
 
