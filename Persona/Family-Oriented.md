@@ -27,28 +27,28 @@ Preston has used Google to search for bucket list suggestions and websites to he
 Preston registers for a profile and adds his first bucket list item.
 ### Interaction Flow: 
 *Preston scans the home page to see what features are offered*
-> As Preston scrolls down the page, the website gradually pans down to display more of the page
+As Preston scrolls down the page, the website gradually pans down to display more of the page
 *Preston clicks on a link for tracking features*
-> The website moves to the page for tracking features
+The website moves to the page for tracking features
 *Preston scans the features available that will help him track his experiences*
 *Preston uses top navigation to click on the link to the inspiration page*
-> The website moves to the page for inspiration
+The website moves to the page for inspiration
 *Preston reviews what type of inspiration is offered, such as categories, location suggestions, and community suggestions.*
 *Preston uses top navigation to click on the community link*
-> The website moves to the page for community
+The website moves to the page for community
 *Preston reviews the community options, such as discussion boards, shared scrapbooks, and following friends or other community members.*
 *Preston clicks the link to sign up*
-> The website takes Preston to a sign up form
+The website takes Preston to a sign up form
 *Preston fills out each form field, including name, email, password and username*
-> The website shows Preston's entries in each field
+The website shows Preston's entries in each field
 *Preston clicks the register button*
-> The website gives Preston a confirmation 'thank you' message for signing up
-*Preston clicks the x at the top of the confirmation popup to close the message
-> The website takes Preston to the My Profile page
-*Preston is eager to add his first item and test out the functionality of the site
-*Preston clicks the + button to add his first bucket list item
-> The website takes Preston to a form to fill out the information for his first bucket list item
+The website gives Preston a confirmation 'thank you' message for signing up
+*Preston clicks the x at the top of the confirmation popup to close the message*
+The website takes Preston to the My Profile page
+*Preston is eager to add his first item and test out the functionality of the site*
+*Preston clicks the + button to add his first bucket list item*
+The website takes Preston to a form to fill out the information for his first bucket list item
 *Preston fills out the form to add the first trip he wants to take with his family*
-> The website displays his entries as he types
+The website displays his entries as he types
 *Preston clicks the submit button*
-> The website returns Preston to his profile page and displays the new item he just added. 
+The website returns Preston to his profile page and displays the new item he just added. 
