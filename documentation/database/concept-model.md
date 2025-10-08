@@ -38,11 +38,11 @@
   * content, 
   * dateCreated, 
   * dateModified, 
-  * status
+  * privacy
 
 *tag*: Tags associated with posts for better organization and searchability.
 * Attributes:
-  * postI (Foreign Key), 
+  * postId (Foreign Key), 
   * categoryId (Foreign Key),
 
 **category**: Classifications for organizing posts or products.
@@ -53,3 +53,28 @@
 
 **Bucket-List**: Represents a collection of items or goals that users want to achieve.
 * Attributes:
+  * bucketListId (Primary Key),
+  * userId (Foreign Key),
+  * categoryId (Foreign Key),
+  * title,
+  * description,
+  * dateCreated,
+  * isCompleted, 
+  * targetDate,
+  * favorite
+
+**Following**
+* Attributes:
+  * userFollowingId (Foreign Key),
+  * userFollowedId (Foreign Key)
+
+**Comments**
+* Attributes: 
+  * commentId (Primary Key),
+  * postId (Foreign Key),
+  * userId (Foreign Key),
+  * content,
+  * dateCreated,
+  * liked
+
+discussions - community 
