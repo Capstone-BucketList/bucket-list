@@ -10,8 +10,7 @@
   * password, 
   * dateCreated,
   * dateOfBirth, 
-  * docation
-  
+  * location
 
 **Profile**: Represents user profiles containing personal information and preferences.
 * Attributes: 
@@ -61,7 +60,8 @@
   * dateCreated,
   * isCompleted, 
   * targetDate,
-  * favorite
+  * favorite,
+  * isPublic
 
 **Following**
 * Attributes:
@@ -74,7 +74,40 @@
   * postId (Foreign Key),
   * userId (Foreign Key),
   * content,
-  * dateCreated,
-  * liked
+  * dateCreated
 
-discussions - community 
+**Likes**
+* Attributes: 
+  * likeId (Primary Key),
+  * postId (Foreign Key),
+  * userId (Foreign Key)
+
+**Media**
+* Attributes: 
+  * mediaId (Primary Key),
+  * postId (Foreign Key),
+  * userId (Foreign Key),
+  * mediaType,
+  * url,
+  * dateUploaded,
+  * addToScrapBook, 
+  * isPublic
+
+**Discussions**
+* Attributes: 
+  * discussionId (Primary Key),
+  * title,
+  * description,
+  * dateCreated,
+  * content,
+  * userId (Foreign Key),
+  * mediaId (Foreign Key)
+
+**discussionComments**
+* Attributes: 
+  * commentId (Primary Key),
+  * discussionId (Foreign Key),
+  * userId (Foreign Key),
+  * comments,
+  * dateCreated
+  * isLiked
