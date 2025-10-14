@@ -12,24 +12,40 @@ passwordHash
 dateCreated timestamp
 }
 
-Table posts {
-id inte[primary key]
-username varchar
-role varchar
-created_at timestamp
-}
-
-Table posts {
-id integer [primary key]
+Table bucketList {
+bucketListId uuid [primary key]
+profileId integer
 title varchar
-body text [note: 'Content of the post']
-user_id integer [not null]
-status varchar
-created_at timestamp
+description varchar
+dateCreated timestamp
+isCompleted boolean
+targetDate date
+pinned boolean
+visibility varchar
 }
 
-Ref user_posts: posts.user_id > users.id // many-to-one
+Table following {
+followerProfileId integer
+followedProfileId integer
 
-Ref: users.id < follows.following_user_id
+}
 
-Ref: users.id < follows.followed_user_id
+Table comments {
+commentId uuid [primary key]
+postId integer
+profileId integer
+comment varchar
+dateCreated timestamp
+}
+
+Table media {
+mediaId uuid [primary key]
+postId integer
+url url
+}
+
+Ref posts: posts.profileId > profile.profileId
+
+Ref: bucketList: bucketList.profileId < profile.profileId
+
+Ref: following: followerProfileId.followedProfileId < followerProfile.followerProfileId
