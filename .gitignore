@@ -1,5 +1,6 @@
+.DS_Store
 .idea
-.Ds_Store
 node_modules
-dist
-
+project.env
+.flowbite-react
+.react-router
