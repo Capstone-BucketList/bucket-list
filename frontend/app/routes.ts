@@ -4,6 +4,6 @@ export default [
     index('routes/home/home.tsx'),
     route('/community', 'routes/community/community.tsx'),
     route('/scrapbook', 'routes/scrapbook/scrapbook.tsx'),
-    // route('/profile/:username', 'routes/profile.tsx'),
+    route('/profile', 'routes/profile/profile.tsx'),
 
 ] satisfies RouteConfig;
