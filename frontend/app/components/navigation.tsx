@@ -40,7 +40,7 @@ export function Navigation() {
     <NavbarToggle />
 </div>
     <NavbarCollapse>
-        <NavbarLink href="#" active>
+        <NavbarLink href="/" active>
             Home
         </NavbarLink>
         <NavbarLink href="/profile">Profile</NavbarLink>
