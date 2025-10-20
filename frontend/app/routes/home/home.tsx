@@ -3,7 +3,7 @@ import type { Route } from "../../../.react-router/types/app/routes/+types";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "New React Router App" },
+        { title: "Bucket List" },
         { name: "description", content: "Welcome to React Router!" },
     ];
 }
