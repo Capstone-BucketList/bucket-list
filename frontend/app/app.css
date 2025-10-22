@@ -1,3 +1,19 @@
 @import "tailwindcss";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
+
+@theme {
+  /* Color Palette */
+  --color-orange-brown: #A06E3D;
+  --color-pale-tan: #EDE1D1;
+  --color-orange: #E88C2D;
+  --color-burnt-orange: #CC5500;
+  --color-auburn: #9a3001;
+  --color-deep-blue: #344785;
+  --color-bright-light-blue: #0CBFF5;
+  --color-turquoise: #3697B5;
+  --color-seafoam: #3AA1AB;
+
+  /* Font Families */
+  --font-sans: 'Helvetica Neue', Arial, sans-serif;
+}
