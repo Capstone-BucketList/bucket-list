@@ -1,6 +1,6 @@
 import {Avatar} from "flowbite-react";
 import {HR} from "flowbite-react";
-import {ListItems} from ""
+import {ListItems} from "~/routes/profile/list-items";
 
 export default function Profile() {
     return (
@@ -19,7 +19,7 @@ export default function Profile() {
                     <h2>My Bucket List</h2>
 
                     @todo: add logic to only show if no items in bucket list
-                    <section className="bg-containerbg rounded-xl shadow-md mx-20 my-4"> {/* start empty bucket list
+                    <section className="bg-containterbg rounded-xl shadow-md mx-20 my-4"> {/* start empty bucket list
                      section */}
                         <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
                             <div className="mx-auto max-w-screen-sm text-center">
