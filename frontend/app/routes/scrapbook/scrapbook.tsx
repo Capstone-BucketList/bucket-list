@@ -3,7 +3,7 @@ import { Banner, BannerCollapseButton } from "flowbite-react";
 import { HiX } from "react-icons/hi";
 import { MdAnnouncement } from "react-icons/md";
 import { Card } from "flowbite-react";
-
+import PhotoCard from "../../components/photo-card";
 
 
 export default function Scrapbook () {
@@ -60,58 +60,38 @@ export default function Scrapbook () {
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
-                        <h2 className="text-3xl mb-4">Health & Fitness</h2>
+                        <h2 className='text-3xl font-extrabold text-center mb-6'>Health & Fitness</h2>
                         <Button>See Gallery</Button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
-                            <Card className="max-w-sm" imgAlt="highway sunset view"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                            <div className='flex flex-col items-center '>
+                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                           altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
-                            <Card className="max-w-sm" imgAlt="placeholder photo"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                            </div>
+                            <div className='flex flex-col items-center '>
+                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                           altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
+                            </div>
                         </div>
                     </div>
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
-                        <h2 className="text-3xl mb-4">Learning</h2>
+                        <h2 className='text-3xl font-extrabold text-center mb-6'>Learning</h2>
                         <Button>See Gallery</Button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
-                            <Card className="max-w-sm" imgAlt="placeholder photo"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                            <div className='flex flex-col items-center '>
+                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                           altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
-                            <Card className="max-w-sm" imgAlt="placeholder photo"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                            </div>
+                            <div className='flex flex-col items-center '>
+                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                           altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -120,58 +100,38 @@ export default function Scrapbook () {
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
-                            <h2 className="text-3xl mb-4">Food</h2>
+                            <h2 className='text-3xl font-extrabold text-center mb-6'>Food</h2>
                             <Button>See Gallery</Button>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
-                            <Card className="max-w-sm" imgAlt="highway sunset view"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                            <div className='flex flex-col items-center '>
+                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                           altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
-                            <Card className="max-w-sm" imgAlt="placeholder photo"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                            </div>
+                            <div className='flex flex-col items-center '>
+                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                           altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
+                            </div>
                         </div>
                     </div>
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
-                            <h2 className="text-3xl mb-4">Group Goals???</h2>
+                            <h2 className='text-3xl font-extrabold text-center mb-6'>Group Goals???</h2>
                             <Button>See Gallery</Button>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
-                            <Card className="max-w-sm" imgAlt="placeholder photo"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4 pb-10">
+                            <div className='flex flex-col items-center'>
+                            <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                       altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
-                            <Card className="max-w-sm" imgAlt="placeholder photo"
-                                  imgSrc='img_6.png'>
-                                <h5 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Route 66 2025
-                                </h5>
-                                <p className="font-normal text-gray-300 dark:text-gray-400">
-                                    10 days traveling on route 66
-                                </p>
+                            </div>
+                            <div className='flex flex-col items-center '>
+                            <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
+                                       altText='highway leading into sunset'/>
                                 <Button>Default</Button>
-                            </Card>
+                            </div>
                         </div>
                     </div>
                 </div>
