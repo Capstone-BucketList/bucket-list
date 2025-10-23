@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://use.typekit.net/rnl2dgg.css");
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 
@@ -15,5 +16,19 @@
   --color-seafoam: #3AA1AB;
 
   /* Font Families */
-  --font-sans: 'Helvetica Neue', Arial, sans-serif;
+  --font-baga: 'baga', sans-serif;
+  --font-bc-civitas: 'bc-civitas', sans-serif;
+  --font-playpen: 'playpen-sans-hebrew', sans-serif;
+  --font-bufalino: 'bufalino', sans-serif;
+  --font-eaves: 'mr-eaves-xl-modern', sans-serif;
+  --font-eloise: 'hey-eloise', sans-serif;
+  --font-elois-watercolor: 'hey-elois-watercolor', sans-serif;
+  --font-swing-king: 'swing-king', sans-serif;
+  --font-catseye: 'catseye', sans-serif;
+  --font-chaloops: 'chaloops', sans-serif;
+  --font-sweet-salty: 'sweet-and-salty', sans-serif;
+  --font-boli: 'mv-boli', sans-serif;
+  --font-marydale: 'marydale', sans-serif;
+  --font-volina: 'volina', sans-serif;
+  --font-rigatoni: 'rigatoni', sans-serif;
 }

@@ -6,7 +6,7 @@ export function Navigation() {
         <>
             {/*Navbar*/}
 
-            <nav className="bg-auburn border-b-4 border-orange-400 shadow-xl">
+            <nav className="bg-blue-950 border-b-4 border-bright-light-blue shadow-xl">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                     <a href="https://flowbite.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
                         <img src="https://flowbite.com/docs/images/logo.svg" className="h-8" alt="Flowbite Logo"/>
@@ -64,7 +64,7 @@ export function Navigation() {
                     </div>
                     <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
                          id="navbar-user">
-                        <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 bg-auburn">
+                        <ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 bg-blue-950">
                             <li>
                                 <a href="/"
                                    className="block py-2 px-3 text-pale-tan rounded-sm hover:bg-gray-100 hover:text-blue-600"
