@@ -1,7 +1,13 @@
-import { useRef } from 'react';
-import { Button } from 'flowbite-react';
+import {useRef} from 'react';
+import {Button, Card} from 'flowbite-react';
+import type {WhyBucketList} from "~/routes/home/home";
 
-export function DivSlider() {
+type BucketListProp = {
+    bucketListProp: WhyBucketList[]
+}
+
+export function DivSlider(props:BucketListProp ) {
+    const bList = props.bucketListProp
     const containerRef = useRef<HTMLDivElement | null>(null);
     const divRefs = useRef<Array<HTMLDivElement | null>>([]); // To store refs for each individual div
     const divsPerPage = 1; // Number of divs to show at a time
@@ -33,16 +39,20 @@ export function DivSlider() {
             <div
                 ref={containerRef}
                 className="flex overflow-x-hidden scrollbar-hide" // Hide default scrollbar
-                style={{ scrollSnapType: 'x mandatory' }} // Optional: for smoother snapping
-            >
-                {[...Array(10)].map((_, i) => ( // Example: 10 divs
+                style={{scrollSnapType: 'x mandatory'}} // Optional: for smoother snapping
+                 >
+                {bList.map((item, i) => (
                     <div
                         key={i}
                         ref={(el) => { divRefs.current[i] = el; }}
-                        className="flex-shrink-0 w-1/4 p-4 border border-gray-300" // Adjust width based on divsPerPage
+                        className="flex-shrink-0 w-1/4 p-4 h-70" // Adjust width based on divsPerPage
                         style={{ scrollSnapAlign: 'start' }} // Optional: for smoother snapping
                     >
-                        Div {i + 1} Content
+                    <Card className="h-full text-center hover:shadow-lg transition duration-200" key={i}>
+                        {item.icon}
+                        <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                        <p className="text-gray-600 text-sm"> {item.description} </p>
+                    </Card>
                     </div>
                 ))}
             </div>

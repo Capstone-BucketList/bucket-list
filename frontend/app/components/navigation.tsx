@@ -15,8 +15,7 @@ import {useLocation} from "react-router";
 
 export function Navigation() {
     const location=useLocation();
-console.log(location.pathname)
-    if(location.pathname === '/' ) {
+    if(location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup') {
         return (
             <>
 

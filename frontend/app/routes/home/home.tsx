@@ -1,12 +1,13 @@
 
-import {Button, Card, Carousel} from "flowbite-react";
+import {Button, Card} from "flowbite-react";
 import {useLocation} from "react-router";
 import {useEffect} from "react";
 import {
+    FaBook,
     FaBullseye,
-    FaCameraRetro,
+    FaCameraRetro, FaChartLine,
     FaGlassCheers,
-    FaGlobeAmericas,
+    FaGlobeAmericas, FaHeart,
     FaLightbulb,
     FaListAlt,
     FaMedal,
@@ -14,6 +15,8 @@ import {
     FaUsers
 } from "react-icons/fa";
 import type {Route} from "../../../.react-router/types/app/routes/home/+types/home";
+import {DivSlider} from "~/components/div_slider";
+import type { ReactNode } from "react";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -21,6 +24,11 @@ export function meta({}: Route.MetaArgs) {
         { title: "Bucket List" },
         { name: "description", content: "Welcome to React Router!" },
     ];
+}
+export type WhyBucketList = {
+    icon: ReactNode;
+    title: string;
+    description: string;
 }
 const features = [
     {
@@ -54,21 +62,60 @@ const scrollImages = [
     "/adventures6.jpg",
     "/travel.webp"
     ]
-const whyBucketList =[
+const whyBucketList: WhyBucketList[] =[
     {
+
         icon: <FaGlobeAmericas className="text-indigo-600 text-5xl mx-auto mb-3" />,
         title: "Global Inspiration",
-        description:  "Discover ideas from travelers, creators, and dreamers around the world.",
+        description:
+            "Discover unique bucket list ideas from dreamers, travelers, and creators around the world.",
+    },
+    {
+        icon: <FaBook className="text-indigo-600 text-5xl mx-auto mb-3" />,
+        title: "Scrap Book",
+        description:
+            "Capture your adventures with photos, notes, and stories — your memories all in one place.",
+    },
+    {
+        icon: <FaUsers className="text-indigo-600 text-5xl mx-auto mb-3" />,
+        title: "Share with Friends",
+        description:
+            "Connect with others, share your progress, and celebrate milestones together.",
+    },
+    {
+        icon: <FaLightbulb className="text-indigo-600 text-5xl mx-auto mb-3" />,
+        title: "Stay Inspired",
+        description:
+            "Explore trending goals and spark new ideas to add to your own adventure list.",
+    },
+    {
+        icon: <FaChartLine className="text-indigo-600 text-5xl mx-auto mb-3" />,
+        title: "Track Your Journey",
+        description:
+            "Visualize your progress and stay motivated as you move from dreams to achievements.",
+    },
+    {
+        icon: <FaCameraRetro className="text-indigo-600 text-5xl mx-auto mb-3" />,
+        title: "Visual Memories",
+        description:
+            "Upload images from your completed goals to relive your favorite moments anytime.",
+    },
+    {
+         icon: <FaHeart className="text-indigo-600 text-5xl mx-auto mb-3" />,
+        title: "Personal Growth",
+        description:
+            "Your bucket list becomes a reflection of your passions, growth, and life experiences.",
+    },
+    {
+         icon: <FaMedal className="text-indigo-600 text-5xl mx-auto mb-3" />,
+        title: "Celebrate Success",
+        description:
+            "Every goal you complete becomes a victory — collect achievements and badges along the way.",
     },
     {
         icon: <FaUsers className="text-indigo-600 text-5xl mx-auto mb-3" />,
         title: "Supportive Community",
         description: "Join groups, find partners, and share your progress with people who inspire you.",
-    },
-    {
-        icon: <FaLightbulb className="text-indigo-600 text-5xl mx-auto mb-3" />,
-        title: "Stay Motivated",
-        description:  "Visualize your goals and celebrate milestones that keep your motivation high.",
     },
     {
         icon: <FaMedal className="text-indigo-600 text-5xl mx-auto mb-3" />,
@@ -98,15 +145,6 @@ console.log(images.length);
     }, [location.pathname]);
     return(
         <>
-
-          {/*  <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-                <Carousel >
-                    <img src= "/adventures.jpg" alt="..." />
-                    <img src= "/adventures1.jpg" alt="..." />
-                    <img src="/adventures2.jpg" alt="..." />
-                </Carousel>
-            </div>*/}
-
             <section className="relative">
                 <div className="relative w-full" data-carousel="slide" id="adventure-data-carousel">
                     <div className="relative h-[550px] overflow-hidden  rounded-lg z-0">
@@ -140,7 +178,7 @@ console.log(images.length);
                             Connect with a community of adventurers and make every moment count.
                             Connect with dreamers like you and start your journey now!
                         </p>
-                        <Button href='/login'  size="lg" className="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 rounded-lg text-white font-semibold hover:opacity-90 transition">
+                        <Button href='/signup'  size="lg" className="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 rounded-lg text-white font-semibold hover:opacity-90 transition">
                             Start your journey
                         </Button>
                     </div>
@@ -163,28 +201,28 @@ console.log(images.length);
                         }
                     </div>
                 </section>
- <section className="bg-blue-600 p-5">
-     <div className="max-w-6xl mx-auto px-6 text-center">
-         <h2 className="text-4xl font-extrabold mb-4 "> Why Choose <span className="text-white">Bucket List? </span></h2>
-         <p className="text-black max-w-2xl mx-auto mb-12">
-             Bucket List isn’t just a goal tracker — it’s your digital adventure
-             journal, connecting dreamers worldwide and inspiring you to live a
-             more meaningful life.
-         </p>
-         <div className="grid grid-cols-4  gap-8">
-             { whyBucketList.map((item, index) => (
-                 <Card className=" text-center hover:shadow-lg transition duration-200">
-                     {item.icon}
-                     <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                     <p className="text-gray-600 text-sm"> {item.description} </p>
-                 </Card>
-             )) }
 
-         </div>
-     </div>
+              <section className="bg-blue-600 p-5">
+                  <div className="max-w-6xl mx-auto px-6 text-center">
+                      <h2 className="text-4xl font-extrabold mb-4 "> Why Choose <span className="text-white">Bucket List? </span></h2>
+                      <p className="text-black max-w-2xl mx-auto mb-12">
+                          Bucket List isn’t just a goal tracker — it’s your digital adventure
+                          journal, connecting dreamers worldwide and inspiring you to live a
+                          more meaningful life.
+                      </p>
 
- </section>
+                        {/*  { whyBucketList.map((item, index) => (
+                              <Card className=" text-center hover:shadow-lg transition duration-200">
+                                  {item.icon}
+                                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                                  <p className="text-gray-600 text-sm"> {item.description} </p>
+                              </Card>
+                          )) }*/}
+                          <DivSlider  bucketListProp={whyBucketList} />
 
+                  </div>
+
+              </section>
                 <section id="inspiration" className="py-16 bg-indigo-50">
                     <h2 className="text-3xl font-bold text-center mb-10">Inspiration Gallery</h2>
                     <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto px-6">
