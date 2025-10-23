@@ -21,11 +21,11 @@ import type { ReactNode } from "react";
 
 export function meta({}: Route.MetaArgs) {
     return [
-        { title: "Bucket List" },
+        { title: "Wander List" },
         { name: "description", content: "Welcome to React Router!" },
     ];
 }
-export type WhyBucketList = {
+export type WhyWanderList = {
     icon: ReactNode;
     title: string;
     description: string;
@@ -33,7 +33,7 @@ export type WhyBucketList = {
 const features = [
     {
         icon: <FaListAlt className="w-10 h-10 text-indigo-600 mx-auto mb-3" />,
-        title: "My Bucket List",
+        title: "My Wander List",
         description: "Add, organize, and track your goals easily.",
     },
     {
@@ -62,13 +62,13 @@ const scrollImages = [
     "/adventures6.jpg",
     "/travel.webp"
     ]
-const whyBucketList: WhyBucketList[] =[
+const whyWanderList: WhyWanderList[] =[
     {
 
         icon: <FaGlobeAmericas className="text-indigo-600 text-5xl mx-auto mb-3" />,
         title: "Global Inspiration",
         description:
-            "Discover unique bucket list ideas from dreamers, travelers, and creators around the world.",
+            "Discover unique Wander list ideas from dreamers, travelers, and creators around the world.",
     },
     {
         icon: <FaBook className="text-indigo-600 text-5xl mx-auto mb-3" />,
@@ -104,7 +104,7 @@ const whyBucketList: WhyBucketList[] =[
          icon: <FaHeart className="text-indigo-600 text-5xl mx-auto mb-3" />,
         title: "Personal Growth",
         description:
-            "Your bucket list becomes a reflection of your passions, growth, and life experiences.",
+            "Your Wander list becomes a reflection of your passions, growth, and life experiences.",
     },
     {
          icon: <FaMedal className="text-indigo-600 text-5xl mx-auto mb-3" />,
@@ -169,12 +169,12 @@ console.log(images.length);
 
                 </div>
                 <div className="absolute inset-0 w-full top-0 m-5">
-                    <h2 className="text-blue-500 text-center text-5xl font-extrabold">Bucket List App</h2>
+                    <h2 className="text-blue-500 text-center text-5xl font-extrabold">Wander List App</h2>
                 </div>
                     <div className="absolute inset-0  flex flex-col justify-center items-center text-center p-6">
                         <h2 className="text-5xl font-extrabold text-yellow-500 mb-4" key="heading"> Turn your Dreams Into Adventures</h2>
                         <p className="text-lg text-black-900 font-bold mb-8 mx-auto w-1/2">
-                            Create your bucket list, share with friends, and start checking off your dreams today!
+                            Create your Wander list, share with friends, and start checking off your dreams today!
                             Connect with a community of adventurers and make every moment count.
                             Connect with dreamers like you and start your journey now!
                         </p>
@@ -204,21 +204,21 @@ console.log(images.length);
 
               <section className="bg-blue-600 p-5">
                   <div className="max-w-6xl mx-auto px-6 text-center">
-                      <h2 className="text-4xl font-extrabold mb-4 "> Why Choose <span className="text-white">Bucket List? </span></h2>
+                      <h2 className="text-4xl font-extrabold mb-4 "> Why Choose <span className="text-white">Wander List? </span></h2>
                       <p className="text-black max-w-2xl mx-auto mb-12">
-                          Bucket List isn’t just a goal tracker — it’s your digital adventure
+                          Wander List isn’t just a goal tracker — it’s your digital adventure
                           journal, connecting dreamers worldwide and inspiring you to live a
                           more meaningful life.
                       </p>
 
-                        {/*  { whyBucketList.map((item, index) => (
+                        {/*  { whyWanderList.map((item, index) => (
                               <Card className=" text-center hover:shadow-lg transition duration-200">
                                   {item.icon}
                                   <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
                                   <p className="text-gray-600 text-sm"> {item.description} </p>
                               </Card>
                           )) }*/}
-                          <DivSlider  bucketListProp={whyBucketList} />
+                          <DivSlider  wanderListProp={whyWanderList} />
 
                   </div>
 

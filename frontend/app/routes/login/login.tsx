@@ -1,8 +1,8 @@
 export default function  Login (){
     return (
         <>
-            <h1 className="font-extrabold text-4xl p-3 text-orange text-center">Wonder List </h1>
-        <form className="max-w-sm mx-auto">
+            <h1 className="text-5xl font-extrabold text-center pt-5 pb-5 bg-orange"> Wander List</h1>
+        <form className="max-w-sm mx-auto m-6">
             <div className="mb-5">
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
                     email</label>

@@ -1,13 +1,13 @@
 import {useRef} from 'react';
 import {Button, Card} from 'flowbite-react';
-import type {WhyBucketList} from "~/routes/home/home";
+import type {WhyWanderList} from "~/routes/home/home";
 
-type BucketListProp = {
-    bucketListProp: WhyBucketList[]
+type WanderListProp = {
+    wanderListProp: WhyWanderList[]
 }
 
-export function DivSlider(props:BucketListProp ) {
-    const bList = props.bucketListProp
+export function DivSlider(props:WanderListProp ) {
+    const bList = props.wanderListProp
     const containerRef = useRef<HTMLDivElement | null>(null);
     const divRefs = useRef<Array<HTMLDivElement | null>>([]); // To store refs for each individual div
     const divsPerPage = 1; // Number of divs to show at a time
