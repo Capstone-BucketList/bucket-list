@@ -4,7 +4,44 @@
 export function Navigation() {
     return (
         <>
+<<<<<<< HEAD
             {/*Navbar*/}
+=======
+
+                   <Navbar fluid>
+                   <NavbarBrand href="https://flowbite-react.com">
+                   {/*<img src="/favicon.svg" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />*/}
+                   <span className="self-center whitespace-nowrap text-4xl font-semibold text-pale-tan">WanderList</span>
+                   </NavbarBrand>
+                   <div className="flex md:order-2">
+                   <Dropdown
+                   arrowIcon={false}
+               inline
+               label={
+                   <Avatar alt="User settings" img="https://flowbite.com/docs/images/people/profile-picture-5.jpg" rounded />
+               }
+        >
+        <DropdownHeader>
+            <span className="block text-sm">Bonnie Green</span>
+            <span className="block truncate text-sm font-medium">name@flowbite.com</span>
+        </DropdownHeader>
+        <DropdownItem>Dashboard</DropdownItem>
+        <DropdownItem>Settings</DropdownItem>
+        <DropdownDivider />
+        <DropdownItem>Sign out</DropdownItem>
+        </Dropdown>
+    <NavbarToggle />
+</div>
+    <NavbarCollapse>
+        <NavbarLink href="/" active>
+            Home
+        </NavbarLink>
+        <NavbarLink href="/profile">Profile</NavbarLink>
+        <NavbarLink href="/community">Community</NavbarLink>
+        <NavbarLink href="/scrapbook">Scrapbook</NavbarLink>
+    </NavbarCollapse>
+</Navbar>
+>>>>>>> 04b0539685e47f3b05d7de139d7525b7de9c5138
 
             <nav className="bg-auburn border-b-4 border-orange-400 shadow-xl">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
