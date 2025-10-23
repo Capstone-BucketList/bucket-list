@@ -9,9 +9,9 @@ import PhotoCard from "../../components/photo-card";
 export default function Scrapbook () {
     return(
         <>
-            <div className="flex w-full justify-between border-gray-200 bg-blue-500 p-4">
+            <div className="flex w-full justify-between border-gray-200 bg-burnt-orange p-4">
                 <div className="mx-auto flex items-center">
-                    <h1 className="font-bold whitespace-nowrap text-3xl text-white ">
+                    <h1 className="font-extrabold whitespace-nowrap text-4xl text-bright-light-blue">
                         Your Collection of Memories
                     </h1>
                 </div>
@@ -56,7 +56,7 @@ export default function Scrapbook () {
                 </div>
             </section>
                 <hr/>
-            <section className="w-full bg-gray-400 py-6">
+            <section className="w-full bg-burnt-orange py-6">
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
@@ -67,12 +67,12 @@ export default function Scrapbook () {
                             <div className='flex flex-col items-center '>
                                 <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                            altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                             <div className='flex flex-col items-center '>
                                 <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                            altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                         </div>
                     </div>
@@ -85,12 +85,12 @@ export default function Scrapbook () {
                             <div className='flex flex-col items-center '>
                                 <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                            altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                             <div className='flex flex-col items-center '>
                                 <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                            altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                         </div>
                     </div>
@@ -107,12 +107,12 @@ export default function Scrapbook () {
                             <div className='flex flex-col items-center '>
                                 <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                            altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                             <div className='flex flex-col items-center '>
                                 <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                            altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                         </div>
                     </div>
@@ -125,12 +125,12 @@ export default function Scrapbook () {
                             <div className='flex flex-col items-center'>
                             <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                        altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                             <div className='flex flex-col items-center '>
                             <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
                                        altText='highway leading into sunset'/>
-                                <Button>Default</Button>
+                                <Button>Submit</Button>
                             </div>
                         </div>
                     </div>
