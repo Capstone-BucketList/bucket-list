@@ -4,44 +4,7 @@
 export function Navigation() {
     return (
         <>
-<<<<<<< HEAD
             {/*Navbar*/}
-=======
-
-                   <Navbar fluid>
-                   <NavbarBrand href="https://flowbite-react.com">
-                   {/*<img src="/favicon.svg" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />*/}
-                   <span className="self-center whitespace-nowrap text-4xl font-semibold text-pale-tan">WanderList</span>
-                   </NavbarBrand>
-                   <div className="flex md:order-2">
-                   <Dropdown
-                   arrowIcon={false}
-               inline
-               label={
-                   <Avatar alt="User settings" img="https://flowbite.com/docs/images/people/profile-picture-5.jpg" rounded />
-               }
-        >
-        <DropdownHeader>
-            <span className="block text-sm">Bonnie Green</span>
-            <span className="block truncate text-sm font-medium">name@flowbite.com</span>
-        </DropdownHeader>
-        <DropdownItem>Dashboard</DropdownItem>
-        <DropdownItem>Settings</DropdownItem>
-        <DropdownDivider />
-        <DropdownItem>Sign out</DropdownItem>
-        </Dropdown>
-    <NavbarToggle />
-</div>
-    <NavbarCollapse>
-        <NavbarLink href="/" active>
-            Home
-        </NavbarLink>
-        <NavbarLink href="/profile">Profile</NavbarLink>
-        <NavbarLink href="/community">Community</NavbarLink>
-        <NavbarLink href="/scrapbook">Scrapbook</NavbarLink>
-    </NavbarCollapse>
-</Navbar>
->>>>>>> 04b0539685e47f3b05d7de139d7525b7de9c5138
 
             <nav className="bg-auburn border-b-4 border-orange-400 shadow-xl">
                 <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -59,7 +22,7 @@ export function Navigation() {
                             <img className="w-10 h-10 rounded-full" src="https://placehold.co/300x300"
                                  alt="user photo"/>
                         </button>
-                       {/*Dropdown menu*/}
+                        {/*Dropdown menu*/}
                         <div
                             className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
                             id="user-dropdown">
@@ -108,8 +71,8 @@ export function Navigation() {
                                    aria-current="page">Home</a>
                             </li>
                             <li>
-                                <a href="/profile"
-                                   className="block py-2 px-3 text-pale-tan rounded-sm hover:bg-gray-100 hover:text-blue-600">Profile</a>
+                                <a href="/dashboard"
+                                   className="block py-2 px-3 text-pale-tan rounded-sm hover:bg-gray-100 hover:text-blue-600">Dashboard</a>
                             </li>
                             <li>
                                 <a href="/community"
