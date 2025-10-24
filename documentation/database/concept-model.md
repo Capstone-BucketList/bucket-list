@@ -3,7 +3,7 @@
 
 ## Entities
 
-**Profile**: Represents user profiles containing personal information and preferences.
+**Dashboard**: Represents user profiles containing personal information and preferences.
 * Attributes: 
   * profileId (Primary Key), 
   * bio,

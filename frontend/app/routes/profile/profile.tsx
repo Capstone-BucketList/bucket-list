@@ -1,41 +1,76 @@
-import {Avatar} from "flowbite-react";
-import {HR} from "flowbite-react";
-import {ListItems} from "~/routes/profile/list-items";
+
 
 export default function Profile() {
     return (
         <>
-            <section className="bg-mainbg">
-                @todo: add code to fetch user data and display it here
-                <h1>Welcome back, [NAME]!</h1>
-                <Avatar img="/images/people/profile-picture-5.jpg" rounded bordered className="size-xl">
-                    <div className="space-y-1 font-medium">
-                        <div>Jesse Leos</div>
-                        <div className="text-sm text-gray-500">Joined in August 2014</div>
-                    </div>
-                </Avatar>
-                <HR />
-                <section> {/* start bucket list section */}
-                    <h2>My Bucket List</h2>
-
-                    @todo: add logic to only show if no items in bucket list
-                    <section className="bg-containterbg rounded-xl shadow-md mx-20 my-4"> {/* start empty bucket list
-                     section */}
-                        <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-                            <div className="mx-auto max-w-screen-sm text-center">
-                                <h2 className="mb-4 text-4xl tracking-tight font-extrabold leading-tight text-gray-200">It looks like you haven't added any tasks to your bucket!</h2>
-                                <p className="mb-6 font-light text-gray-500 md:text-lg">Add your first wish or event by clicking below.</p>
-                                <a href="#"
-                                   className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-semibold rounded-lg text-sm px-5 py-2.5 mr-2 mb-2">Start my bucket list!</a>
-                            </div>
-                        </div>
-                        <ListItems />
-                    </section> {/* end empty bucket list section */}
-                </section> {/* end bucket list section*/}
-
-            </section>
+        <div className="flex items-center justify-center py-4 md:py-8 flex-wrap">
+            <button type="button"
+                    className="text-blue-700 hover:text-white border border-blue-600 bg-white hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:bg-gray-900 dark:focus:ring-blue-800">All
+                categories
+            </button>
+            <button type="button"
+                    className="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Shoes
+            </button>
+            <button type="button"
+                    className="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Bags
+            </button>
+            <button type="button"
+                    className="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Electronics
+            </button>
+            <button type="button"
+                    className="text-gray-900 border border-white hover:border-gray-200 dark:border-gray-900 dark:bg-gray-900 dark:hover:border-gray-700 bg-white focus:ring-4 focus:outline-none focus:ring-gray-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:text-white dark:focus:ring-gray-800">Gaming
+            </button>
+        </div>
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg" alt="" />
+        </div>
+        <div>
+            <img className="h-auto max-w-full rounded-lg"
+                 src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg" alt="" />
+        </div>
+    </div>
         </>
-    )
+)
 }
-
-

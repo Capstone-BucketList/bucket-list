@@ -8,7 +8,7 @@
     * Preston primarily uses a personal laptop and his work desktop computer. 
     * He primarily only uses his phone to add quick ideas on the go. 
 
-## Profile
+## Dashboard
 * Preston already has a few ideas of experiences he would like to have with his family, but isn't sure how he can track and remember everything he would like to add to their bucket list.
 * Preston and his wife have solid, well-paying careers but still like to save money anywhere available to invest in their children's futures. A portion of that savings and extra cash flow is set aside for vacations and other unique experiences on their bucket list.
 * He wants to organize ideas that will appeal to the whole family, not just one person. 
@@ -44,7 +44,7 @@ Preston registers for a profile and adds his first bucket list item.
 * Preston clicks the register button
 * The website gives Preston a confirmation 'thank you' message for signing up
 * Preston clicks the x at the top of the confirmation popup to close the message
-* The website takes Preston to the My Profile page
+* The website takes Preston to the My Dashboard page
 * Preston is eager to add his first item and test out the functionality of the site*
 * Preston clicks the + button to add his first bucket list item
 * The website takes Preston to a form to fill out the information for his first bucket list item
