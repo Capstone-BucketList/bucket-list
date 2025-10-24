@@ -18,7 +18,7 @@ export function DivSlider(props:WanderListProp ) {
 
         if (!container || !firstDiv) return;
 
-        const divWidth = firstDiv.offsetWidth; // Assuming all divs have same width
+        const divWidth = firstDiv.offsetWidth;
         const scrollAmount = divWidth * divsPerPage;
 
         if (direction === 'left') {
@@ -38,15 +38,15 @@ export function DivSlider(props:WanderListProp ) {
         <div className="relative">
             <div
                 ref={containerRef}
-                className="flex overflow-x-hidden scrollbar-hide" // Hide default scrollbar
-                style={{scrollSnapType: 'x mandatory'}} // Optional: for smoother snapping
+                className="flex overflow-x-hidden scrollbar-hide px-4"
+                style={{scrollSnapType: 'x mandatory'}}
                  >
                 {bList.map((item, i) => (
                     <div
                         key={i}
                         ref={(el) => { divRefs.current[i] = el; }}
-                        className="flex-shrink-0 w-1/4 p-4 h-70" // Adjust width based on divsPerPage
-                        style={{ scrollSnapAlign: 'start' }} // Optional: for smoother snapping
+                        className="flex-shrink-0 snap-start p-4 w-3/4 sm:w-1/2 md:w-1/3 lg:w-1/4" // Adjust width based on divsPerPage
+                        style={{ scrollSnapAlign: 'start' }}
                     >
                     <Card className="h-full text-center hover:shadow-lg transition duration-200" key={i}>
                         {item.icon}
@@ -57,7 +57,7 @@ export function DivSlider(props:WanderListProp ) {
                 ))}
             </div>
 
-            <div className="absolute top-1/2 left-0 -translate-y-1/2">
+            <div className="absolute top-1/2 -left-5 -translate-y-1/2">
                 <Button onClick={() => scrollContainer('left')}>&lt;</Button>
             </div>
             <div className="absolute top-1/2 right-0 -translate-y-1/2">

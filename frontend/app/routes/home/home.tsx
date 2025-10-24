@@ -147,7 +147,7 @@ console.log(images.length);
         <>
             <section className="relative">
                 <div className="relative w-full" data-carousel="slide" id="adventure-data-carousel">
-                    <div className="relative h-[550px] overflow-hidden  rounded-lg z-0">
+                    <div className="relative h-[550px] overflow-hidden z-0 object-cover">
                     {
                         scrollImages.map((image, index) => (
                             <div className="hidden ease-in-out duration-700" key ={index+1} data-carousel-item>
@@ -166,22 +166,26 @@ console.log(images.length);
                         }
 
                     </div>
+                    <div className="absolute inset-0 bg-black/50"></div>
 
                 </div>
-                <div className="absolute inset-0 w-full top-0 m-5">
+               {/* <div className="absolute inset-0 w-full top-0 m-5">
                     <h2 className="text-blue-500 text-center text-5xl font-extrabold">Wander List App</h2>
+                </div>*/}
+                <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-10">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+                        Turn your Dreams Into Adventures
+                    </h2>
+
+                    <p className="text-base sm:text-lg md:text-xl text-gray-100 font-medium mb-8 max-w-2xl">
+                        Create your Wander list, share with friends, and start checking off your dreams today!
+                        Connect with a community of adventurers and make every moment count.
+                    </p>
+
+                    <Button href="/signup" size="lg" className="bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 rounded-lg text-white font-semibold hover:opacity-90 transition">
+                        Start your journey
+                    </Button>
                 </div>
-                    <div className="absolute inset-0  flex flex-col justify-center items-center text-center p-6">
-                        <h2 className="text-5xl font-extrabold text-yellow-500 mb-4" key="heading"> Turn your Dreams Into Adventures</h2>
-                        <p className="text-lg text-black-900 font-bold mb-8 mx-auto w-1/2">
-                            Create your Wander list, share with friends, and start checking off your dreams today!
-                            Connect with a community of adventurers and make every moment count.
-                            Connect with dreamers like you and start your journey now!
-                        </p>
-                        <Button href='/signup'  size="lg" className="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 rounded-lg text-white font-semibold hover:opacity-90 transition">
-                            Start your journey
-                        </Button>
-                    </div>
 
             </section>
           <div className="text-gray-900">
