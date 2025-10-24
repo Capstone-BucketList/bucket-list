@@ -1,7 +1,7 @@
 export default function SignUp(){
     return (
 <>
-    <h1 className="text-5xl font-extrabold text-center pt-5 pb-5 bg-orange"> Wander List</h1>
+
         <section className="bg-gray-50 flex">
 
             <div className=" w-1/2 flex flex-col items-center justify-center px-6 py-8 mx-auto   lg:py-0">
