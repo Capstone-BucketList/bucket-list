@@ -16,43 +16,43 @@ export default function Scrapbook () {
                     </h1>
                 </div>
             </div>
-            <section className='w-full bg-gray-200 px-4 pt-5' >
+            <section className='w-full bg-gray-200 px-2 pt-5 pb-5' >
                 <div className='flex flex-col items-center mb-6'>
-                    <h2 className='text-3xl font-extrabold text-center mb-6' >Travel</h2>
-                    <Button>See Gallery</Button>
+                    <h2 className='text-3xl font-extrabold text-center mb-4' >Travel</h2>
+                    <Button>Call-to-action</Button>
                 </div>
-                <div className='flex flex-wrap justify-center gap-6' >
-                    <Card className="max-w-sm mt-2" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
-                <h5 className="text-xl font-bold whitespace-nowrap tracking-tight text-gray-900 dark:text-white">
-                    Albuquerque Balloon Fiesta 2024
-                </h5>
-                 <p className="font-normal text-gray-300 dark:text-gray-400">
-                 Finally completed my bucket item of a Hot Air Balloon experience.
-                </p>
-                    <Button>Submit</Button>
-                </Card>
-                <Card className="max-w-sm mt-2"
-                      imgAlt="person on hiking trail"
-                      imgSrc='img_5.png'>
-                    <h5 className="text-xl font-bold whitespace-nowrap tracking-tight text-gray-900 dark:text-white">
-                        Sandia Mountains Hiking Trail 2025
-                    </h5>
-                    <p className="font-normal text-gray-300 dark:text-gray-400">
-                        Completed 12,000 steps in a single day hike!
-                    </p>
-                    <Button>Submit</Button>
-                </Card>
-                <Card className="max-w-sm mt-2"
-                      imgAlt="highway sunset view"
-                      imgSrc='img_6.png'>
-                    <h5 className="text-xl font-bold whitespace-nowrap tracking-tight text-gray-900 dark:text-white">
-                        Route 66 2025
-                    </h5>
-                    <p className="font-normal text-gray-300 dark:text-gray-400">
-                        10 days traveling on route 66
-                    </p>
-                    <Button>Submit</Button>
-                </Card>
+                <div className='w-full max-w-4xl mx-auto relative h-[500px]'>
+                    <Carousel slide={true} indicators={true} className="w-full max-w-4xl mx-auto">
+                        <Card className="max-w-sm" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
+                            <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Albuquerque Balloon Fiesta 2024
+                            </h5>
+                            <p className="font-normal text-gray-300 dark:text-gray-400">
+                                Finally completed my bucket item of a Hot Air Balloon experience.
+                            </p>
+                            <Button>Submit</Button>
+                        </Card>
+
+                        <Card className="max-w-sm" imgAlt="person on hiking trail" imgSrc='img_5.png'>
+                            <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Sandia Mountains Hiking Trail 2025
+                            </h5>
+                            <p className="font-normal text-gray-300 dark:text-gray-400">
+                                Completed 12,000 steps in a single day hike!
+                            </p>
+                            <Button>Submit</Button>
+                        </Card>
+
+                        <Card className="max-w-sm" imgAlt="highway sunset view" imgSrc='img_6.png'>
+                            <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                Route 66 2025
+                            </h5>
+                            <p className="font-normal text-gray-300 dark:text-gray-400">
+                                10 days traveling on route 66
+                            </p>
+                            <Button>Submit</Button>
+                        </Card>
+                    </Carousel>
                 </div>
             </section>
                 <hr/>
@@ -61,37 +61,40 @@ export default function Scrapbook () {
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
                         <h2 className='text-3xl font-extrabold text-center mb-6'>Health & Fitness</h2>
-                        <Button>See Gallery</Button>
+                        <Button>Call-to-Action</Button>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
-                            <div className='flex flex-col items-center '>
-                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                           altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                           altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-1">
-                        <div className='flex flex-col items-center mb-6'>
-                        <h2 className='text-3xl font-extrabold text-center mb-6'>Learning</h2>
-                        <Button>See Gallery</Button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
-                            <div className='flex flex-col items-center '>
-                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                           altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                           altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
+                        <div className='w-full max-w-4xl mx-auto relative h-[500px]'>
+                            <Carousel slide={true} indicators={true} className="w-full max-w-4xl mx-auto">
+                                <Card className="max-w-sm" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Albuquerque Balloon Fiesta 2024
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        Finally completed my bucket item of a Hot Air Balloon experience.
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+
+                                <Card className="max-w-sm" imgAlt="person on hiking trail" imgSrc='img_5.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Sandia Mountains Hiking Trail 2025
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        Completed 12,000 steps in a single day hike!
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+
+                                <Card className="max-w-sm" imgAlt="highway sunset view" imgSrc='img_6.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Route 66 2025
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        10 days traveling on route 66
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+                            </Carousel>
                         </div>
                     </div>
                 </div>
@@ -99,44 +102,91 @@ export default function Scrapbook () {
             <section className="w-full bg-white py-6">
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
                     <div className="flex-1">
-                        <div className='flex flex-col items-center mb-6'>
-                            <h2 className='text-3xl font-extrabold text-center mb-6'>Food</h2>
-                            <Button>See Gallery</Button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4">
-                            <div className='flex flex-col items-center '>
-                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                           altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                                <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                           altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
-                        </div>
-                    </div>
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
-                            <h2 className='text-3xl font-extrabold text-center mb-6'>Group Goals???</h2>
-                            <Button>See Gallery</Button>
+                        <h2 className='text-3xl font-extrabold text-center mb-6'>Learning</h2>
+                        <Button>Call-to-Action</Button>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 justify-center gap-4 pb-10">
-                            <div className='flex flex-col items-center'>
-                            <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                       altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
-                            <div className='flex flex-col items-center '>
-                            <PhotoCard title='Route 66 2025' description='10 days of cruising this highway' imageSrc='img_6.png'
-                                       altText='highway leading into sunset'/>
-                                <Button>Submit</Button>
-                            </div>
+                        <div className='w-full max-w-4xl mx-auto relative h-[500px]'>
+                            <Carousel slide={true} indicators={true} className="w-full max-w-4xl mx-auto">
+                                <Card className="max-w-sm" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Albuquerque Balloon Fiesta 2024
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        Finally completed my bucket item of a Hot Air Balloon experience.
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+
+                                <Card className="max-w-sm" imgAlt="person on hiking trail" imgSrc='img_5.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Sandia Mountains Hiking Trail 2025
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        Completed 12,000 steps in a single day hike!
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+
+                                <Card className="max-w-sm" imgAlt="highway sunset view" imgSrc='img_6.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Route 66 2025
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        10 days traveling on route 66
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+                            </Carousel>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </section>
+            <section className="w-full bg-burnt-orange py-6 mb-12">
+                <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
+                    <div className="flex-1">
+                        <div className='flex flex-col items-center mb-6'>
+                            <h2 className='text-3xl font-extrabold text-center mb-6'>Group Goals</h2>
+                            <Button>Call-to-Action</Button>
+                        </div>
+                        <div className='w-full max-w-4xl mx-auto relative h-[500px]'>
+                            <Carousel slide={true} indicators={true} className="w-full max-w-4xl mx-auto">
+                                <Card className="max-w-sm" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Albuquerque Balloon Fiesta 2024
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        Finally completed my bucket item of a Hot Air Balloon experience.
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+
+                                <Card className="max-w-sm" imgAlt="person on hiking trail" imgSrc='img_5.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Sandia Mountains Hiking Trail 2025
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        Completed 12,000 steps in a single day hike!
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+
+                                <Card className="max-w-sm" imgAlt="highway sunset view" imgSrc='img_6.png'>
+                                    <h5 className="text-xl font-bold text-gray-900 dark:text-white">
+                                        Route 66 2025
+                                    </h5>
+                                    <p className="font-normal text-gray-300 dark:text-gray-400">
+                                        10 days traveling on route 66
+                                    </p>
+                                    <Button>Submit</Button>
+                                </Card>
+                            </Carousel>
                         </div>
                     </div>
                 </div>
             </section>
-
         </>
     )
 }

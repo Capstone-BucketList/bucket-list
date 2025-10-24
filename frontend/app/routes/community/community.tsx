@@ -8,10 +8,10 @@ export default function Community () {
             <section className=" border-2 border-b-gray-500 bg-burnt-orange rounded-xl my-16 mx-2">
                 <div
                     className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left md:max-w-5xl md:mx-auto md:gap-8 rounded-xl">
-                    <img className="mt-4 mb-4 border-2 w-[450px]" src='img.png' alt="placeholder image"/>
-                    <div className="flex flex-col bg-pale-tan rounded-lg mt-4">
-                        <p className="md:container md:mx-auto mt-4 mb-2">Someday, I'm going to Hawaii, or I'm going to ride in a Hot Air Balloon.  With your community, you can collectively go on that Hawaii trip, or as a group take a Hot Air Balloon ride. <strong>It's much more possible if you write down your goals and make a plan to accomplish them</strong>. Communities can enjoy these accomplishments and even make changes for their own community.</p>
-                        <p className="mb-4"> For each of us, we find our community everywhere. Within social networks, our circle of friends, and with our family are such places. <strong>Wander List app</strong> can help you develop/connect with your community and we can start moving forward with our goals.</p>
+                    <img className="mt-4 mb-4 border-2 w-[450px] rounded-2xl" src='img.png' alt="placeholder image"/>
+                    <div className="flex flex-col bg-pale-tan rounded-lg mt-4 mb-4">
+                        <p className="md:container md:mx-auto mt-4 mb-2 p-4">Someday, I'm going to Hawaii, or I'm going to ride in a Hot Air Balloon.  With your community, you can collectively go on that Hawaii trip, or as a group take a Hot Air Balloon ride. <strong>It's much more possible if you write down your goals and make a plan to accomplish them</strong>. Communities can enjoy these accomplishments and even make changes for their own community.</p>
+                        <p className="md:container md:mx-auto p-4"> For each of us, we find our community everywhere. Within social networks, our circle of friends, and with our family are such places. <strong>Wander List app</strong> can help you develop/connect with your community and we can start moving forward with our goals.</p>
                     </div>
                 </div>
             </section>
