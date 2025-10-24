@@ -7,22 +7,24 @@ import PhotoCard from "../../components/photo-card";
 
 
 export default function Scrapbook () {
+    const [activeCard, setActiveCard] = useState<PhotoData | null>(null);
     return(
         <>
-            <div className="flex w-full justify-between border-gray-200 bg-burnt-orange p-4">
+            <div className="flex w-full justify-between border-gray-200 bg-pale-tan p-4">
                 <div className="mx-auto flex items-center">
-                    <h1 className="font-extrabold whitespace-nowrap text-4xl text-bright-light-blue">
+                    <h1 className="font-extrabold whitespace-nowrap text-4xl">
                         Your Collection of Memories
                     </h1>
                 </div>
             </div>
             <section className='w-full bg-gray-200 px-2 pt-5 pb-5' >
                 <div className='flex flex-col items-center mb-6'>
-                    <h2 className='text-3xl font-extrabold text-center mb-4' >Travel</h2>
+                    <h2 className='text-3xl font-extrabold text-center mb-4 ' >Travel</h2>
                     <Button>Call-to-action</Button>
                 </div>
                 <div className='w-full max-w-4xl mx-auto relative h-[500px]'>
                     <Carousel slide={true} indicators={true} className="w-full max-w-4xl mx-auto">
+                        <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_4.png" })}>
                         <Card className="max-w-sm" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
                             <h5 className="text-xl font-bold text-gray-900 dark:text-white">
                                 Albuquerque Balloon Fiesta 2024
@@ -32,7 +34,8 @@ export default function Scrapbook () {
                             </p>
                             <Button>Submit</Button>
                         </Card>
-
+                        </div>
+                        <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_5.png" })}>
                         <Card className="max-w-sm" imgAlt="person on hiking trail" imgSrc='img_5.png'>
                             <h5 className="text-xl font-bold text-gray-900 dark:text-white">
                                 Sandia Mountains Hiking Trail 2025
@@ -42,7 +45,8 @@ export default function Scrapbook () {
                             </p>
                             <Button>Submit</Button>
                         </Card>
-
+                        </div>
+                        <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_6.png" })}>
                         <Card className="max-w-sm" imgAlt="highway sunset view" imgSrc='img_6.png'>
                             <h5 className="text-xl font-bold text-gray-900 dark:text-white">
                                 Route 66 2025
@@ -52,11 +56,12 @@ export default function Scrapbook () {
                             </p>
                             <Button>Submit</Button>
                         </Card>
+                        </div>
                     </Carousel>
                 </div>
             </section>
                 <hr/>
-            <section className="w-full bg-burnt-orange py-6">
+            <section className="w-full bg-turquoise py-6">
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
@@ -99,9 +104,8 @@ export default function Scrapbook () {
                     </div>
                 </div>
             </section>
-            <section className="w-full bg-white py-6">
+            <section className="w-full bg-gray-200 py-6">
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
-                    <div className="flex-1">
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
                         <h2 className='text-3xl font-extrabold text-center mb-6'>Learning</h2>
@@ -109,6 +113,7 @@ export default function Scrapbook () {
                         </div>
                         <div className='w-full max-w-4xl mx-auto relative h-[500px]'>
                             <Carousel slide={true} indicators={true} className="w-full max-w-4xl mx-auto">
+                                <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_4.png" })}>
                                 <Card className="max-w-sm" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
                                     <h5 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Albuquerque Balloon Fiesta 2024
@@ -118,7 +123,8 @@ export default function Scrapbook () {
                                     </p>
                                     <Button>Submit</Button>
                                 </Card>
-
+                                </div>
+                                <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_4.png" })}>
                                 <Card className="max-w-sm" imgAlt="person on hiking trail" imgSrc='img_5.png'>
                                     <h5 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Sandia Mountains Hiking Trail 2025
@@ -128,7 +134,8 @@ export default function Scrapbook () {
                                     </p>
                                     <Button>Submit</Button>
                                 </Card>
-
+                                </div>
+                                <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_4.png" })}>
                                 <Card className="max-w-sm" imgAlt="highway sunset view" imgSrc='img_6.png'>
                                     <h5 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Route 66 2025
@@ -138,13 +145,13 @@ export default function Scrapbook () {
                                     </p>
                                     <Button>Submit</Button>
                                 </Card>
+                                </div>
                             </Carousel>
                         </div>
                     </div>
                 </div>
-                </div>
             </section>
-            <section className="w-full bg-burnt-orange py-6 mb-12">
+            <section className="w-full bg-turquoise py-6 mb-12">
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
                     <div className="flex-1">
                         <div className='flex flex-col items-center mb-6'>
@@ -153,6 +160,9 @@ export default function Scrapbook () {
                         </div>
                         <div className='w-full max-w-4xl mx-auto relative h-[500px]'>
                             <Carousel slide={true} indicators={true} className="w-full max-w-4xl mx-auto">
+                                <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_4.png" })}>
+
+
                                 <Card className="max-w-sm" imgAlt="hot air balloons at sunset" imgSrc='img_4.png'>
                                     <h5 className="text-xl font-bold text-gray-900 dark:text-white">
                                         Albuquerque Balloon Fiesta 2024
@@ -162,6 +172,9 @@ export default function Scrapbook () {
                                     </p>
                                     <Button>Submit</Button>
                                 </Card>
+                                </div>
+                                <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_4.png" })}>
+
 
                                 <Card className="max-w-sm" imgAlt="person on hiking trail" imgSrc='img_5.png'>
                                     <h5 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -172,6 +185,9 @@ export default function Scrapbook () {
                                     </p>
                                     <Button>Submit</Button>
                                 </Card>
+                                </div>
+                                <div onClick={() => setActiveCard({ title: "...", description: "...", imageUrl: "img_4.png" })}>
+
 
                                 <Card className="max-w-sm" imgAlt="highway sunset view" imgSrc='img_6.png'>
                                     <h5 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -182,6 +198,7 @@ export default function Scrapbook () {
                                     </p>
                                     <Button>Submit</Button>
                                 </Card>
+                                </div>
                             </Carousel>
                         </div>
                     </div>

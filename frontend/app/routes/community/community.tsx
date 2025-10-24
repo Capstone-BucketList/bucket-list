@@ -5,7 +5,7 @@ export default function Community () {
         <>
             <h1 className="text-5xl font-extrabold text-center mb-4 mt-4 text-bright-light-blue">Community
                 Creates Change</h1>
-            <section className=" border-2 border-b-gray-500 bg-burnt-orange rounded-xl my-16 mx-2">
+            <section className=" border-2 border-b-gray-500 bg-turquoise rounded-xl my-16 mx-2">
                 <div
                     className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left md:max-w-5xl md:mx-auto md:gap-8 rounded-xl">
                     <img className="mt-4 mb-4 border-2 w-[450px] rounded-2xl" src='img.png' alt="placeholder image"/>
@@ -19,7 +19,7 @@ export default function Community () {
                 <h2 className='font-extrabold text-5xl text-center text-bright-light-blue'>Inspiration</h2>
             </div>
 
-            <section className="bg-burnt-orange">
+            <section className="bg-turquoise">
                 <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
                     <div className="max-w-screen-md mb-8 lg:mb-10 bg-pale-tan rounded-lg p-4">
                         <p className="text-black sm:text-xl "> What motivates you to start checking things off your own bucket list? What motivates you to get out of bed each day, or to continue learning a new topic? Being inspired happens every moment; to do or create something. Finding the ideas for motivation can help by listing them. Connecting with like-minded people leads to shared goals, shared advice on accomplishing your goals. Do list out what motivates you.</p>
@@ -60,7 +60,7 @@ export default function Community () {
             </section>
 
             <section
-                className="w-full flex flex-col md:flex-row justify-between items-start gap-6 mt-4 bg-burnt-orange p-4">
+                className="w-full flex flex-col md:flex-row justify-between items-start gap-6 mt-4 bg-turquoise p-4">
                 <div className='flex flex-col items-center gap-4'>
                     <img className="w-[250px] h-[250px] border-2 m-2" src='img_1.png' alt='Categories in red button'/>
                     <p className='text-xl'>Categories</p>
