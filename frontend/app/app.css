@@ -1,5 +1,6 @@
-@import "tailwindcss";
+
 @import url("https://use.typekit.net/rnl2dgg.css");
+@import "tailwindcss";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
 

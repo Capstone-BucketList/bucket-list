@@ -9,7 +9,7 @@ import {
 } from "flowbite-react";
 import {BsDribbble, BsFacebook, BsGithub, BsInstagram, BsTwitter} from "react-icons/bs";
 
-export function BucketListFooter(){
+export function WanderListFooter(){
     return (
         <Footer container className="bg-black text-white text-center p-4 mt-8 fixed bottom-0 w-full">
 

@@ -1,8 +1,15 @@
-
-
+import {
+    Navbar,
+    NavbarBrand,
+    NavbarCollapse,
+    NavbarLink,
+    NavbarToggle,
+} from "flowbite-react";
+import {useLocation} from "react-router";
 
 export function Navigation() {
     const location = useLocation();
+
     if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup') {
         return (
             <>
@@ -33,7 +40,6 @@ export function Navigation() {
     } else {
         return (
             <>
-                {/*Navbar*/}
 
                 <nav className="bg-blue-950 border-b-4 border-bright-light-blue shadow-xl">
                     <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -51,7 +57,6 @@ export function Navigation() {
                                 <img className="w-10 h-10 rounded-full" src="https://placehold.co/300x300"
                                      alt="user photo"/>
                             </button>
-                            {/*Dropdown menu*/}
                             <div
                                 className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm"
                                 id="user-dropdown">
