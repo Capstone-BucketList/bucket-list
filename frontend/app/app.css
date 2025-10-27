@@ -6,30 +6,43 @@
 
 @theme {
   /* Color Palette */
-  --color-orange-brown: #A06E3D;
-  --color-pale-tan: #EDE1D1;
-  --color-orange: #E88C2D;
-  --color-burnt-orange: #CC5500;
-  --color-auburn: #9a3001;
-  --color-deep-blue: #344785;
-  --color-bright-light-blue: #0CBFF5;
-  --color-turquoise: #3697B5;
-  --color-seafoam: #3AA1AB;
+  /*---------------*/
+
+  /* background/dark bg text */
+  --color-cream: #FDFBF7;
+
+  /* headers */
+  --color-violet: #7B44F2;
+
+  /* primary/secondary */
+  --color-azure: #2C7FB8;
+  --color-lavender: #9B7EBD;
+
+  /* accents */
+  --color-coral: #FF7E67;
+  --color-golden: #F4D03F;
+  --color-sage: #7FB685;
+
+  /* containers/sections */
+  --color-navy: #1A2639;
+
+  /* text/footer */
+  --color-charcoal: #252326;
+
 
   /* Font Families */
+  /*---------------*/
+
+  /* headings */
   --font-baga: 'baga', sans-serif;
-  --font-bc-civitas: 'bc-civitas', sans-serif;
-  --font-playpen: 'playpen-sans-hebrew', sans-serif;
-  --font-bufalino: 'bufalino', sans-serif;
+
+  /* body */
   --font-eaves: 'mr-eaves-xl-modern', sans-serif;
-  --font-eloise: 'hey-eloise', sans-serif;
-  --font-elois-watercolor: 'hey-elois-watercolor', sans-serif;
-  --font-swing-king: 'swing-king', sans-serif;
-  --font-catseye: 'catseye', sans-serif;
-  --font-chaloops: 'chaloops', sans-serif;
-  --font-sweet-salty: 'sweet-and-salty', sans-serif;
-  --font-boli: 'mv-boli', sans-serif;
-  --font-marydale: 'marydale', sans-serif;
-  --font-volina: 'volina', sans-serif;
-  --font-rigatoni: 'rigatoni', sans-serif;
+
+  --font-forma: "forma-djr-micro", sans-serif;
+
+  --font-bufalino: 'bufalino', sans-serif;
+
+  --font-poppins: 'poppins', sans-serif;
+  --font-inter: 'inter-tight-variable', sans-serif;
 }

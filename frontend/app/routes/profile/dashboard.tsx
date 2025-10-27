@@ -17,9 +17,9 @@ export default function Dashboard() {
                 <img className="rounded-full w-50 h-50 float-right" src="https://placehold.co/300x300"
                      alt="image description"/>
                 <div>
-                    <h2 className="text-lg font-extrabold leading-none tracking-tight text-gray-900">First and Last Name</h2>
-                    <h3 className="italic">Username</h3>
-                    <p className="text-lg font-normal text-gray-500 lg:text-xl">Viatorem per terras incognitas ambulantem, montes altissimi et valles profundae expectant. Itinera longa et ardua trans oceanos vastos ducunt, ubi stellae nocturnas vias illuminant. In urbibus antiquis, mercatores exotici merces mirabiles vendunt, dum templa vetusta historias saeculorum narrant. Pontes lapidei super flumina crystallina extendunt, et viae serpentinae ad horizontes infinitos perveniunt. Adventurae novae in quaque porta expectant, promittentes memorias quae in perpetuum in corde manebunt.</p>
+                    <h2 className="text-lg font-extrabold leading-none tracking-tight text-gray-900 font-baga">Violet Evergarden</h2>
+                    <h3 className="italic font-baga">Username</h3>
+                    <p className="text-lg font-normal font-eaves text-gray-500 lg:text-xl">Viatorem per terras incognitas ambulantem, montes altissimi et valles profundae expectant. Itinera longa et ardua trans oceanos vastos ducunt, ubi stellae nocturnas vias illuminant. In urbibus antiquis, mercatores exotici merces mirabiles vendunt, dum templa vetusta historias saeculorum narrant. Pontes lapidei super flumina crystallina extendunt, et viae serpentinae ad horizontes infinitos perveniunt. Adventurae novae in quaque porta expectant, promittentes memorias quae in perpetuum in corde manebunt.</p>
 
                 </div>
 
@@ -47,8 +47,8 @@ export default function Dashboard() {
                 <section className="bg-seafoam">
                     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 ">
                         <div className="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
-                            <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900">My Wanderlist</h2>
-                            <p className="font-light text-black lg:mb-16 sm:text-xl">Explore the
+                            <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold font-baga text-gray-900">My Wanderlist</h2>
+                            <p className="tracking-wide font-eaves text-black lg:mb-16 sm:text-xl">Explore the
                                 whole collection of open-source web components and elements built with the utility
                                 classes from Tailwind</p>
                         </div>
@@ -68,34 +68,34 @@ export default function Dashboard() {
 
                 {/*Container*/}
                 <div
-                    className="w-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                    className="w-full bg-white border border-gray-200 rounded-lg shadow-sm ">
                     <div className="sm:hidden">
                         <label htmlFor="tabs" className="sr-only">Select tab</label>
                         <select id="tabs"
-                                className="bg-gray-50 border-0 border-b border-gray-200 text-gray-900 text-sm rounded-t-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                className="bg-gray-50 border-0 border-b border-gray-200 text-gray-900 text-sm rounded-t-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                             <option>Post</option>
                             <option>My Posts</option>
                             <option>Friends</option>
                         </select>
                     </div>
-                    <ul className="hidden text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex dark:divide-gray-600 dark:text-gray-400 rtl:divide-x-reverse"
+                    <ul className="hidden text-sm font-medium text-center text-gray-500 divide-x divide-gray-200 rounded-lg sm:flex rtl:divide-x-reverse"
                         id="fullWidthTab" data-tabs-toggle="#fullWidthTabContent" role="tablist">
                         <li className="w-full">
                             <button id="stats-tab" data-tabs-target="#stats" type="button" role="tab"
                                     aria-controls="stats" aria-selected="true"
-                                    className="inline-block w-full p-4 rounded-ss-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">Post
+                                    className="inline-block w-full p-4 rounded-ss-lg bg-gray-50 hover:bg-gray-100 focus:outline-none font-baga">Post
                             </button>
                         </li>
                         <li className="w-full">
                             <button id="about-tab" data-tabs-target="#about" type="button" role="tab"
                                     aria-controls="about" aria-selected="false"
-                                    className="inline-block w-full p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">Services
+                                    className="inline-block w-full p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none">Services
                             </button>
                         </li>
                         <li className="w-full">
                             <button id="faq-tab" data-tabs-target="#faq" type="button" role="tab" aria-controls="faq"
                                     aria-selected="false"
-                                    className="inline-block w-full p-4 rounded-se-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600">FAQ
+                                    className="inline-block w-full p-4 rounded-se-lg bg-gray-50 hover:bg-gray-100 focus:outline-none">FAQ
                             </button>
                         </li>
                     </ul>
@@ -279,11 +279,10 @@ export default function Dashboard() {
 
                 {/*My Posts*/}
                 <section>
-                    <section className="bg-white dark:bg-gray-900">
+                    <section className="bg-white ">
                         <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
                             <div className="mx-auto max-w-screen-sm text-center lg:mb-16 mb-8">
-                                <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">Our
-                                    Blog</h2>
+                                <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold font-baga text-gray-900">My Posts</h2>
                                 <p className="font-light text-gray-500 sm:text-xl dark:text-gray-400">We use an agile
                                     approach to test assumptions and connect with the needs of your audience early and
                                     often.</p>
@@ -828,7 +827,7 @@ export default function Dashboard() {
                 <section className="w-3/4 mx-auto p-8 m-8">
                     <div
                         className="w-full p-8 text-center sm:p-8">
-                        <h5 className="mb-2 text-3xl font-bold text-cyan-700">Work fast from anywhere</h5>
+                        <h5 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold font-baga text-gray-900">My Journey</h5>
                         <p className="mb-5 text-base text-gray-500 sm:text-lg">Stay up to date and move
                             work forward with Flowbite on iOS & Android. Download the app today.</p>
                         <ProgressBars/>

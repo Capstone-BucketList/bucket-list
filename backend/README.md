@@ -45,7 +45,7 @@ This is a skeleton repository to help you add Express to your capstone.  Copy th
     * existing documentation directory from planning and data design sprint.
 16. `sql/Dockerfile`
     * File to create a custom mysql image.
-17. `sql/wander-list.sql`
+17. `sql/wanderlist.sql`
     * This file should be named after **your project**
     * File containing create table statements to initialize the database.
 
