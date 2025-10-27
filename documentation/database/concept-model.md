@@ -3,54 +3,55 @@
 
 ## Entities
 
-**Dashboard**: Represents user profiles containing personal information and preferences.
+**profile**: Represents user profiles containing personal information and preferences.
 * Attributes: 
-  * profileId (Primary Key), 
+  * profile_id (Primary Key), 
+  * activation_token, 
   * bio,
-  * profilePicture, 
-  * visibility (public, private, following-only),
-  * userName,
+  * date_created,
   * email,
-  * passwordHash,
-  * dateCreated
+  * password_hash,
+  * profile_picture, 
+  * user_name,
+  * visibility (public, private, following-only),
 
-**Posts**: Content created by users, such as articles, comments, or reviews.
+**post**: Content created by users, such as articles, comments, or reviews.
 * Attributes:
-  * postId (Primary Key), 
-  * profileId (Foreign Key), 
-  * title, 
+  * post_id (Primary Key), 
+  * wanderlist_id (Foreign Key),
   * content, 
-  * dateCreated, 
-  * dateModified, 
-  * visibility (public, private, following-only)
-
-**Bucket-List**: Represents a collection of items or goals that users want to achieve.
-* Attributes:
-  * bucketListId (Primary Key),
-  * profileId (Foreign Key),
+  * date_created, 
+  * date_modified, 
   * title,
-  * description,
-  * dateCreated,
-  * isCompleted, 
-  * targetDate,
-  * pinned,
   * visibility (public, private, following-only)
 
-**Following**
+**wanderlist**: Represents a collection of items or goals that users want to achieve.
 * Attributes:
-  * followerProfileId (Foreign Key),
-  * followedProfileId (Foreign Key)
+  * wanderlist_id (Primary Key),
+  * profile_id (Foreign Key),
+  * date_created,
+  * description,
+  * pinned, 
+  * status,
+  * target_date,
+  * title,
+  * visibility (public, private, following-only)
 
-**Comments**
+**following**
+* Attributes:
+  * followed_profile_id (Foreign Key),
+  * follower_profile_id (Foreign Key)
+
+**comment**
 * Attributes: 
-  * commentId (Primary Key),
-  * postId (Foreign Key),
-  * profileId (Foreign Key),
+  * comment_id (Primary Key),
+  * post_id (Foreign Key),
+  * profile_id (Foreign Key),
   * comment,
-  * dateCreated
+  * date_created
 
-**Media**
+**media**
 * Attributes: 
-  * mediaId (Primary Key),
-  * postId (Foreign Key),
+  * media_id (Primary Key),
+  * post_id (Foreign Key),
   * url
