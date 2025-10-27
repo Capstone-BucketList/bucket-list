@@ -27,3 +27,4 @@ export function WanderListFooter(){
         </Footer>
     );
 }
+
