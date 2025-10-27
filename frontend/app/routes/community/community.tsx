@@ -64,34 +64,34 @@ export default function Community () {
                 <div className='flex flex-col items-center gap-4'>
                     <img className="w-[250px] h-[250px] border-2 m-2" src='img_1.png' alt='Categories in red button'/>
                     <p className='text-xl'>Categories</p>
-                    <Button>Go to Categories</Button>
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Go to Categories</Button>
                 </div>
                 <div className='flex flex-col items-center gap-4'>
                     <img className="w-[250px] h-[250px] border-2 m-2" src='img_2.png'
                          alt='social network logos collection'/>
                     <p className='text-xl whitespace-nowrap'>Social Network</p>
-                    <Button>Connect your Bucket List</Button>
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Connect your Bucket List</Button>
                 </div>
                 <div className='flex flex-col items-center gap-4'>
                     <img className="w-[250px] h-[250px] border-2 m-2" src='img_3.png'
                          alt='people figures surrounding goal'/>
                     <p className='text-xl whitespace-nowrap'>Group Goal(s)</p>
-                    <Button>Group Goal Experiences</Button>
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Group Goal Experiences</Button>
                 </div>
             </section>
 
             <section className='w-full relative flex flex-col justify-start md:flex md:flex-col-3 mt-4'>
                 <div className='gap-4 mt-2 ml-10'>
                     <p className='font-extrabold text-xl'>Your City</p>
-                    <Button className='mt-2'>Click Me</Button>
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2'>Click Me</Button>
                 </div>
                 <div className='gap-4 mt-2 ml-10'>
                     <p className='font-extrabold text-xl'>Your Network</p>
-                    <Button className='mt-2'>Click Me</Button>
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2'>Click Me</Button>
                 </div>
                 <div className='gap-4 mt-2 ml-10'>
                     <p className='font-extrabold text-xl'>Shared Goals</p>
-                    <Button className='mt-2 mb-20'>Click Me</Button>
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2 mb-20'>Click Me</Button>
                 </div>
             </section>
         </>
