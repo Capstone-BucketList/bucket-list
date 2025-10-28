@@ -1,46 +1,80 @@
-drop table if exists post;
-drop table if exists wanderlist;
 drop table if exists following;
 drop table if exists comment;
 drop table if exists media;
+drop table if exists post;
+drop table if exists wanderlist;
+drop table if exists profile;
 
 create table if not exists profile(
-    profile_id uuid not null,
+    profile_id uuid primary key not null,
     activation_token char(32) not null,
     bio varchar(160),
-    date_created timestamp not null,
-    email varchar(32) not null unique,
+    date_created date not null,
+    email varchar(128) not null unique,
     password_hash char(97) not null,
     profile_picture varchar(255),
     user_name varchar(32),
-    visibility varchar(128),
-    primary key (profile_id)
+    visibility varchar(32)
 );
 
 create table if not exists wanderlist(
     wanderlist_id uuid not null,
     profile_id uuid not null,
-    date_created timestamp not null,
+    date_created date not null,
     description varchar(256),
     pinned boolean,
     status varchar(32),
     target_date date,
     title varchar(64),
-    visibility varchar(128) not null,
+    visibility varchar(32) not null,
     foreign key(profile_id) references profile(profile_id),
     primary key (wanderlist_id)
 );
+create index on wanderlist(profile_id);
 
 create table if not exists post(
-    post_id uuid not null,
+    post_id uuid primary key not null,
     wanderlist_id uuid not null,
-    content varchar(1000),
-    date_created timestamp not null,
-    date_modified timestamp not null,
-    title varchar(64),
-    visibility varchar(128) not null,
-    foreign key(wanderlist_id) references wanderlist(wanderlist_id),
-    primary key(post_id)
+    content varchar(1000) not null,
+    datetime_created timestamptz not null,
+    datetime_modified timestamptz not null,
+    title varchar(64) not null,
+    visibility varchar(32) not null,
+    foreign key(wanderlist_id) references wanderlist(wanderlist_id)
 );
+create index on post(wanderlist_id);
+
+create table if not exists following(
+    followed_profile_id uuid not null,
+    follower_profile_id uuid not null,
+    foreign key(followed_profile_id) references profile(profile_id),
+    foreign key(follower_profile_id) references profile(profile_id),
+    primary key (followed_profile_id, follower_profile_id)
+);
+
+create index on following(followed_profile_id);
+create index on following(follower_profile_id);
+
+create table if not exists comment(
+    comment_id uuid not null,
+    post_id uuid not null,
+    profile_id uuid not null,
+    comment varchar(160),
+    date_created timestamp not null,
+    foreign key(post_id) references post(post_id),
+    foreign key(profile_id) references profile(profile_id),
+    primary key(comment_id)
+);
+create index on comment(post_id);
+create index on comment(profile_id);
+
+create table if not exists media(
+    media_id uuid not null,
+    post_id uuid not null,
+    url varchar(255),
+    foreign key(post_id) references post(post_id),
+    primary key(media_id)
+);
+create index on media(post_id);
 
 

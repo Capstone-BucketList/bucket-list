@@ -1,6 +1,7 @@
 import {Button, Carousel} from "flowbite-react";
 import PhotoCard from "../../components/photo-card";
 import React, { useState } from 'react';
+import {DivSlider} from "~/components/div_slider";
 
 const travelPhotos: PhotoData[] = [
     { title: 'Balloon Fiesta', description: 'hot air balloon view.', imageSrc: '/img_4.png' },
@@ -27,7 +28,7 @@ const groupGoalPhotos: PhotoData[] = [
 ];
     // add more photo objects here
 
-type PhotoData = {
+export type PhotoData = {
     title: string;
     description: string;
     imageSrc: string;
@@ -64,6 +65,10 @@ export default function Scrapbook () {
                         ))}
                     </Carousel>
                     </div>
+            </section>
+            <section  className="w-full bg-turquoise py-6">
+                <h1>slider</h1>
+                <DivSlider photo ={travelPhotos} wanderListProp={[]}/>
             </section>
             <section className="w-full bg-turquoise py-6">
                 <div className="flex flex-col md:flex-row justify-between gap-6 px-4">
