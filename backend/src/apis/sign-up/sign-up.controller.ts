@@ -11,8 +11,9 @@ import {insertProfile, type PrivateProfile} from "../profile/profile.model.ts";
 
 
 export async function signUpProfileController (request:Request, response: Response) {
+    console.log(process.env.MAILGUN_DOMAIN)
     try {
-        //validate the new user's data
+        //validate the new user's data coming from the request body
         const validationResult = SignUpProfileSchema.safeParse(request.body)
         //if validation fails, return an error response
         if (!validationResult.success) {
@@ -38,7 +39,7 @@ export async function signUpProfileController (request:Request, response: Respon
         }
         await insertProfile(profile)
 
-        //prepare and send activation email to new user
+        //prepare and send activation email to new user, by create new mailgun client with mailgun api key
         const mailgun: Mailgun = new Mailgun(formData)
         const mailgunClient = mailgun.client({username: 'api', key: process.env.MAILGUN_API_KEY as string })
         const basePath: string = `${request.protocol}://${request.hostname}:8080${request.originalUrl}activation/${activationToken}`
@@ -64,6 +65,7 @@ export async function signUpProfileController (request:Request, response: Respon
         response.status(200).json(status)
 
     }catch(error: any) {
+        console.error(error)
         const status: Status = {
             status: 500,
             message: error.message,
