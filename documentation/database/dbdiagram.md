@@ -2,7 +2,7 @@
 // Docs: https://dbml.dbdiagram.io/docs
 
 Table profile {
-profileId uuid [primary key]
+id uuid [primary key]
 activationToken char32
 bio varchar
 dateCreated timestamp
@@ -25,7 +25,7 @@ visibility varchar
 
 Table bucketList {
 bucketListId uuid [primary key]
-profileId uuid
+id uuid
 dateCreated timestamp
 description varchar
 pinned boolean
@@ -43,7 +43,7 @@ followerProfileId uuid
 Table comment {
 commentId uuid [primary key]
 postId uuid
-profileId uuid
+id uuid
 comment varchar
 dateCreated timestamp
 }
@@ -56,14 +56,14 @@ url url
 
 Ref post: post.bucketListId > bucketList.bucketListId
 
-Ref bucketList: bucketList.profileId > profile.profileId
+Ref bucketList: bucketList.id > profile.id
 
-Ref follow: follow.followerProfileId > profile.profileId
+Ref follow: follow.followerProfileId > profile.id
 
-Ref follow: follow.followedProfileId > profile.profileId
+Ref follow: follow.followedProfileId > profile.id
 
 Ref comment: comment.postId > post.postId
 
-Ref comment: comment.profileId > profile.profileId
+Ref comment: comment.id > profile.id
 
 Ref media: media.postId > post.postId 

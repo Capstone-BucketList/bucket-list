@@ -5,10 +5,13 @@ import session from 'express-session'
 import type {  RedisClientType } from 'redis'
 import {RedisStore} from 'connect-redis'
 import {indexRoute} from "./apis/index.route.ts";
+import {signupRoute} from "./apis/sign-up/sign-up-route.ts";
+
 export class App {
 	app: Application
 	redisStore : RedisStore
 
+    //constructor that takes ina  redis client and set s up the app, settings, middleware and
 	constructor (  redisClient: RedisClientType
 	) {
 		this.redisStore = new RedisStore({client: redisClient})
@@ -35,6 +38,7 @@ export class App {
 	// private method for setting up routes in their basic sense (ie. any route that performs an action on profiles starts with /profiles)
 	private routes (): void {
 		this.app.use(indexRoute.basePath, indexRoute.router)
+        this.app.use(signupRoute.basePath, signupRoute.router)
 
 	}
 

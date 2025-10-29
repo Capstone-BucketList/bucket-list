@@ -1,6 +1,8 @@
 import * as argon2 from 'argon2'
-import { sign } from 'jsonwebtoken'
+import pkg from 'jsonwebtoken'
 import * as crypto from 'crypto'
+const { sign } = pkg;
+
 
 
 

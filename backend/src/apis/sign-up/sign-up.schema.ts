@@ -1,8 +1,8 @@
 import {z} from "zod/v4";
 import {PrivateProfileSchema} from "../profile/profile.model.ts";
 
-export const signUpProfileSchema = PrivateProfileSchema
-    .omit({ passwordHash: true, activationToken: true, profilePicture: true, bio: true})
+export const SignUpProfileSchema = PrivateProfileSchema
+    .omit({ passwordHash: true, activationToken: true, profilePicture: true, bio: true, dateCreated: true, visibility: true})
     .extend({
         passwordConfirm: z.string('password confirmation is required')
         .min(8, 'Password confirm cannot be less than 8 characters')
