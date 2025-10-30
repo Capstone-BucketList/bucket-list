@@ -40,7 +40,7 @@ export async function signUpProfileController (request:Request, response: Respon
         await insertProfile(profile)
 
         //prepare and send activation email to new user, by create new mailgun client with mailgun api key
-        const basePath: string = `${request.protocol}://${request.hostname}:8080${request.originalUrl}activation/${activationToken}`
+        const basePath: string = `${request.protocol}://${request.hostname}:8080${request.originalUrl}/activation/${activationToken}`
 
         // create a new mailgun client with the mailgun api key
         const mailgun: Mailgun = new Mailgun(FormData)

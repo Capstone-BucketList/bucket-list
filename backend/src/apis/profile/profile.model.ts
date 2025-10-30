@@ -1,6 +1,17 @@
 import { z } from 'zod/v4'
 import {sql} from "../../utils/database.utils.ts";
 
+/**
+ * Schema for validating private profile objects
+ * @shape id: string the primary key for the profile
+ * @shape bio: string | null the about section for the profile
+ * @shape activationToken: string | null the activation token for the profile
+ * @shape email: string the email for the profile
+ * @shape passwordHash: string the password hash for the profile
+ * @shape profilePicture: string | null the image URL for the profile
+ * @shape userName: string the name for the profile
+ * @shape visibility: string visibility of the profile
+ */
 export const PrivateProfileSchema = z.object({
     id: z.uuidv7('please provide a valid uuid for id'),
 
@@ -32,8 +43,25 @@ export const PrivateProfileSchema = z.object({
 
     visibility: z.string('please provide public or private setting'),
 })
-
+/**
+ * this type is used to represent a private profile object
+ * @shape id: string the primary key for the profile
+ * @shape bio: string | null the about section for the profile
+ * @shape activationToken: string | null the activation token for the profile
+ * @shape email: string the email for the profile
+ * @shape passwordHash: string the password hash for the profile
+ * @shape profilePicture: string | null the image URL for the profile
+ * @shape userName: string the name for the profile
+ * @shape visibility: string visibility of the profile
+ */
 export type PrivateProfile = z.infer<typeof PrivateProfileSchema>
+
+/**
+ * Inserts a new profile into the profile table
+ * @param profile the profile to insert
+ * @returns "profile successfully created"
+ */
+
 
 export async function insertProfile(profile: PrivateProfile): Promise<string> {
     PrivateProfileSchema.parse(profile)
@@ -41,4 +69,44 @@ export async function insertProfile(profile: PrivateProfile): Promise<string> {
     const {id , activationToken ,bio, dateCreated, email, passwordHash, profilePicture, userName, visibility} = profile
     await sql `INSERT INTO profile(id, activation_token, bio, date_created, email, password_hash, profile_picture, user_name, visibility) VALUES (${id}, ${activationToken}, ${bio},now(), ${email}, ${passwordHash}, ${profilePicture}, ${userName}, ${visibility})`
     return 'Profile Successfully created'
+}
+
+/**
+ *Selects a profile from the profile table by activationToken
+ * @param activationToken the profile's activation token to search for in the profile table
+ * @returns Profile or null if no profile was found
+ */
+export async function selectPrivateProfileByProfileActivationToken(activationToken: string) : Promise<PrivateProfile|null> {
+
+    const rowList = await sql `SELECT id, bio,date_created, activation_token, email,profile_picture, password_hash, user_name, visibility FROM profile WHERE activation_token = ${activationToken}`
+    const result = PrivateProfileSchema.array().max(1).parse(rowList)
+    return result[0] ?? null
+}
+
+/**
+ * update profile table by activation token
+ * @param profile
+ * @returns {Promise<string>} 'Profile successfully updated
+ */
+export async function updateProfile(profile: PrivateProfile): Promise<string> {
+    const {id,activationToken, bio, dateCreated, email, passwordHash, profilePicture, userName, visibility} = profile
+    await sql `UPDATE profile SET bio = ${bio}, activation_token = ${activationToken}, email = ${email},password_hash = ${passwordHash}, profile_picture = ${profilePicture}, user_name = ${userName}, visibility = ${visibility} WHERE id = ${id}`
+    return 'Profile successfully updated'
+}
+
+/**
+ * Selects the privateProfile from the profile table by email
+ * @param email the profile's email to search for in the profile table
+ * @returns Profile or null if no profile was found
+ */
+export async function selectPrivateProfileByProfileEmail(email: string): Promise<PrivateProfile | null> {
+
+    // create a prepared statement that selects the profile by email and execute the statement
+    const rowList = await sql`SELECT id, bio,activation_token,date_created, email, password_hash, profile_picture, user_name, visibility FROM profile WHERE email = ${email} `
+
+    //enforce that the result is an array of one profile, or null
+    const result = PrivateProfileSchema.array().max(1).parse(rowList)
+
+        //return the profile or null if no profile was found
+    return result[0] ?? null
 }
