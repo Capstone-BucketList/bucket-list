@@ -1,4 +1,4 @@
-drop table if exists following;
+drop table if exists follow;
 drop table if exists comment;
 drop table if exists media;
 drop table if exists post;
@@ -44,7 +44,7 @@ create table if not exists post(
 );
 create index on post(wanderlist_id);
 
-create table if not exists following(
+create table if not exists follow(
     followed_profile_id uuid not null,
     follower_profile_id uuid not null,
     foreign key(followed_profile_id) references profile(id),
@@ -52,8 +52,8 @@ create table if not exists following(
     primary key (followed_profile_id, follower_profile_id)
 );
 
-create index on following(followed_profile_id);
-create index on following(follower_profile_id);
+create index on follow(followed_profile_id);
+create index on follow(follower_profile_id);
 
 create table if not exists comment(
     id uuid primary key not null,

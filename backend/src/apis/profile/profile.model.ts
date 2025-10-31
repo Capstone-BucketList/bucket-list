@@ -110,3 +110,20 @@ export async function selectPrivateProfileByProfileEmail(email: string): Promise
         //return the profile or null if no profile was found
     return result[0] ?? null
 }
+
+/**
+ * Selects a user profile based on their unique profile id
+ * @param id
+ * @returns profile or null if profile not found
+ */
+export async function getProfileByPrimaryKey(id: string): Promise<PrivateProfile | null > {
+    // create a prepared statement that selects the profile by id and execute the statement
+    const rowList = await sql`SELECT id, bio,activation_token,date_created, email, password_hash, profile_picture, user_name, visibility FROM profile WHERE id = ${id} `
+
+    //enforce that the result is an array of one profile, or null
+    const result = PrivateProfileSchema.array().max(1).parse(rowList)
+//console.log(result[0])
+    //return the profile or null if no profile was found
+    return result[0] ?? null
+}
+

@@ -37,7 +37,7 @@
   * title,
   * visibility (public, private, following-only)
 
-**following**
+**follow**
 * Attributes:
   * followed_profile_id (Foreign Key),
   * follower_profile_id (Foreign Key)
