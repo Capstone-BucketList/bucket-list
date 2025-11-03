@@ -20,7 +20,6 @@ export async function signUpProfileController (request:Request, response: Respon
             return
         }
 
-        console.log(process.env)
         //if validation succeeds, create a new user
         const {userName, email, password, id} = validationResult.data
         const passwordHash = await setHash(password)
