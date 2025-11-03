@@ -43,6 +43,16 @@ export const PrivateProfileSchema = z.object({
 
     visibility: z.string('please provide public or private setting'),
 })
+
+/**
+ * Schema for validating public profile objects
+ * @shape id: string the primary key for the profile
+ * @shape about: string | null the about section for the profile
+ * @shape imageUrl: string | null the image URL for the profile
+ * @shape name: string the name for the profile
+ */
+export const PublicProfileSchema = PrivateProfileSchema.omit({passwordHash: true, activationToken: true, email: true, dateCreated: true, profilePicture: true})
+
 /**
  * this type is used to represent a private profile object
  * @shape id: string the primary key for the profile
@@ -57,11 +67,19 @@ export const PrivateProfileSchema = z.object({
 export type PrivateProfile = z.infer<typeof PrivateProfileSchema>
 
 /**
+ * this type is used to represent a public profile object
+ * @shape id: string the primary key for the profile
+ * @shape about: string | null the about section for the profile
+ * @shape imageUrl: string the image URL for the profile
+ * @shape name: string the name for the profile
+ **/
+export type PublicProfile = z.infer<typeof PublicProfileSchema>
+
+/**
  * Inserts a new profile into the profile table
  * @param profile the profile to insert
  * @returns "profile successfully created"
  */
-
 
 export async function insertProfile(profile: PrivateProfile): Promise<string> {
     PrivateProfileSchema.parse(profile)
@@ -89,7 +107,7 @@ export async function selectPrivateProfileByProfileActivationToken(activationTok
  * @returns {Promise<string>} 'Profile successfully updated
  */
 export async function updateProfile(profile: PrivateProfile): Promise<string> {
-    const {id,activationToken, bio, dateCreated, email, passwordHash, profilePicture, userName, visibility} = profile
+    const {id,activationToken, bio,  email, passwordHash, profilePicture, userName, visibility} = profile
     await sql `UPDATE profile SET bio = ${bio}, activation_token = ${activationToken}, email = ${email},password_hash = ${passwordHash}, profile_picture = ${profilePicture}, user_name = ${userName}, visibility = ${visibility} WHERE id = ${id}`
     return 'Profile successfully updated'
 }
@@ -116,14 +134,54 @@ export async function selectPrivateProfileByProfileEmail(email: string): Promise
  * @param id
  * @returns profile or null if profile not found
  */
-export async function getProfileByPrimaryKey(id: string): Promise<PrivateProfile | null > {
+export async function getPublicProfileByPrimaryKey(id: string): Promise<PublicProfile | null > {
     // create a prepared statement that selects the profile by id and execute the statement
-    const rowList = await sql`SELECT id, bio,activation_token,date_created, email, password_hash, profile_picture, user_name, visibility FROM profile WHERE id = ${id} `
+    const rowList = await sql`SELECT id, bio, email, profile_picture, user_name, visibility FROM profile WHERE id = ${id} `
 
     //enforce that the result is an array of one profile, or null
-    const result = PrivateProfileSchema.array().max(1).parse(rowList)
+    const result = PublicProfileSchema.array().max(1).parse(rowList)
 //console.log(result[0])
     //return the profile or null if no profile was found
     return result[0] ?? null
 }
+/**
+ * selects the privateProfile from the profile table by id
+ * @param id the profile's id to search for in the profile table
+ * @returns PrivateProfile or null if no profile was found
+ */
+export async function selectPrivateProfileByProfileId(id: string): Promise<PrivateProfile | null> {
+
+    // create a prepared statement that selects the profile by id and execute the statement
+    const rowList = await sql`SELECT id, bio, activation_token, date_created, email, password_hash, profile_picture, user_name, visibility FROM profile WHERE id = ${id}`
+
+// enforce that the result is an array of one profile, or null
+    const result = PrivateProfileSchema.array().max(1).parse(rowList)
+
+    // return the profile or null if no profile was found
+    return result[0] ?? null
+}
+
+/**
+ * Selects a user profile and deletes the profile from database
+ * @param id used to locate Profile & deletes that user Profile
+ * @returns message that tells user, their profile has been deleted
+ */
+export async function deleteProfileById(id: string): Promise<string>
+{
+    // method used to delete all attributes of Profile table for Profile ID
+    const rowList = await sql `DELETE FROM profile WHERE id = ${id} `
+
+    // return message that Profile has been deleted
+    return 'Profile successfully deleted'
+}
+
+// export async function getProfilesByFollowedId(id: string): Promise<PrivateProfile |null > {
+//
+//     const rowList = await sql `SELECT ID, BIO, user_name FROM profile p
+//         inner join follow f on p.id = f.followed_profile_id where p.id = ${id} `
+//
+//     const result = PrivateProfileSchema.array().max(1).parse(rowList)
+//
+//     return result[0] ?? null
+// }
 

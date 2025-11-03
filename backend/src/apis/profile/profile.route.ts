@@ -1,5 +1,7 @@
-import {profileController} from "./profile.controller.ts";
+import {deleteProfileController, profileController, putProfileController} from "./profile.controller.ts";
 import {Router} from "express";
+import {deleteProfileById} from "./profile.model.ts";
+import {isLoggedInController} from "../../utils/controller/is-logged-in-controller.ts";
 
 //declare a basePath for this router
 const basePath = '/apis/profile' as const
@@ -9,6 +11,10 @@ const router = Router()
 
 //define signup route for this router
 router.route('/:id').get(profileController)
+    .put(isLoggedInController, putProfileController)
+    .delete(deleteProfileController)
+
 
 //export the router with the basePath and router object
 export const profileRoute = {basePath, router}
+
