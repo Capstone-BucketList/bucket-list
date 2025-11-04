@@ -40,8 +40,8 @@ export async function postFollowController(request:Request, response:Response) :
 
         //constructing delete object to pass to delete method
         const follow: Follow = {
-             followedProfileId, //334
-             followerProfileId //399
+             followedProfileId,
+             followerProfileId
         }
 
 
