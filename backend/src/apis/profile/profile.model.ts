@@ -186,7 +186,7 @@ export async function deleteProfileById(id: string): Promise<string>
           inner join follow f on p.id = f.followed_profile_id where f.follower_profile_id = ${id} `
 
       const result = PublicProfileSchema.array().parse(rowList)
-console.log(result)
+
       return result ?? null
 }
 
