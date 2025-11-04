@@ -52,7 +52,6 @@ export async function signInController(request: Request, response: Response) : P
         //check if the password matches the hash
         const isPasswordValid = await validatePassword( profile.passwordHash, password,)
 
-
         //check for failed sign in
         //if sign in failed, return a response to the client
         if (!isPasswordValid) {
