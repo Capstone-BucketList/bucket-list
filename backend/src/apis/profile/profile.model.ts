@@ -175,13 +175,18 @@ export async function deleteProfileById(id: string): Promise<string>
     return 'Profile successfully deleted'
 }
 
-// export async function getProfilesByFollowedId(id: string): Promise<PrivateProfile |null > {
-//
-//     const rowList = await sql `SELECT ID, BIO, user_name FROM profile p
-//         inner join follow f on p.id = f.followed_profile_id where p.id = ${id} `
-//
-//     const result = PrivateProfileSchema.array().max(1).parse(rowList)
-//
-//     return result[0] ?? null
-// }
+/**
+ * select follower records associated with logged-in user
+ * @param id logged in profileID
+ * @returns follower profiles
+ */
+ export async function selectPublicFollowersByProfileId(id: string): Promise<PublicProfile[] |null > {
+
+      const rowList = await sql `SELECT ID, BIO, user_name,profile_picture,visibility FROM profile p
+          inner join follow f on p.id = f.followed_profile_id where f.follower_profile_id = ${id} `
+
+      const result = PublicProfileSchema.array().parse(rowList)
+console.log(result)
+      return result ?? null
+}
 

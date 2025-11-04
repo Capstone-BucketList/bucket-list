@@ -1,5 +1,10 @@
 import {zodErrorResponse} from "../../utils/response.utils.ts";
-import {type Follow, followSchema, insertFollow} from "./follow.model.ts";
+import {
+    deleteFollow,
+    type Follow,
+    FollowSchema,
+    insertFollow
+} from "./follow.model.ts";
 import type {Request} from "express"
 import type {Response} from "express"
 import type {Status} from "../../utils/interfaces/Status.ts";
@@ -14,28 +19,37 @@ import type {Status} from "../../utils/interfaces/Status.ts";
  */
 
 
-export async function followController(request:Request, response:Response) : Promise<void> {
+export async function postFollowController(request:Request, response:Response) : Promise<void> {
     try {
-        // validate the follow data from the request body
-        const validationResult = followSchema.safeParse(request.body)
-        // if validation fails, return an error response
-            if (!validationResult.success){
-             zodErrorResponse(response, validationResult.error)
-             return
-            }
+        const validationResult = FollowSchema.pick({
+            followedProfileId:true
+        }).safeParse(request.params)
 
-            // if validation succeeds, create a new follow
-            const {followedProfileId, followerProfileId} = validationResult.data
-            const follow: Follow = {
-                followedProfileId,
-                followerProfileId
-            }
+        if(!validationResult.success){
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
 
-            await insertFollow(follow)
+        //grab the id off of the validated request parameters
+        const { followedProfileId} = validationResult.data
+
+        //grab the id from the session
+        const profileFromSession = request.session?.profile
+        const followerProfileId = profileFromSession?.id
+
+
+        //constructing delete object to pass to delete method
+        const follow: Follow = {
+             followedProfileId, //334
+             followerProfileId //399
+        }
+
+
+      const message =  await insertFollow(follow)
 
         const status: Status = {
                 status: 200,
-                message: 'Follow success',
+                message: message,
                 data: null
         }
             response.status(200).json(status)
@@ -43,6 +57,55 @@ export async function followController(request:Request, response:Response) : Pro
     } catch (error: any) {
         const status: Status = {
             status: 500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * delete controller to unfollow the user
+ * @param request
+ * @param response
+ */
+export async function deleteFollowController(request:Request, response:Response) : Promise<void> {
+    try{
+        const validationResult = FollowSchema.pick({
+            followedProfileId:true
+        }).safeParse(request.params)
+
+        if(!validationResult.success){
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+
+        //grab the id off of the validated request parameters
+        const { followedProfileId} = validationResult.data
+
+        //grab the id from the session
+        const profileFromSession = request.session?.profile
+        const followerProfileId = profileFromSession?.id
+
+        //constructing delete object to pass to delete method
+         const follow: Follow = {
+                    followedProfileId: followedProfileId,
+                followerProfileId:followerProfileId
+         }
+        //calling delete
+        const message =await deleteFollow(follow)
+
+        const status: Status = {
+            status:200,
+            message:message,
+            data:null
+        }
+        //sending success response
+        response.status(200).json(status)
+
+    }catch(error:any){
+        const status: Status = {
+            status:500,
             message: error.message,
             data: null
         }

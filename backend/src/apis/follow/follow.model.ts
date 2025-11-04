@@ -8,7 +8,7 @@ import {sql} from "../../utils/database.utils.ts";
  */
 
 
-export const followSchema = z.object ({
+export const FollowSchema = z.object ({
     followedProfileId: z.uuidv7('please provide a valid uuid'),
     followerProfileId: z.uuidv7('please provide a valid uuid')
 })
@@ -18,7 +18,7 @@ export const followSchema = z.object ({
  * @shape followedProfileId: uuid referencing profile table id
  * @shape followerProfileId: uuid referencing profile table id
  */
-export type Follow = z.infer<typeof followSchema>
+export type Follow = z.infer<typeof FollowSchema>
 
 /**
  * inserts a new follow into follow table
@@ -27,24 +27,27 @@ export type Follow = z.infer<typeof followSchema>
  */
 
 export async function insertFollow(follow: Follow): Promise<string> {
-    followSchema.parse(follow)
+    FollowSchema.parse(follow)
 
     const {followedProfileId, followerProfileId} = follow
+    console.log("insert follow", follow)
     await sql `INSERT INTO follow(followed_profile_id, follower_profile_id) VALUES (${followedProfileId}, ${followerProfileId})`
-    return 'follow success'
+    return 'Successfully inserted into Follow table.'
 }
 
 /**
- * select a profile id from the follow table by follow(er/ed) id
- * @param followId the profile id used to locate follow id from follow table
- * @returns profile or null if no profile id was found
+ * deleting the record from follow table to unfollow
+ * @param follow to delete the record
+ * @returns successfully deleted message
  */
 
-export async function selectFollowProfileById(followId: string): Promise<Follow | null> {
-    const rowList = await sql `SELECT followed_profile_id, follower_profile_id FROM follow WHERE followed_profile_id = ${followId}`
-    const result = followSchema.array().max(1).parse(rowList)
+export async function deleteFollow(follow: Follow): Promise<string | null> {
+    FollowSchema.parse(follow)
+    const {followedProfileId, followerProfileId} = follow
 
-    return result[0] ?? null
+    const rowList = await sql `DELETE FROM follow WHERE followed_profile_id = ${followedProfileId} and follower_profile_id = ${followerProfileId}`
+
+    return  "Successfully unfollowed"
 }
 
 
