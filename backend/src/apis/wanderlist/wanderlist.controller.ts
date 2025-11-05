@@ -1,0 +1,280 @@
+import type {Status} from "../../utils/interfaces/Status.ts";
+import {
+    WanderListSchema,
+    type WanderList,
+    insertWanderList,
+    updateWanderList, deleteWanderList, selectWanderlistByProfileId, selectWanderlistByPrimaryKey,
+    selectWanderlistByVisibility
+} from "./wanderlist.model.ts";
+import {zodErrorResponse} from "../../utils/response.utils.ts";
+import type {Request, Response} from "express";
+
+export async function postWanderListItemController(request:Request, response:Response): Promise<void> {
+    try{
+        const validationResult = WanderListSchema.safeParse(request.body);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {id, profileId, wanderlistStatus, pinned, description,title,targetDate, visibility } = validationResult.data
+
+        const wanderlist:WanderList = {
+            id,
+            profileId,
+            wanderlistStatus,
+            pinned,
+            description,
+            title,
+            targetDate,
+            visibility
+        }
+        const message = await insertWanderList(wanderlist);
+
+        const status: Status = {
+            status: 200,
+            message: message,
+            data: null
+        }
+        response.status(200).json(status)
+
+    }catch(error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+
+}
+
+export async function putWanderListItemController(request:Request, response:Response): Promise<void> {
+    try{
+
+        const validationResult = WanderListSchema.safeParse(request.body);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {id, profileId, wanderlistStatus, pinned, description,title,targetDate, visibility } = validationResult.data
+
+        const wanderlist:WanderList = {
+            id,
+            profileId,
+            wanderlistStatus,
+            pinned,
+            description,
+            title,
+            targetDate,
+            visibility
+        }
+
+        const message = await updateWanderList(wanderlist);
+
+        const status: Status = {
+            status: 200,
+            message: message,
+            data: null
+        }
+        response.status(200).json(status)
+
+    }catch(error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * Delete Controller to delete the record in wanderlist table
+ * @param request
+ * @param response
+ */
+export async function deleteWanderListItemController(request:Request, response:Response): Promise<void> {
+    try{
+
+        const validationResult = WanderListSchema.pick({
+            id:true
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {id } = validationResult.data
+
+
+        const message = await deleteWanderList(id);
+
+        const status: Status = {
+            status: 200,
+            message: message,
+            data: null
+        }
+        response.status(200).json(status)
+
+    }catch(error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * get the wanderlist items by profileid
+ * @param request
+ * @param response
+ */
+export async function getWanderlistByProfileIdController(request:Request, response:Response): Promise<void> {
+    try{
+
+        const validationResult = WanderListSchema.pick({
+            profileId: true,
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {profileId} = validationResult.data
+
+        const wanderlist:WanderList[] | null= await selectWanderlistByProfileId(profileId)
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: wanderlist
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * get the wanderlist items by profileid
+ * @param request
+ * @param response
+ */
+export async function getWanderlistByProfileIdAndVisibilityController(request:Request, response:Response): Promise<void> {
+    try{
+        const validationResult = WanderListSchema.pick({
+            profileId: true,
+            visibility: true
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {profileId,visibility} = validationResult.data
+
+        const wanderlist:WanderList[] | null= await selectWanderlistByProfileId(profileId)
+
+        const visibilityData = wanderlist?.filter(list => list.visibility === visibility)
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: visibilityData
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * get the wanderlist item by primary key
+ * @param request
+ * @param response
+ */
+export async function getWanderlistByWanderListIdController(request:Request, response:Response): Promise<void> {
+    try{
+
+        const validationResult = WanderListSchema.pick({
+            id: true
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {id} = validationResult.data
+
+        const wanderlist:WanderList | null= await selectWanderlistByPrimaryKey(id)
+
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: wanderlist
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+
+/**
+ * get the wanderlist items by profileid
+ * @param request
+ * @param response
+ */
+export async function getWanderlistByVisibilityController(request:Request, response:Response): Promise<void> {
+    try{
+        const validationResult = WanderListSchema.pick({
+            visibility: true
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {visibility} = validationResult.data
+
+        const wanderlist:WanderList[] | null= await selectWanderlistByVisibility(visibility)
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: wanderlist
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}

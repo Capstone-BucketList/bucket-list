@@ -23,7 +23,7 @@ create table if not exists wanderlist(
     date_created date not null,
     description varchar(256),
     pinned boolean,
-    status varchar(32),
+    wanderlist_status varchar(32),
     target_date date,
     title varchar(64),
     visibility varchar(32) not null,
