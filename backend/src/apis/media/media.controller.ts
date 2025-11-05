@@ -101,7 +101,7 @@ export async function getMediaByPrimaryKeyController(request:Request, response:R
         }
         const {id} = validationResult.data
 
-        const data:Media = await selectMediaByPrimaryKey(id)
+        const data:Media | null = await selectMediaByPrimaryKey(id)
 
         const status: Status = {
             status: 200,
@@ -135,7 +135,7 @@ export async function getMediaByPostIdController(request:Request, response:Respo
         }
         const {postId} = validationResult.data
 
-        const data:Media = await selectMediaByPostId(postId)
+        const data:Media[] |null = await selectMediaByPostId(postId)
 
         const status: Status = {
             status: 200,
@@ -165,7 +165,7 @@ export async function getAllMediaForVisiblePosts(request:Request, response:Respo
     try{
 
 
-        const data:Media | null = await selectAllMediaForVisiblePosts()
+        const data:Media[] | null = await selectAllMediaForVisiblePosts()
 
         const status: Status = {
             status: 200,

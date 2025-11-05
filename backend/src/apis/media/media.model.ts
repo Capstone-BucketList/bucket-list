@@ -1,5 +1,6 @@
 import {z} from "zod/v4";
 import {sql} from "../../utils/database.utils.ts";
+import {PostSchema} from "../post/post.model.ts";
 
 /**
  * Schema for validating media objects
@@ -21,10 +22,7 @@ export const MediaSchema = z.object({
  * @shape url: string the url for the image
  */
 export type Media = z.infer<typeof MediaSchema>
-/*
-const MediaWithPost = MediaSchema.extend({
-    posts:z.array(PostSc)
-})*/
+
 /**
  * inserts the record into media table
  * @param media
@@ -56,7 +54,7 @@ export async function deleteMedia(id: string):Promise<string> {
  * @param id
  * @return media objects
  */
-export async function selectMediaByPrimaryKey(id: string):Promise<Media> {
+export async function selectMediaByPrimaryKey(id: string):Promise<Media | null> {
     const rowList = await sql `SELECT id, post_id, url FROM media WHERE id = ${id}`
     const result = MediaSchema.array().max(1).parse(rowList)
     return result[0] ?? null
@@ -67,7 +65,7 @@ export async function selectMediaByPrimaryKey(id: string):Promise<Media> {
  * @param postId
  * @return media object
  */
-export async function selectMediaByPostId(postId: string):Promise<string> {
+export async function selectMediaByPostId(postId: string):Promise<Media[] | null> {
     const rowList = await sql `SELECT id, post_id, url FROM media WHERE post_id = ${postId}`
     const result = MediaSchema.array().parse(rowList)
     return result ?? null
