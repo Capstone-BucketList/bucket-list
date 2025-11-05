@@ -14,13 +14,13 @@ const router=Router();
 router.route('/')
         .post(postWanderListItemController)
         .put(putWanderListItemController)
+        .get(getWanderlistByProfileIdAndVisibilityController)
 
 router.route('/:id')
     .delete(deleteWanderListItemController)
     .get(getWanderlistByWanderListIdController)
 
-router.route('/:profileId').get(getWanderlistByProfileIdController)
-router.route('/:profileId/:visibility').get(getWanderlistByProfileIdAndVisibilityController)
+router.route('/profile/:profileId').get(getWanderlistByProfileIdController)
 
 router.route('/visibility/:visibility').get(getWanderlistByVisibilityController)
 

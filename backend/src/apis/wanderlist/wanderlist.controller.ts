@@ -135,7 +135,6 @@ export async function deleteWanderListItemController(request:Request, response:R
  */
 export async function getWanderlistByProfileIdController(request:Request, response:Response): Promise<void> {
     try{
-
         const validationResult = WanderListSchema.pick({
             profileId: true,
         }).safeParse(request.params);
@@ -172,10 +171,11 @@ export async function getWanderlistByProfileIdController(request:Request, respon
  */
 export async function getWanderlistByProfileIdAndVisibilityController(request:Request, response:Response): Promise<void> {
     try{
+
         const validationResult = WanderListSchema.pick({
             profileId: true,
-            visibility: true
-        }).safeParse(request.params);
+            visibility: true,
+        }).safeParse(request.body);
 
         if(!validationResult.success) {
             zodErrorResponse(response,validationResult.error)
@@ -183,8 +183,10 @@ export async function getWanderlistByProfileIdAndVisibilityController(request:Re
         }
         const {profileId,visibility} = validationResult.data
 
+        // getting all wanderlist items by profileId
         const wanderlist:WanderList[] | null= await selectWanderlistByProfileId(profileId)
 
+        // filter by visibility
         const visibilityData = wanderlist?.filter(list => list.visibility === visibility)
 
         const status: Status = {
@@ -211,7 +213,6 @@ export async function getWanderlistByProfileIdAndVisibilityController(request:Re
  */
 export async function getWanderlistByWanderListIdController(request:Request, response:Response): Promise<void> {
     try{
-
         const validationResult = WanderListSchema.pick({
             id: true
         }).safeParse(request.params);
@@ -222,6 +223,7 @@ export async function getWanderlistByWanderListIdController(request:Request, res
         }
         const {id} = validationResult.data
 
+        // get the wanderlist details by primary key
         const wanderlist:WanderList | null= await selectWanderlistByPrimaryKey(id)
 
 
@@ -260,6 +262,7 @@ export async function getWanderlistByVisibilityController(request:Request, respo
         }
         const {visibility} = validationResult.data
 
+        // getting the wanderlist items by visibility
         const wanderlist:WanderList[] | null= await selectWanderlistByVisibility(visibility)
 
         const status: Status = {
