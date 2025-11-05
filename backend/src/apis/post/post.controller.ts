@@ -1,7 +1,15 @@
 import type {Request, Response} from "express";
 import {zodErrorResponse} from "../../utils/response.utils.ts";
 import type {Status} from "../../utils/interfaces/Status.ts";
-import {insertPost, type Post, PostSchema} from "./post.model.ts";
+import {
+    deletePost,
+    insertPost,
+    type Post,
+    PostSchema,
+    selectPostbyPrimaryKey,
+    selectPostbyWanderlistIdAndVisibility
+} from "./post.model.ts";
+
 
 /**
  * Express controller for post
@@ -14,7 +22,7 @@ import {insertPost, type Post, PostSchema} from "./post.model.ts";
 
 export async function postPostController(request:Request, response:Response) : Promise<void> {
     try {
-        console.log("bypostPostController")
+
         const validationResult = PostSchema
             .safeParse(request.body)
 
@@ -48,6 +56,112 @@ export async function postPostController(request:Request, response:Response) : P
     } catch (error: any) {
         const status: Status = {
             status: 500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+export async function deletePostController(request: Request, response: Response) : Promise<void> {
+    try {
+        const validationResult = PostSchema.pick({id: true}).safeParse(request.params)
+
+        if(!validationResult.success){
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+
+        const {id} = validationResult.data
+    console.log("id: ", id)
+        const message = await deletePost(id)
+
+        const status: Status = {
+            status: 200,
+            message: message,
+            data: null
+        }
+        response.status(200).json(status)
+
+    } catch(error: any) {
+        const status: Status = {
+            status: 500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * get the post items by wanderlist id
+ * @param request
+ * @param response
+ */
+export async function getPostByWanderlistIdAndVisibilityController(request:Request, response:Response): Promise<void> {
+    try{
+
+        const validationResult = PostSchema.pick({
+            wanderlistId: true,
+            visibility: true,
+        }).safeParse(request.body);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {wanderlistId,visibility} = validationResult.data
+
+        const data = await selectPostbyWanderlistIdAndVisibility(visibility, wanderlistId)
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: data
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * get the post items by wanderlist id
+ * @param request
+ * @param response
+ */
+export async function getPostByPrimaryKeyController(request:Request, response:Response): Promise<void> {
+    try{
+
+        const validationResult = PostSchema.pick({
+            id: true,
+
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {id} = validationResult.data
+
+        const data = await selectPostbyPrimaryKey(id)
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: data
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
             message: error.message,
             data: null
         }

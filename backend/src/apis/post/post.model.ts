@@ -47,3 +47,45 @@ export async function insertPost(post:Post): Promise<string> {
 
     return "Successfully inserted post"
 }
+
+/**
+ * deleting the record from post table
+ * @param id to delete the record
+ * @returns successfully deleted message
+ */
+
+export async function deletePost(id: string): Promise<string | null> {
+    await sql `DELETE FROM post WHERE id = ${id}`
+
+    return  "Successfully deleted"
+}
+
+/**
+*select the post basedon wanderlist id and visibility
+* @param visibility, and wanderlist id
+* @return post items
+ */
+
+export async function selectPostbyWanderlistIdAndVisibility(visibility: string, wanderlistId: string): Promise<Post[]  | null>
+{
+    const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility FROM post WHERE visibility =${visibility} and wanderlist_id =${wanderlistId}`
+
+    const result = PostSchema.array().parse(rowList)
+
+    return result ?? null
+}
+
+/**
+ *select the post by Primary Key
+ * @param visibility, and wanderlist id
+ * @return post items
+ */
+
+export async function selectPostbyPrimaryKey(id: string): Promise<Post  | null>
+{
+    const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility FROM post WHERE id =${id}`
+
+    const result = PostSchema.array().max(1).parse(rowList)
+
+    return result[0] ?? null
+}
