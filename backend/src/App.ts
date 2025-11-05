@@ -11,6 +11,7 @@ import {profileRoute} from "./apis/profile/profile.route.ts";
 import {followRoute} from "./apis/follow/follow.route.ts";
 import {wanderlistRoute} from "./apis/wanderlist/wanderlist.route.ts";
 import {postRoute} from "./apis/post/post.route.ts";
+import {commentRoute} from "./apis/comment/comment.route.ts";
 
 export class App {
 	app: Application
@@ -49,6 +50,7 @@ export class App {
         this.app.use(followRoute.basePath, followRoute.router)
         this.app.use(wanderlistRoute.basePath, wanderlistRoute.router)
         this.app.use(postRoute.basePath, postRoute.router)
+        this.app.use(commentRoute.basePath, commentRoute.router)
     }
 
 	// starts the server and tells the terminal to post a message that the server is running and on what port
