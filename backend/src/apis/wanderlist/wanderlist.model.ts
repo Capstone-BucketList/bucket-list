@@ -1,7 +1,6 @@
 import { z} from "zod/v4";
 import {sql} from "../../utils/database.utils.ts";
 
-
 /**
  * Schema for validating the wanderlist object
  * @shape id: string the primary key for the profile
