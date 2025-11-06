@@ -4,7 +4,7 @@ import {
 } from "../../utils/controller/is-logged-in-controller.ts";
 import {
     deleteCommentController, getCommentByPostIdController,
-    getCommentByPrimaryKeyController,
+    getCommentByPrimaryKeyController, getCommentByProfileIdController,
     postCommentController,
 } from "./comment.controller.ts"
 
@@ -25,6 +25,9 @@ router.route('/:id')
 
 router.route('/post/:postId')
     .get(isLoggedInController,getCommentByPostIdController)
+
+router.route('/post/:profileId')
+    .get(isLoggedInController,getCommentByProfileIdController)
 
 // export the router with the basePath and router object
 export const commentRoute = {basePath, router}
