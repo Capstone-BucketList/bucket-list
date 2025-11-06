@@ -89,3 +89,13 @@ export async function selectPostbyPrimaryKey(id: string): Promise<Post  | null>
 
     return result[0] ?? null
 }
+
+// async function selectPostByProfileIdAndVisibility(id:string, visibility:string): Promise<Post[] | null>
+// {
+//     const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility FROM post WHERE visibility =${visibility} and profile_id =${profileId}`
+//
+//     const result = PostSchema.array().parse(rowList)
+//
+//     return result ?? null
+// }
+

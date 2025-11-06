@@ -168,3 +168,41 @@ export async function getPostByPrimaryKeyController(request:Request, response:Re
         response.status(200).json(status)
     }
 }
+
+/**
+* get the post items by profile id
+* @param request
+* @param response
+*/
+// export async function getPostByProfileIdAndVisibilityController(request:Request, response:Response): Promise<void> {
+//     // try{
+    //
+    //     const validationResult = PostSchema.pick({
+    //         profileId: true,
+    //         visibility: true,
+    //     }).safeParse(request.body);
+    //
+    //     if(!validationResult.success) {
+    //         zodErrorResponse(response,validationResult.error)
+    //         return
+    //     }
+    //     const {profileId,visibility} = validationResult.data
+    //
+    //     // const data = await selectPostByProfileIdAndVisibility(visibility, profileId)
+    //
+    //     const status: Status = {
+    //         status: 200,
+    //         message: null,
+    //         data: data
+    //     }
+    //     response.status(200).json(status)
+//
+//     }catch (error: any){
+//         const status: Status = {
+//             status:500,
+//             message: error.message,
+//             data: null
+//         }
+//         response.status(200).json(status)
+//     }
+// }
