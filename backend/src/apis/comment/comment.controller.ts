@@ -202,7 +202,7 @@ export async function getCommentByPostIdController (request: Request, response: 
 export async function getCommentByProfileIdController (request: Request, response: Response): Promise<void> {
     try {
         const validationResult = CommentSchema
-            .pick({postId: true})
+            .pick({profileId: true})
             .safeParse(request.params)
 
         if (!validationResult.success) {
@@ -210,9 +210,9 @@ export async function getCommentByProfileIdController (request: Request, respons
             return
         }
 
-        const {postId} = validationResult.data
+        const {profileId} = validationResult.data
 
-        const data: Comment[] | null = await getCommentByProfileId(postId)
+        const data: Comment[] | null = await getCommentByProfileId(profileId)
 
 
         // if the comments does not exist, return a preformatted response to the client

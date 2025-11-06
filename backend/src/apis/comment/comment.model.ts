@@ -122,7 +122,7 @@ export async function getCommentByProfileId (profileId: string): Promise<Comment
     const rowList = await sql `
     SELECT id, post_id, profile_id, comment, date_created
     FROM comment
-    WHERE post_id = ${profileId}
+    WHERE profile_id = ${profileId}
     `
 
     const result = CommentSchema

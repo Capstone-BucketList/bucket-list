@@ -26,7 +26,7 @@ router.route('/:id')
 router.route('/post/:postId')
     .get(isLoggedInController,getCommentByPostIdController)
 
-router.route('/post/:profileId')
+router.route('/profile/:profileId')
     .get(isLoggedInController,getCommentByProfileIdController)
 
 // export the router with the basePath and router object
