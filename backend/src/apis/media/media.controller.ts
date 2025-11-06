@@ -82,7 +82,7 @@ export async function deleteMediaController(request:Request, response:Response):
             message: error.message,
             data: null
         }
-        response.status(200).json(status)
+        response.status(500).json(status)
     }
 
 }

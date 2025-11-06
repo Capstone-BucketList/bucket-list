@@ -1,6 +1,12 @@
 import {Router} from "express";
-import {isLoggedInController} from "../../utils/controller/is-logged-in-controller.ts";
-import {postCommentController} from "./comment.controller.ts";
+import {
+    isLoggedInController
+} from "../../utils/controller/is-logged-in-controller.ts";
+import {
+    postCommentController,
+    getCommentByPrimaryKeyController, deleteCommentController
+} from "./comment.controller.ts"
+
 
 // declare a basePath for this router
 const basePath = '/apis/comment' as const
@@ -12,12 +18,10 @@ const router = Router()
 router.route('/')
       .post(postCommentController)
       .put(isLoggedInController)
-            // add putCommentController to .put
 
-
-// router.route('/comment/:id')
-//       .get(getCommentsByCommentId)
-//       .delete(deleteCommentController)
+router.route('/comment/:id')
+      .get(getCommentByPrimaryKeyController)
+      .delete(deleteCommentController)
 
 // export the router with the basePath and router object
 export const commentRoute = {basePath, router}
