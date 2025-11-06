@@ -4,7 +4,7 @@ import {
     insertComment,
     deleteComment,
     getCommentByPrimaryKey,
-    getCommentByPostId
+    getCommentByPostId, getCommentByProfileId
 } from "./comment.model.ts";
 import {zodErrorResponse} from "../../utils/response.utils.ts";
 import type {Status} from "../../utils/interfaces/Status.ts";
@@ -185,6 +185,52 @@ export async function getCommentByPostIdController (request: Request, response: 
     } catch (error:any) {
         const status: Status = {
             status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(500).json(status)
+    }
+}
+
+/**
+ * controller to get comments by post id they are associated with from profile table
+ * @param request an object containing the comment id in params
+ * @param response an object modeling the response that will be sent to the client
+ * @returns response all comments on a post message
+ */
+
+export async function getCommentByProfileIdController (request: Request, response: Response): Promise<void> {
+    try {
+        const validationResult = CommentSchema
+            .pick({postId: true})
+            .safeParse(request.params)
+
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+
+        const {postId} = validationResult.data
+
+        const data: Comment[] | null = await getCommentByProfileId(postId)
+
+
+        // if the comments does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "comments does not exist", data: null})
+            return
+        }
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: data
+        }
+        response.status(200).json(status)
+
+    } catch (error: any) {
+        const status: Status = {
+            status: 500,
             message: error.message,
             data: null
         }

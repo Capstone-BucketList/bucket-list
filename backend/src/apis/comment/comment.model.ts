@@ -111,3 +111,22 @@ export async function getCommentByPostId (postId: string): Promise<Comment[] | n
         .parse(rowList)
     return result ?? null
 }
+
+/**
+ * select comments by post id
+ * @param profileId an object that contains the comment id in params
+ * @returns comments on post
+ */
+
+export async function getCommentByProfileId (profileId: string): Promise<Comment[] | null> {
+    const rowList = await sql `
+    SELECT id, post_id, profile_id, comment, date_created
+    FROM comment
+    WHERE post_id = ${profileId}
+    `
+
+    const result = CommentSchema
+        .array()
+        .parse(rowList)
+    return result ?? null
+}
