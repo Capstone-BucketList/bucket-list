@@ -7,7 +7,8 @@ import {
     type Post,
     PostSchema, type PostWithProfileFollow, selectAllVisiblePosts,
     selectPostbyPrimaryKey,
-    selectPostbyWanderlistIdAndVisibility, selectPostsByProfileId, selectVisiblePostsByLoggedInProfileFollow, updatePost
+    selectPostbyWanderlistIdAndVisibility, selectPostsByProfileId,
+    selectPostsByWanderList, selectVisiblePostsByLoggedInProfileFollow, updatePost
 } from "./post.model.ts";
 
 
@@ -317,6 +318,44 @@ export async function getPostsByProfileId(request:Request, response:Response): P
         const {id} = validationResult.data
 
         const data:Post[] | null = await selectPostsByProfileId(id)
+
+        // if the post does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "post does not exist", data: null})
+            return
+        }
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: data
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+export async function getPostByWanderlistId(request:Request, response:Response): Promise<void> {
+    try{
+
+        const validationResult = PostSchema.pick({
+            id: true,
+
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {id} = validationResult.data
+
+        const data:Post[] | null = await selectPostsByWanderList(id)
 
         // if the post does not exist, return a preformatted response to the client
         if (data === null) {

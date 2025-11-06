@@ -1,6 +1,6 @@
 import {Router} from "express";
 import {
-    deletePostController, getAllVisiblePosts, getPostByPrimaryKeyController,
+    deletePostController, getAllVisiblePosts, getPostByPrimaryKeyController, getPostByWanderlistId,
     getPostByWanderlistIdAndVisibilityController, getPostsByProfileId, getVisiblePostsByLoggedInProfileFollow,
     postPostController, putPostController
 } from "./post.controller.ts";
@@ -30,5 +30,8 @@ router.route('/visible/posts')
 
 router.route('/profile/:id')
     .get(isLoggedInController,getPostsByProfileId)
+
+router.route('/wanderlist/:id')
+    .get(isLoggedInController,getPostByWanderlistId)
 
 export const postRoute = {basePath, router}

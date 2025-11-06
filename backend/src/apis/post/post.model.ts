@@ -169,3 +169,15 @@ export async function selectPostsByProfileId(id:string):Promise<Post[]> {
     return PostSchema.array().parse(rowlist)
 
 }
+
+/**
+ * select post by wanderlist
+ * @param wanderlist id
+ * @return posts associated with wanderlist id
+ */
+export async function selectPostsByWanderList(id:string):Promise<Post[]> {
+    const rowlist = await sql
+        `SELECT id,wanderlist_id,content, title,visibility FROM POST WHERE wanderlist_id =${id} `
+
+    return PostSchema.array().parse(rowlist)
+}
