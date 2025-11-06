@@ -1,4 +1,3 @@
-
 import {sql} from "../../utils/database.utils.ts";
 import {z} from "zod/v4";
 
@@ -41,15 +40,15 @@ export type Comment = z.infer<typeof CommentSchema>
 
 /**
  * insert new comment into comment table
- * @param comment the comment object to insert
+ * @param comments the comment object to insert
  * @returns success message
  */
 
-export async function insertComment(comment: Comment): Promise<string> {
+export async function insertComment(comments: Comment): Promise<string> {
     // validate the thread object against the CommentSchema
-    CommentSchema.parse(comment)
+    CommentSchema.parse(comments)
 
-    const {id, postId, profileId, comment, dateCreated} = comment
+    const {id, postId, profileId, comment, dateCreated} = comments
 
     await sql `
         INSERT INTO comment (id, post_id, profile_id, comment, date_created) 
@@ -82,7 +81,7 @@ export async function getCommentByPrimaryKey(id: string): Promise<Comment | null
 /**
  * delete comment record
  * @param id an object that contains the comment id in params
- * @returns succes message
+ * @returns success message
  */
 
 export async function deleteComment (id: string): Promise<string> {
@@ -92,4 +91,23 @@ export async function deleteComment (id: string): Promise<string> {
         WHERE id = ${id}
 `
     return ("Comment successfully deleted")
+}
+
+/**
+ * select comments by post id
+ * @param postId an object that contains the comment id in params
+ * @returns comments on post
+ */
+
+export async function getCommentByPostId (postId: string): Promise<Comment[] | null> {
+    const rowList = await sql `
+    SELECT id, post_id, profile_id, comment, date_created
+    FROM comment
+    WHERE post_id = ${postId}
+    `
+
+    const result = CommentSchema
+        .array()
+        .parse(rowList)
+    return result ?? null
 }

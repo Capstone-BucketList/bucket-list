@@ -137,3 +137,42 @@ export async function deleteCommentController(request: Request, response: Respon
         response.status(500).json(status)
     }
 }
+
+/**
+ * controller to get comments by post id they are associated with from post table
+ * @param request an object containing the comment id in params
+ * @param response an object modeling the response that will be sent to the client
+ * @returns response all comments on a post message
+ */
+
+export async function getCommentByPostIdController (request: Request, response: Response): Promise<void> {
+    try {
+        const validationResult = CommentSchema
+            .pick({ postId: true})
+            .safeParse(request.params)
+
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+
+        const { postId } = validationResult.data
+
+        const data: Comment[] | null = await getCommentByPostId(postId)
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: data
+        }
+        response.status(200).json(status)
+
+    } catch (error:any) {
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(500).json(status)
+    }
+}
