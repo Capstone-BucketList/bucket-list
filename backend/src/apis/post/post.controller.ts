@@ -169,11 +169,11 @@ export async function getPostByPrimaryKeyController(request:Request, response:Re
     }
 }
 
-/**
-* get the post items by profile id
-* @param request
-* @param response
-*/
+// /**
+// * get the post items by profile id
+// * @param request
+// * @param response
+// */
 // export async function getPostByProfileIdAndVisibilityController(request:Request, response:Response): Promise<void> {
 //     // try{
     //
