@@ -3,11 +3,10 @@ import {
     isLoggedInController
 } from "../../utils/controller/is-logged-in-controller.ts";
 import {
-    postCommentController,
+    deleteCommentController, getCommentByPostIdController,
     getCommentByPrimaryKeyController,
-    deleteCommentController, getCommentByPostIdController
+    postCommentController,
 } from "./comment.controller.ts"
-import {getMediaByPostIdController} from "../media/media.controller.ts";
 
 
 // declare a basePath for this router
@@ -18,15 +17,14 @@ const router = Router()
 
 //define comment route for this router
 router.route('/')
-      .post(postCommentController)
-      .put(isLoggedInController)
+      .post(isLoggedInController,postCommentController)
 
-router.route('/comment/:id')
-      .get(getCommentByPrimaryKeyController)
-      .delete(deleteCommentController)
+router.route('/:id')
+      .get(isLoggedInController,getCommentByPrimaryKeyController)
+      .delete(isLoggedInController,deleteCommentController)
 
 router.route('/post/:postId')
-    .get(getCommentByPostIdController)
+    .get(isLoggedInController,getCommentByPostIdController)
 
 // export the router with the basePath and router object
 export const commentRoute = {basePath, router}

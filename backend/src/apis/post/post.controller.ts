@@ -71,7 +71,7 @@ export async function deletePostController(request: Request, response: Response)
         }
 
         const {id} = validationResult.data
-    console.log("id: ", id)
+
         const message = await deletePost(id)
 
         const status: Status = {
@@ -112,6 +112,12 @@ export async function getPostByWanderlistIdAndVisibilityController(request:Reque
 
         const data = await selectPostbyWanderlistIdAndVisibility(visibility, wanderlistId)
 
+        // if the post does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "post does not exist", data: null})
+            return
+        }
+
         const status: Status = {
             status: 200,
             message: null,
@@ -150,6 +156,11 @@ export async function getPostByPrimaryKeyController(request:Request, response:Re
 
         const data = await selectPostbyPrimaryKey(id)
 
+        // if the post does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "post does not exist", data: null})
+            return
+        }
         const status: Status = {
             status: 200,
             message: null,
@@ -218,7 +229,7 @@ export async function putPostController(request:Request, response:Response): Pro
  */
 export async function getVisiblePostsByLoggedInProfileFollow(request:Request, response:Response): Promise<void> {
     try{
-console.log("post by login user")
+
         const validationResult = PostSchema.pick({
             id: true,
 
@@ -232,6 +243,11 @@ console.log("post by login user")
 
         const data:PostWithProfileFollow[] | null = await selectVisiblePostsByLoggedInProfileFollow(id)
 
+        // if the post does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "post does not exist", data: null})
+            return
+        }
         const status: Status = {
             status: 200,
             message: null,
@@ -258,6 +274,11 @@ export async function getAllVisiblePosts(request:Request, response:Response): Pr
     try{
         const data:Post[] | null = await selectAllVisiblePosts()
 
+        // if the post does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "post does not exist", data: null})
+            return
+        }
         const status: Status = {
             status: 200,
             message: null,
@@ -283,7 +304,7 @@ export async function getAllVisiblePosts(request:Request, response:Response): Pr
  */
 export async function getPostsByProfileId(request:Request, response:Response): Promise<void> {
     try{
-        console.log("post by login user")
+
         const validationResult = PostSchema.pick({
             id: true,
 
@@ -297,6 +318,11 @@ export async function getPostsByProfileId(request:Request, response:Response): P
 
         const data:Post[] | null = await selectPostsByProfileId(id)
 
+        // if the post does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "post does not exist", data: null})
+            return
+        }
         const status: Status = {
             status: 200,
             message: null,

@@ -190,3 +190,18 @@ export async function deleteProfileById(id: string): Promise<string>
       return result ?? null
 }
 
+
+/**
+ * select following records associated with logged-in user
+ * @param id logged in profileID
+ * @returns follower profiles
+ */
+export async function selectPublicFollowingByProfileId(id: string): Promise<PublicProfile[] |null > {
+
+    const rowList = await sql `SELECT ID, BIO, user_name,profile_picture,visibility FROM profile p
+          inner join follow f on p.id = f.follower_profile_id where f.followed_profile_id = ${id} `
+
+    const result = PublicProfileSchema.array().parse(rowList)
+
+    return result ?? null
+}

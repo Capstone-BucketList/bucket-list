@@ -5,6 +5,7 @@ import {
     postPostController, putPostController
 } from "./post.controller.ts";
 import {selectPostbyPrimaryKey} from "./post.model.ts";
+import {isLoggedInController} from "../../utils/controller/is-logged-in-controller.ts";
 
 
 const basePath = '/apis/post' as const
@@ -13,21 +14,21 @@ const basePath = '/apis/post' as const
 const router = Router()
 
 router.route('/')
-    .post(postPostController)
-    .get(getPostByWanderlistIdAndVisibilityController)
-    .put(putPostController)
+    .post(isLoggedInController,postPostController)
+    .get(isLoggedInController,getPostByWanderlistIdAndVisibilityController)
+    .put(isLoggedInController,putPostController)
 
 router.route('/:id')
-    .delete(deletePostController)
-    .get(getPostByPrimaryKeyController)
+    .delete(isLoggedInController,deletePostController)
+    .get(isLoggedInController,getPostByPrimaryKeyController)
 
 router.route('/follow/:id')
-    .get(getVisiblePostsByLoggedInProfileFollow)
+    .get(isLoggedInController,getVisiblePostsByLoggedInProfileFollow)
 
 router.route('/visible/posts')
-    .get(getAllVisiblePosts)
+    .get(isLoggedInController,getAllVisiblePosts)
 
 router.route('/profile/:id')
-    .get(getPostsByProfileId)
+    .get(isLoggedInController,getPostsByProfileId)
 
 export const postRoute = {basePath, router}

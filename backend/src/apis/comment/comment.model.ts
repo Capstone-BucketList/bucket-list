@@ -25,7 +25,7 @@ export const CommentSchema = z.object({
         .trim(),
     dateCreated: z.coerce
         .date('Please provide a valid date')
-})
+}).omit({dateCreated: true})
 
 /**
  * this type is used to represent comment object
@@ -48,11 +48,11 @@ export async function insertComment(comments: Comment): Promise<string> {
     // validate the thread object against the CommentSchema
     CommentSchema.parse(comments)
 
-    const {id, postId, profileId, comment, dateCreated} = comments
+    const {id, postId, profileId, comment} = comments
 
     await sql `
         INSERT INTO comment (id, post_id, profile_id, comment, date_created) 
-        VALUES (${id}, ${postId}, ${profileId}, ${comment}, date(${dateCreated}))
+        VALUES (${id}, ${postId}, ${profileId}, ${comment}, now())
         `
 
     return ("Comment successfully created")

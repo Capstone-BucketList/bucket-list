@@ -5,6 +5,7 @@ import {
     getMediaByPrimaryKeyController,
     postMediaController
 } from "./media.controller.ts";
+import {isLoggedInController} from "../../utils/controller/is-logged-in-controller.ts";
 
 
 const basePath = "/apis/media" as const
@@ -12,15 +13,15 @@ const basePath = "/apis/media" as const
 const router = Router();
 
 router.route('/')
-    .post(postMediaController)
-    .get(getAllMediaForVisiblePosts)
+    .post(isLoggedInController,postMediaController)
+    .get(isLoggedInController,getAllMediaForVisiblePosts)
 
 router.route('/:id')
-    .delete(deleteMediaController)
-    .get(getMediaByPrimaryKeyController)
+    .delete(isLoggedInController,deleteMediaController)
+    .get(isLoggedInController,getMediaByPrimaryKeyController)
 
 router.route('/post/:postId')
-    .get(getMediaByPostIdController)
+    .get(isLoggedInController,getMediaByPostIdController)
 
 
 

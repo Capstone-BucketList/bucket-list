@@ -147,6 +147,12 @@ export async function getWanderlistByProfileIdController(request:Request, respon
 
         const wanderlist:WanderList[] | null= await selectWanderlistByProfileId(profileId)
 
+        // if the wanderlist does not exist, return a preformatted response to the client
+        if (wanderlist === null) {
+            response.json({status: 400, message: "wanderlist does not exist", data: null})
+            return
+        }
+
         const status: Status = {
             status: 200,
             message: null,
@@ -185,6 +191,12 @@ export async function getWanderlistByProfileIdAndVisibilityController(request:Re
 
         // getting all wanderlist items by profileId
         const wanderlist:WanderList[] | null= await selectWanderlistByProfileId(profileId)
+
+        // if the wanderlist does not exist, return a preformatted response to the client
+        if (wanderlist === null) {
+            response.json({status: 400, message: "wanderlist does not exist", data: null})
+            return
+        }
 
         // filter by visibility
         const visibilityData = wanderlist?.filter(list => list.visibility === visibility)
@@ -226,6 +238,11 @@ export async function getWanderlistByWanderListIdController(request:Request, res
         // get the wanderlist details by primary key
         const wanderlist:WanderList | null= await selectWanderlistByPrimaryKey(id)
 
+        // if the wanderlist does not exist, return a preformatted response to the client
+        if (wanderlist === null) {
+            response.json({status: 400, message: "wanderlist does not exist", data: null})
+            return
+        }
 
         const status: Status = {
             status: 200,
@@ -264,6 +281,11 @@ export async function getWanderlistByVisibilityController(request:Request, respo
 
         // getting the wanderlist items by visibility
         const wanderlist:WanderList[] | null= await selectWanderlistByVisibility(visibility)
+        // if the wanderlist does not exist, return a preformatted response to the client
+        if (wanderlist === null) {
+            response.json({status: 400, message: "wanderlist does not exist", data: null})
+            return
+        }
 
         const status: Status = {
             status: 200,

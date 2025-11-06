@@ -103,6 +103,12 @@ export async function getMediaByPrimaryKeyController(request:Request, response:R
 
         const data:Media | null = await selectMediaByPrimaryKey(id)
 
+        // if the media does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "media does not exist", data: null})
+            return
+        }
+
         const status: Status = {
             status: 200,
             message: null,
@@ -137,6 +143,12 @@ export async function getMediaByPostIdController(request:Request, response:Respo
 
         const data:Media[] |null = await selectMediaByPostId(postId)
 
+        // if the media does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "media does not exist", data: null})
+            return
+        }
+
         const status: Status = {
             status: 200,
             message: null,
@@ -164,8 +176,13 @@ export async function getMediaByPostIdController(request:Request, response:Respo
 export async function getAllMediaForVisiblePosts(request:Request, response:Response):Promise<void>  {
     try{
 
-
         const data:Media[] | null = await selectAllMediaForVisiblePosts()
+
+        // if the media does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "media does not exist", data: null})
+            return
+        }
 
         const status: Status = {
             status: 200,

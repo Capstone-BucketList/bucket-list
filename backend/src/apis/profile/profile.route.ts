@@ -1,6 +1,6 @@
 import {
     deleteProfileController,
-    getFollowersByProfileIdController,
+    getFollowersByProfileIdController, getFollowingByProfileIdController,
     profileController,
     putProfileController
 } from "./profile.controller.ts";
@@ -17,10 +17,13 @@ const router = Router()
 //define signup route for this router
 router.route('/:id').get(profileController)
     .put(isLoggedInController, putProfileController)
-    .delete(deleteProfileController)
+    .delete(isLoggedInController,deleteProfileController)
 
 router.route('/followers/:id')
-    .get(getFollowersByProfileIdController)
+    .get(isLoggedInController,getFollowersByProfileIdController)
+
+router.route('/following/:id')
+    .get(isLoggedInController,getFollowingByProfileIdController)
 
 //export the router with the basePath and router object
 export const profileRoute = {basePath, router}

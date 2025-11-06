@@ -1,4 +1,3 @@
-import express, {response} from "express";
 import {
     CommentSchema,
     type Comment,
@@ -31,15 +30,16 @@ export async function postCommentController(request: Request, response: Response
             return
         } // end if statement
 
-        const comment:Comment = {
+        const {id, postId, profileId, comment} = validationResult.data
+
+        const commentObject: Comment = {
             id,
             postId,
             profileId,
-            comment,
-            dateCreated
+            comment
         }
 
-        const message = await insertComment(comment)
+        const message = await insertComment(commentObject)
 
         const status: Status = {
             status: 200,
@@ -48,16 +48,18 @@ export async function postCommentController(request: Request, response: Response
         }
 
         response.status(200).json(status)
-        }
+
 
     } catch (error: any) {
         const status: Status = {
             status: 500,
             message: error.message,
             data: null
+        }
+        response.status(500).json(status)
     }
-    response.status(500).json(status)
 }
+
 
 /**
  * Express controller for getting comment by its primary key
@@ -70,7 +72,7 @@ export async function getCommentByPrimaryKeyController (request: Request, respon
     try {
 
         // validate the comment ID from params
-        const validationResult = CommentSchema.pick({ id: true}).safeParse({ id: request.params})
+        const validationResult = CommentSchema.pick({ id: true}).safeParse( request.params)
 
         if (!validationResult.success) {
             zodErrorResponse(response, validationResult.error)
@@ -82,6 +84,12 @@ export async function getCommentByPrimaryKeyController (request: Request, respon
         // get the comment
         const data: Comment | null = await getCommentByPrimaryKey(id)
 
+
+        // if the profile does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "comment does not exist", data: null})
+            return
+        }
         const status: Status = {
             status: 200,
             message: null,
@@ -111,7 +119,7 @@ export async function deleteCommentController(request: Request, response: Respon
     try {
         const validationResult = CommentSchema
             .pick({ id: true})
-            .safeParse({ id: request.params })
+            .safeParse(request.params)
 
         if (!validationResult.success) {
             zodErrorResponse(response, validationResult.error)
@@ -159,6 +167,13 @@ export async function getCommentByPostIdController (request: Request, response: 
         const { postId } = validationResult.data
 
         const data: Comment[] | null = await getCommentByPostId(postId)
+
+
+        // if the comments does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "comments does not exist", data: null})
+            return
+        }
 
         const status: Status = {
             status: 200,
