@@ -1,12 +1,18 @@
 import express, {response} from "express";
-import {z} from 'zod/v4'
-import {type Comment, CommentSchema, insertComment, postComment} from "./comment.model.ts";
-import {serverErrorResponse, zodErrorResponse} from "../../utils/response.utils.ts";
+import {
+    CommentSchema,
+    type Comment,
+    insertComment,
+    deleteComment,
+    getCommentByPrimaryKey,
+    getCommentByPostId
+} from "./comment.model.ts";
+import {zodErrorResponse} from "../../utils/response.utils.ts";
 import type {Status} from "../../utils/interfaces/Status.ts";
 import type {Request, Response} from "express";
 
 /**
- * express controller for creating a new comment
+ * post controller to insert new comment record into comment table
  * @endpoint POST /apis/comment
  * @param request and object containing the body with comment data
  * @param response an object modeling the response that will be sent to the client
@@ -25,29 +31,148 @@ export async function postCommentController(request: Request, response: Response
             return
         } // end if statement
 
-        // get the profile from the session
-        const profile = request.session?.profile
-        if (!profile) {
-            response.json({ status: 401, message: 'Please login to leave a comment', data: null})
+        const comment:Comment = {
+            id,
+            postId,
+            profileId,
+            comment,
+            dateCreated
+        }
+
+        const message = await insertComment(comment)
+
+        const status: Status = {
+            status: 200,
+            message: message,
+            data: null
+        }
+
+        response.status(200).json(status)
+        }
+
+    } catch (error: any) {
+        const status: Status = {
+            status: 500,
+            message: error.message,
+            data: null
+    }
+    response.status(500).json(status)
+}
+
+/**
+ * Express controller for getting comment by its primary key
+ * @endpoint Get /apis/comment/: id
+ * @param request an object containing the comment ID in params
+ * @param response an object modeling the response that will be sent to the client
+ * @returns response with the comment data or null if not found
+ */
+export async function getCommentByPrimaryKeyController (request: Request, response: Response): Promise<void> {
+    try {
+
+        // validate the comment ID from params
+        const validationResult = CommentSchema.pick({ id: true}).safeParse({ id: request.params})
+
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
             return
         }
 
-        // validate that the profileId in the request matches the session profileId
-        if (validationResult.data.profileId !== profile.id) {
-            response.json({ status: 403, message: 'Profile ID in request does not match authenticated user', data: null})
-        }
+        const { id } = validationResult.data
 
-        // insert the comment into the database
-        const comment = await insertComment(validationResult.data)
+        // get the comment
+        const data: Comment | null = await getCommentByPrimaryKey(id)
 
-        // return success response
         const status: Status = {
-            status: 200, message, data: null
+            status: 200,
+            message: null,
+            data: data
         }
-        response.json(status)
+
+        response.status(200).json(status)
 
     } catch (error: any) {
-        console.error(error)
-        serverErrorResponse(response, error.message)
+        const status: Status = {
+            status: 500,
+            message: error.message,
+            data: null
+        }
+        response.status(500).json(status)
+    }
+}
+
+/**
+ * delete controller to remove comment from comment table
+ * @param request an object containing the comment id in params
+ * @param response an object modeling the response that will be sent to the client
+ * @returns response delete message
+ */
+
+export async function deleteCommentController(request: Request, response: Response): Promise<void> {
+    try {
+        const validationResult = CommentSchema
+            .pick({ id: true})
+            .safeParse({ id: request.params })
+
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+        const { id } = validationResult.data
+
+        const message = await deleteComment(id)
+
+        const status: Status = {
+            status: 200,
+            message: message,
+            data: null
+        }
+        response.status(200).json(status)
+
+    } catch (error: any) {
+        const status: Status = {
+            status: 500,
+            message: error.message,
+            data: null
+        }
+        response.status(500).json(status)
+    }
+}
+
+/**
+ * controller to get comments by post id they are associated with from post table
+ * @param request an object containing the comment id in params
+ * @param response an object modeling the response that will be sent to the client
+ * @returns response all comments on a post message
+ */
+
+export async function getCommentByPostIdController (request: Request, response: Response): Promise<void> {
+    try {
+        const validationResult = CommentSchema
+            .pick({ postId: true})
+            .safeParse(request.params)
+
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+
+        const { postId } = validationResult.data
+
+        const data: Comment[] | null = await getCommentByPostId(postId)
+
+        const status: Status = {
+            status: 200,
+            message: null,
+            data: data
+        }
+        response.status(200).json(status)
+
+    } catch (error:any) {
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(500).json(status)
     }
 }
