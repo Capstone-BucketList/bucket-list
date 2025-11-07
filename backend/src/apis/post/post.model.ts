@@ -1,6 +1,8 @@
 import {z} from "zod/v4";
 import {FollowSchema} from "../follow/follow.model.ts";
 import {sql} from "../../utils/database.utils.ts";
+import {PublicProfileSchema} from "../profile/profile.model.ts";
+import {WanderListSchema} from "../wanderlist/wanderlist.model.ts";
 
 /**
  * Schema for validating post objects
@@ -34,16 +36,21 @@ export const PostSchema = z.object ({
 
     visibility: z.string('please provide a valid visibility')
         .max(32, 'please provide a valid visibility (max 32 characters)')
-})
+}).omit({datetimeCreated:true, datetimeModified : true})
 
 export type Post = z.infer<typeof PostSchema>
 
+/**
+ * insert the post record
+ * @param post
+ * @return success message
+ */
 export async function insertPost(post:Post): Promise<string> {
     PostSchema.parse(post);
 
-    const{id, wanderlistId, content, datetimeCreated, datetimeModified, title, visibility} = post;
+    const{id, wanderlistId, content, title, visibility} = post;
 
-    await sql `INSERT INTO post(id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility) VALUES(${id}, ${wanderlistId}, ${content}, ${datetimeCreated}, ${datetimeModified}, ${title}, ${visibility})`
+    await sql `INSERT INTO post(id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility) VALUES(${id}, ${wanderlistId}, ${content}, now(),now(), ${title}, ${visibility})`
 
     return "Successfully inserted post"
 }
@@ -61,7 +68,7 @@ export async function deletePost(id: string): Promise<string | null> {
 }
 
 /**
-*select the post basedon wanderlist id and visibility
+*select the post based on wanderlist id and visibility
 * @param visibility, and wanderlist id
 * @return post items
  */
@@ -77,7 +84,7 @@ export async function selectPostbyWanderlistIdAndVisibility(visibility: string, 
 
 /**
  *select the post by Primary Key
- * @param visibility, and wanderlist id
+ * @param postId
  * @return post items
  */
 
@@ -90,12 +97,87 @@ export async function selectPostbyPrimaryKey(id: string): Promise<Post  | null>
     return result[0] ?? null
 }
 
-// async function selectPostByProfileIdAndVisibility(id:string, visibility:string): Promise<Post[] | null>
-// {
-//     const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility FROM post WHERE visibility =${visibility} and profile_id =${profileId}`
-//
-//     const result = PostSchema.array().parse(rowList)
-//
-//     return result ?? null
-// }
+/**
+ * Update the post record
+ * @param post
+ * @return success message
+ */
+export async function  updatePost(post:Post): Promise<string> {
+    PostSchema.parse(post);
 
+    const{id,  content,  title, visibility} = post;
+
+    await sql `UPDATE post SET 
+                content=${content}, 
+                datetime_modified =now(), 
+                title=${title},
+                visibility=${visibility} 
+            WHERE id = ${id}`
+    return "Successfully updated post"
+}
+
+export const PostWithProfileFollowSchema = PostSchema.extend(
+    {
+     profile: PublicProfileSchema.optional(),
+     wanderlist: WanderListSchema.optional()
+    }
+)
+
+export type PostWithProfileFollow = z.infer<typeof PostWithProfileFollowSchema>
+
+/**
+ * get all visible post to friends
+ * @param id
+ */
+export async function selectVisiblePostsByLoggedInProfileFollow(id: string): Promise<PostWithProfileFollow[]> {
+    const rowList = await
+        sql ` SELECT 
+            pt.title, pt.content, pt.datetime_created, pt.datetime_modified, pt.visibility,pt.id, p.id,p.bio,p.id,  p.date_created, p,email, p.visibility, p.profile_picture,pt.wanderlist_id,
+            w.description, w.title, w.date_created,w.target_date,w.pinned,w.visibility,w.id, w.profile_id, w.pinned, w.wanderlist_status    
+        FROM profile p
+            INNER JOIN follow f on p.id = f.follower_profile_id 
+            INNER JOIN wanderlist w on f.followed_profile_id = w.profile_id
+            INNER JOIN post pt on w.id = pt.wanderlist_id
+                WHERE p.id = ${id} AND p.visibility = 'public' `
+    console.log(rowList)
+    return PostWithProfileFollowSchema.array().parse(rowList)
+}
+
+/**
+ * selects all visible post
+ */
+export async function selectAllVisiblePosts():Promise<Post[]> {
+    const rowlist = await sql
+        `SELECT id,wanderlist_id,content, title,visibility FROM POST WHERE visibility='public' `
+
+    return PostSchema.array().parse(rowlist)
+}
+
+/**
+ * select all the posts by profileId
+ * @param id
+ * @return posts associated with profileId
+ */
+export async function selectPostsByProfileId(id:string):Promise<Post[]> {
+    const rowlist = await sql
+        `SELECT pt.id,pt.wanderlist_id,pt.content, pt.title,pt.visibility 
+            FROM POST pt
+            INNER JOIN wanderlist w on pt.wanderlist_id = w.id
+            INNER JOIN profile p on w.profile_id = p.id
+         WHERE p.id= ${id}`
+
+    return PostSchema.array().parse(rowlist)
+
+}
+
+/**
+ * select post by wanderlist
+ * @param wanderlist id
+ * @return posts associated with wanderlist id
+ */
+export async function selectPostsByWanderList(id:string):Promise<Post[]> {
+    const rowlist = await sql
+        `SELECT id,wanderlist_id,content, title,visibility FROM POST WHERE wanderlist_id =${id} `
+
+    return PostSchema.array().parse(rowlist)
+}

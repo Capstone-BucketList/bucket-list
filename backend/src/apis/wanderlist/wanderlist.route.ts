@@ -6,22 +6,25 @@ import {
     postWanderListItemController,
     putWanderListItemController
 } from "./wanderlist.controller.ts";
+import {isLoggedInController} from "../../utils/controller/is-logged-in-controller.ts";
 
 const basePath = '/apis/wanderlist' as const
 
 const router=Router();
 
 router.route('/')
-        .post(postWanderListItemController)
-        .put(putWanderListItemController)
-        .get(getWanderlistByProfileIdAndVisibilityController)
+        .post(isLoggedInController,postWanderListItemController)
+        .put(isLoggedInController,putWanderListItemController)
+        .get(isLoggedInController,getWanderlistByProfileIdAndVisibilityController)
 
 router.route('/:id')
-    .delete(deleteWanderListItemController)
-    .get(getWanderlistByWanderListIdController)
+    .delete(isLoggedInController,deleteWanderListItemController)
+    .get(isLoggedInController,getWanderlistByWanderListIdController)
 
-router.route('/profile/:profileId').get(getWanderlistByProfileIdController)
+router.route('/profile/:profileId')
+    .get(isLoggedInController,getWanderlistByProfileIdController)
 
-router.route('/visibility/:visibility').get(getWanderlistByVisibilityController)
+router.route('/visibility/:visibility')
+    .get(isLoggedInController,getWanderlistByVisibilityController)
 
 export const  wanderlistRoute = {basePath, router}

@@ -3,7 +3,7 @@ import {
     getPublicProfileByPrimaryKey,
     type PrivateProfile,
     PrivateProfileSchema, type PublicProfile, PublicProfileSchema, selectPrivateProfileByProfileId,
-    selectPublicFollowersByProfileId,
+    selectPublicFollowersByProfileId, selectPublicFollowingByProfileId,
     updateProfile
 } from "./profile.model.ts";
 import {zodErrorResponse} from "../../utils/response.utils.ts";
@@ -194,6 +194,41 @@ export async function getFollowersByProfileIdController(request:Request, respons
 
         // grab the followers by id
         const data = await selectPublicFollowersByProfileId(id)
+
+        // if the profile does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "profile does not exist", data: null})
+            return
+        }
+
+        response.json({status: 200, data: data, message: null})
+
+    }catch(error:any){
+        response.json({status: 500, data:null, message: error})
+    }
+}
+
+/**
+ * get all following profiles associated with logged-in user
+ * @param request
+ * @param response
+ */
+export async function getFollowingByProfileIdController(request:Request, response: Response) : Promise<void>  {
+    try{
+        // validate the id coming from the request parameters
+        const validationResult = PublicProfileSchema.pick({id: true}).safeParse(request.params)
+
+        // if the validation is unsuccessful, return a preformatted response to the client
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+
+        // grab the id off of the validated request parameters
+        const {id} = validationResult.data
+
+        // grab the followers by id
+        const data = await selectPublicFollowingByProfileId(id)
 
         // if the profile does not exist, return a preformatted response to the client
         if (data === null) {
