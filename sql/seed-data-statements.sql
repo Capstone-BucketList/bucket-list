@@ -1,0 +1,216 @@
+INSERT INTO profile (
+    id, activation_token, bio, date_created, email, password_hash, profile_picture, user_name, visibility
+) VALUES
+      ('018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', '0123456789abcdef0123456789abcdef', 'Explorer of hidden gems.', '2025-11-01', 'alice+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'alice', 'public'),
+      ('018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', 'fedcba9876543210fedcba9876543210', 'Nomad with a camera.', '2025-11-02', 'bob+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'bob', 'private'),
+      ('018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', '00112233445566778899aabbccddeeff', 'Always chasing sunsets.', '2025-11-03', 'carla+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'carla', 'public'),
+      ('018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', 'ffeeddccbbaa99887766554433221100', 'Mapping the stars and trails.', '2025-11-04', 'dan+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'dan', 'public'),
+      ('018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', '1234567890abcdef1234567890abcdef', 'Backpacking through history.', '2025-11-05', 'ella+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'ella', 'private'),
+      ('018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06', 'abcdef1234567890abcdef1234567890', 'Catching waves and stories.', '2025-11-06', 'frank+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'frank', 'public'),
+      ('018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07', '0f1e2d3c4b5a69788796a5b4c3d2e1f0', 'Sketching the world one trip at a time.', '2025-11-07', 'grace+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'grace', 'public'),
+      ('018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08', '11223344556677889900aabbccddeeff', 'Wanderer with a drone.', '2025-11-08', 'henry+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'henry', 'private'),
+      ('018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09', 'aabbccddeeff00112233445566778899', 'Finding peace in the peaks.', '2025-11-09', 'iris+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'iris', 'public'),
+      ('018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a', '99aabbccddeeff001122334455667788', 'From deserts to glaciers.', '2025-11-10', 'jack+seed@example.com', '$2b$12$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'https://via.placeholder.com/150', 'jack', 'private')
+ON CONFLICT (id) DO NOTHING;
+
+
+INSERT INTO wanderlist (
+    id, profile_id, date_created, description, pinned, wanderlist_status, target_date, title, visibility
+) VALUES
+      ('0a1b2c3d-4e5f-7a8b-9c0d-111111111111', '018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', '2025-11-03', 'Road trip through the Southwest.', true, 'active', '2025-12-15', 'Southwest Sojourn', 'public'),
+      ('1b2c3d4e-5f6a-7b8c-9d0e-222222222222', '018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', '2025-11-05', 'Weekend hikes and roadside diners.', false, 'draft', '2026-01-10', 'Highway Hikes', 'private'),
+      ('2c3d4e5f-6a7b-8c9d-0e1f-333333333333', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', '2025-11-04', 'Photo tour of European cities.', true, 'active', '2026-03-01', 'Euro Lens', 'private'),
+      ('3d4e5f6a-7b8c-9d0e-1f2a-444444444444', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', '2025-11-06', 'Cafes, cobblestones, and late sunsets.', false, 'draft', '2026-04-15', 'Cobbled Evenings', 'public'),
+      ('4e5f6a7b-8c9d-0e1f-2a3b-555555555555', '018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', '2025-11-07', 'Exploring Shiprock and nearby trails.', true, 'active', '2025-12-01', 'Shiprock Trek', 'public'),
+      ('5f6a7b8c-9d0e-1f2a-3b4c-666666666666', '018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', '2025-11-09', 'Local cultural stops and viewpoints.', false, 'draft', '2026-02-10', 'Cultural Stops', 'private'),
+      ('6a7b8c9d-0e1f-2a3b-4c5d-777777777777', '018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', '2025-11-08', 'Cultural sites in New Mexico.', false, 'draft', '2026-01-15', 'Southwest Culture', 'private'),
+      ('7b8c9d0e-1f2a-3b4c-5d6e-888888888888', '018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', '2025-11-10', 'Local festivals and markets.', true, 'active', '2025-12-20', 'Market Days', 'public'),
+      ('8c9d0e1f-2a3b-4c5d-6e7f-999999999999', '018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', '2025-11-09', 'Photo tour of Prague.', true, 'active', '2025-12-10', 'Prague Lens', 'public'),
+      ('9d0e1f2a-3b4c-5d6e-7f8a-000000000000', '018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', '2025-11-11', 'Castles, cathedrals, and river walks.', false, 'draft', '2026-02-01', 'Euro Castles', 'private'),
+      ('0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0', '018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06', '2025-11-10', 'Surfing the Pacific coast.', true, 'active', '2025-12-12', 'Wave Chaser', 'public'),
+      ('1f2e3d4c-5b6a-7988-8899-bbccaadd0011', '018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06', '2025-11-12', 'Beach bonfire nights and boardwalks.', false, 'draft', '2026-01-30', 'Coastal Chill', 'private'),
+      ('2f3e4d5c-6b7a-8a99-99aa-ccddeeff0022', '018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07', '2025-11-11', 'Sketching cityscapes in Tokyo.', true, 'active', '2025-12-22', 'Urban Ink', 'public'),
+      ('3f4e5d6c-7b8a-9b00-00bb-ddeeff001122', '018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07', '2025-11-13', 'Street food and neon nights.', false, 'draft', '2026-02-20', 'Tokyo Bites', 'private'),
+      ('4f5e6d7c-8b9a-0c11-11cc-eeff00112233', '018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08', '2025-11-12', 'Drone tour of Iceland.', true, 'active', '2025-12-25', 'Frozen Flight', 'public'),
+      ('5f6e7d8c-9b0a-1d22-22dd-ff0011223344', '018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08', '2025-11-14', 'Volcanoes and waterfalls exploration.', false, 'draft', '2026-02-28', 'Elemental Earth', 'private'),
+      ('6f7e8d9c-ab0a-2e33-33ee-001122334455', '018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09', '2025-11-13', 'Climbing the Rockies.', true, 'active', '2025-12-08', 'Peak Pursuit', 'public'),
+      ('7f8e9d0c-bc1a-3f44-44ff-112233445566', '018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09', '2025-11-15', 'Snowshoeing and solitude.', false, 'draft', '2026-01-18', 'Winter Silence', 'private'),
+      ('8f9e0d1c-cd2a-4a55-55aa-223344556677', '018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a', '2025-11-14', 'Desert to glacier road trip.', true, 'active', '2025-12-30', 'Extreme Horizons', 'public'),
+      ('9fae1d2c-de3a-5b66-66bb-334455667788', '018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a', '2025-11-16', 'National parks loop and scenic overlooks.', false, 'draft', '2026-03-05', 'Park Circuit', 'private'),
+      ('afbe2d3c-ef4a-6c77-77cc-445566778899', '018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', '2025-11-17', 'Hidden diners and roadside attractions.', false, 'draft', '2026-04-01', 'Roadside Finds', 'public'),
+      ('bfce3d4c-f05a-7d88-88dd-556677889900', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', '2025-11-18', 'Late-night city photography sessions.', true, 'active', '2026-05-10', 'Night Frames', 'public')
+ON CONFLICT (id) DO NOTHING;
+
+
+
+INSERT INTO post (
+    id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility
+) VALUES
+      ('a1111111-1111-4111-8111-111111111111', '0a1b2c3d-4e5f-7a8b-9c0d-111111111111', 'Visited Shiprock and met local artists. Incredible experience!', '2025-11-05 10:00:00', '2025-11-05 10:00:00', 'Shiprock Stories', 'public'),
+      ('a1111111-1111-4111-8112-111111111112', '0a1b2c3d-4e5f-7a8b-9c0d-111111111111', 'Sunrise drive and roadside coffee stops along the way.', '2025-11-05 07:30:00', '2025-11-05 07:30:00', 'Roadside Coffee', 'private'),
+      ('b2222222-2222-4222-8222-222222222221', '1b2c3d4e-5f6a-7b8c-9d0e-222222222222', 'First day in Europe: narrow streets and perfect light.', '2025-11-06 09:30:00', '2025-11-06 09:30:00', 'Euro Arrival', 'private'),
+      ('b2222222-2222-4222-8222-222222222222', '1b2c3d4e-5f6a-7b8c-9d0e-222222222222', 'Late-night walk by the river, reflections everywhere.', '2025-11-06 22:10:00', '2025-11-06 22:10:00', 'River Reflections', 'public'),
+      ('c3333333-3333-4333-8333-333333333333', '2c3d4e5f-6a7b-8c9d-0e1f-333333333333', 'Shiprock trail was tougher than expected but worth it.', '2025-11-13 08:00:00', '2025-11-13 08:00:00', 'Trail Triumph', 'public'),
+      ('c3333333-3333-4333-8333-333333333334', '2c3d4e5f-6a7b-8c9d-0e1f-333333333333', 'Met a guide who shared local stories and history.', '2025-11-13 09:15:00', '2025-11-13 09:15:00', 'Local Stories', 'private'),
+      ('d4444444-4444-4444-8444-444444444444', '3d4e5f6a-7b8c-9d0e-1f2a-444444444444', 'Visited cultural sites and learned about regional crafts.', '2025-11-12 14:00:00', '2025-11-12 14:00:00', 'Cultural Stops', 'private'),
+      ('d4444444-4444-4444-8444-444444444445', '3d4e5f6a-7b8c-9d0e-1f2a-444444444444', 'Market Days were full of color and music.', '2025-11-12 10:30:00', '2025-11-12 10:30:00', 'Market Days', 'public'),
+      ('e5555555-5555-4555-8555-555555555555', '4e5f6a7b-8c9d-0e1f-2a3b-555555555555', 'Prague mornings: fog lifting over the river.', '2025-11-15 07:00:00', '2025-11-15 07:00:00', 'Prague Morning', 'public'),
+      ('e5555555-5555-4555-8555-555555555556', '4e5f6a7b-8c9d-0e1f-2a3b-555555555555', 'Found a tiny café with the best pastries.', '2025-11-15 09:00:00', '2025-11-15 09:00:00', 'Café Find', 'private'),
+      ('f6666666-6666-4666-8666-666666666666', '5f6a7b8c-9d0e-1f2a-3b4c-666666666666', 'Castles and cathedrals dominated the skyline today.', '2025-11-15 14:00:00', '2025-11-15 14:00:00', 'Castle Walk', 'private'),
+      ('f6666666-6666-4666-8666-666666666667', '5f6a7b8c-9d0e-1f2a-3b4c-666666666666', 'Riverbank strolls and sunset reflections.', '2025-11-15 17:45:00', '2025-11-15 17:45:00', 'Sunset Stroll', 'public'),
+      ('a7777777-7777-4777-8777-777777777777', '6a7b8c9d-0e1f-2a3b-4c5d-777777777777', 'Horseshoe Bend at golden hour was unforgettable.', '2025-11-16 18:30:00', '2025-11-16 18:30:00', 'Bend Glow', 'public'),
+      ('a7777777-7777-4777-8777-777777777778', '6a7b8c9d-0e1f-2a3b-4c5d-777777777777', 'Found a quiet overlook for sketches and photos.', '2025-11-16 16:00:00', '2025-11-16 16:00:00', 'Overlook Sketch', 'private'),
+      ('b8888888-8888-4888-8888-888888888888', '7b8c9d0e-1f2a-3b4c-5d6e-888888888888', 'Golden hour in the canyon produced dramatic shadows.', '2025-11-16 17:00:00', '2025-11-16 17:00:00', 'Canyon Shadows', 'private'),
+      ('b8888888-8888-4888-8888-888888888889', '7b8c9d0e-1f2a-3b4c-5d6e-888888888888', 'Hiked a lesser-known trail and found a hidden viewpoint.', '2025-11-16 12:30:00', '2025-11-16 12:30:00', 'Hidden View', 'public'),
+      ('c9999999-9999-4999-8999-999999999999', '8c9d0e1f-2a3b-4c5d-6e7f-999999999999', 'White Sands night sky was full of stars.', '2025-11-17 21:00:00', '2025-11-17 21:00:00', 'White Sands Stars', 'public'),
+      ('c9999999-9999-4999-8999-999999999998', '8c9d0e1f-2a3b-4c5d-6e7f-999999999999', 'Set up a small telescope and tracked constellations.', '2025-11-17 22:00:00', '2025-11-17 22:00:00', 'Constellation Watch', 'private'),
+      ('daaaaaaa-aaaa-4aaa-9aaa-aaaaaaaaaaaa', '9d0e1f2a-3b4c-5d6e-7f8a-000000000000', 'Meteor streaked across the sky during the watch party.', '2025-11-17 22:15:00', '2025-11-17 22:15:00', 'Meteor Moment', 'private'),
+      ('daaaaaaa-aaaa-4aaa-9aaa-aaaaaaaaaaab', '9d0e1f2a-3b4c-5d6e-7f8a-000000000000', 'Shared hot cocoa and stories under the stars.', '2025-11-17 23:00:00', '2025-11-17 23:00:00', 'Hot Cocoa Night', 'public'),
+      ('ebbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbb', '0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0', 'Caught waves and practiced new maneuvers.', '2025-11-19 11:00:00', '2025-11-19 11:00:00', 'Surf Session', 'public'),
+      ('ebbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbc', '0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0', 'Evening bonfire with friends and music.', '2025-11-19 20:00:00', '2025-11-19 20:00:00', 'Beach Jam', 'private'),
+      ('fccccccc-cccc-4ccc-9ccc-cccccccccccc', '1f2e3d4c-5b6a-7988-8899-bbccaadd0011', 'Sketched Shibuya Crossing from a rooftop café.', '2025-11-20 15:00:00', '2025-11-20 15:00:00', 'Shibuya Sketch', 'public'),
+      ('fccccccc-cccc-4ccc-9ccc-cccccccccccd', '1f2e3d4c-5b6a-7988-8899-bbccaadd0011', 'Night markets offered the best street food and neon scenes.', '2025-11-20 19:30:00', '2025-11-20 19:30:00', 'Neon Nights', 'private'),
+      ('adededed-dede-4ded-9ded-dededededede', '2f3e4d5c-6b7a-8a99-99aa-ccddeeff0022', 'Drone flight over glaciers revealed hidden crevasses.', '2025-11-21 09:00:00', '2025-11-21 09:00:00', 'Glacier Flight', 'public'),
+      ('adededed-dede-4ded-9ded-dedededededf', '2f3e4d5c-6b7a-8a99-99aa-ccddeeff0022', 'Icelandic waterfalls thundered with raw power.', '2025-11-21 11:30:00', '2025-11-21 11:30:00', 'Waterfall Roar', 'private'),
+      ('befecefe-fefe-4efe-9efe-fefefefefefe', '3f4e5d6c-7b8a-9b00-00bb-ddeeff001122', 'Volcano rim hikes offered surreal landscapes.', '2025-11-22 10:30:00', '2025-11-22 10:30:00', 'Volcano Rim', 'private'),
+      ('befecefe-fefe-4efe-9efe-fefefefefeff', '3f4e5d6c-7b8a-9b00-00bb-ddeeff001122', 'Found a geothermal pool for a quick soak.', '2025-11-22 14:00:00', '2025-11-22 14:00:00', 'Geothermal Soak', 'public'),
+      ('c0c0c0c0-0c0c-40c0-90c0-c0c0c0c0c0c0', '4f5e6d7c-8b9a-0c11-11cc-eeff00112233', 'Summited a ridge with panoramic views of the valley.', '2025-11-23 07:45:00', '2025-11-23 07:45:00', 'Ridge Summit', 'public'),
+      ('c0c0c0c0-0c0c-40c0-90c0-c0c0c0c0c0c1', '4f5e6d7c-8b9a-0c11-11cc-eeff00112233', 'Early morning light made the climb magical.', '2025-11-23 06:00:00', '2025-11-23 06:00:00', 'Morning Climb', 'private'),
+      ('d1d1d1d1-1d1d-41d1-91d1-d1d1d1d1d1d1', '5f6e7d8c-9b0a-1d22-22dd-ff0011223344', 'Snowshoeing through quiet forests felt meditative.', '2025-11-24 09:00:00', '2025-11-24 09:00:00', 'Snowshoe Silence', 'private'),
+      ('d1d1d1d1-1d1d-41d1-91d1-d1d1d1d1d1d2', '5f6e7d8c-9b0a-1d22-22dd-ff0011223344', 'Found animal tracks and followed them for a while.', '2025-11-24 10:30:00', '2025-11-24 10:30:00', 'Track Follow', 'public'),
+      ('e2e2e2e2-2e2e-42e2-92e2-e2e2e2e2e2e2', '6f7e8d9c-ab0a-2e33-33ee-001122334455', 'Monument Valley sunrise painted the mesas gold.', '2025-11-30 07:00:00', '2025-11-30 07:00:00', 'Monument Sunrise', 'public'),
+      ('e2e2e2e2-2e2e-42e2-92e2-e2e2e2e2e2e3', '6f7e8d9c-ab0a-2e33-33ee-001122334455', 'Stopped at overlooks and sketched the horizon.', '2025-11-30 08:15:00', '2025-11-30 08:15:00', 'Horizon Sketch', 'private'),
+      ('f3f3f3f3-3f3f-43f3-93f3-f3f3f3f3f3f3', '7f8e9d0c-bc1a-3f44-44ff-112233445566', 'Camped near Yellowstone and watched elk at dusk.', '2025-12-01 18:00:00', '2025-12-01 18:00:00', 'Yellowstone Camp', 'private'),
+      ('f3f3f3f3-3f3f-43f3-93f3-f3f3f3f3f3f4', '7f8e9d0c-bc1a-3f44-44ff-112233445566', 'Morning steam rising from the hot springs was surreal.', '2025-12-02 07:30:00', '2025-12-02 07:30:00', 'Hot Spring Morning', 'public'),
+      ('a4a4a4a4-4a4a-44a4-94a4-a4a4a4a4a4a4', '8f9e0d1c-cd2a-4a55-55aa-223344556677', 'Hidden diners and roadside attractions were charming.', '2025-11-17 12:00:00', '2025-11-17 12:00:00', 'Roadside Finds', 'public'),
+      ('a4a4a4a4-4a4a-44a4-94a4-a4a4a4a4a4a5', '8f9e0d1c-cd2a-4a55-55aa-223344556677', 'Tried a local pie that became an instant favorite.', '2025-11-17 13:00:00', '2025-11-17 13:00:00', 'Local Pie', 'private'),
+      ('b5b5b5b5-5b5b-45b5-95b5-b5b5b5b5b5b5', '9fae1d2c-de3a-5b66-66bb-334455667788', 'National parks loop revealed unexpected viewpoints.', '2025-11-18 09:00:00', '2025-11-18 09:00:00', 'Park Circuit', 'private'),
+      ('b5b5b5b5-5b5b-45b5-95b5-b5b5b5b5b5b6', '9fae1d2c-de3a-5b66-66bb-334455667788', 'Sunset at the overlook closed the day perfectly.', '2025-11-18 17:45:00', '2025-11-18 17:45:00', 'Overlook Sunset', 'public'),
+      ('c6c6c6c6-6c6c-46c6-96c6-c6c6c6c6c6c6', 'afbe2d3c-ef4a-6c77-77cc-445566778899', 'Hidden diners and roadside attractions continued to surprise.', '2025-11-17 14:30:00', '2025-11-17 14:30:00', 'More Roadside Finds', 'public'),
+      ('c6c6c6c6-6c6c-46c6-96c6-c6c6c6c6c6c7', 'afbe2d3c-ef4a-6c77-77cc-445566778899', 'Stopped for a mural that told the town history.', '2025-11-17 15:10:00', '2025-11-17 15:10:00', 'Town Mural', 'private'),
+      ('d7d7d7d7-7d7d-47d7-97d7-d7d7d7d7d7d7', 'bfce3d4c-f05a-7d88-88dd-556677889900', 'Late-night city photography sessions produced great frames.', '2025-11-18 23:00:00', '2025-11-18 23:00:00', 'Night Frames', 'public'),
+      ('d7d7d7d7-7d7d-47d7-97d7-d7d7d7d7d7d8', 'bfce3d4c-f05a-7d88-88dd-556677889900', 'Experimented with long exposures and neon reflections.', '2025-11-19 00:30:00', '2025-11-19 00:30:00', 'Long Exposure', 'private')
+ON CONFLICT (id) DO NOTHING;
+
+
+INSERT INTO comment (
+    id, post_id, profile_id, comment, date_created
+) VALUES
+      ('f9c2d51c-5f8b-4b1e-9f7c-3f2b1a6f9e2d', 'a1111111-1111-4111-8111-111111111111', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', 'Love this! Shiprock is magical.', '2025-11-07 08:00:00'),
+      ('a3bb189e-8bf9-3888-9912-ace4e6543002', 'a1111111-1111-4111-8112-111111111112', '018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', 'Prague is on my bucket list!', '2025-11-07 08:15:00'),
+      ('c0010001-0000-4000-8000-000000000003', 'b2222222-2222-4222-8222-222222222221', '018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', 'This trail sounds amazing!', '2025-11-13 09:00:00'),
+      ('c0010002-0000-4000-8000-000000000004', 'b2222222-2222-4222-8222-222222222222', '018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', 'I’ve always wanted to visit Shiprock.', '2025-11-13 09:15:00'),
+      ('c0010003-0000-4000-8000-000000000005', 'c3333333-3333-4333-8333-333333333333', '018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06', 'That museum is a hidden gem.', '2025-11-14 10:00:00'),
+      ('c0010004-0000-4000-8000-000000000006', 'c3333333-3333-4333-8333-333333333334', '018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07', 'Love the cultural angle.', '2025-11-14 10:20:00'),
+      ('c0010005-0000-4000-8000-000000000007', 'd4444444-4444-4444-8444-444444444444', '018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08', 'Charles Bridge is so photogenic.', '2025-11-15 07:00:00'),
+      ('c0010006-0000-4000-8000-000000000008', 'd4444444-4444-4444-8444-444444444445', '018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09', 'Sunrise shots are the best.', '2025-11-15 07:10:00'),
+      ('c0010007-0000-4000-8000-000000000009', 'e5555555-5555-4555-8555-555555555555', '018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a', 'Prague Castle is breathtaking.', '2025-11-15 14:30:00'),
+      ('c0010008-0000-4000-8000-00000000000a', 'e5555555-5555-4555-8555-555555555556', '018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', 'Did you visit the gardens too?', '2025-11-15 14:45:00'),
+      ('c0010009-0000-4000-8000-00000000000b', 'f6666666-6666-4666-8666-666666666666', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', 'Horseshoe Bend is unreal.', '2025-11-16 18:45:00'),
+      ('c001000a-0000-4000-8000-00000000000c', 'f6666666-6666-4666-8666-666666666667', '018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', 'Perfect golden hour spot.', '2025-11-16 18:50:00'),
+      ('c001000b-0000-4000-8000-00000000000d', 'a7777777-7777-4777-8777-777777777777', '018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', 'Canyon shadows are so dramatic.', '2025-11-16 17:15:00'),
+      ('c001000c-0000-4000-8000-00000000000e', 'a7777777-7777-4777-8777-777777777778', '018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', 'Love the lighting in this shot.', '2025-11-16 17:25:00'),
+      ('c001000d-0000-4000-8000-00000000000f', 'b8888888-8888-4888-8888-888888888888', '018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06', 'White Sands is perfect for stargazing.', '2025-11-17 21:15:00'),
+      ('c0010010-0000-4000-8000-000000000010', 'b8888888-8888-4888-8888-888888888889', '018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07', 'What telescope did you use?', '2025-11-17 21:30:00'),
+      ('c0010011-0000-4000-8000-000000000011', 'c9999999-9999-4999-8999-999999999999', '018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08', 'Meteor showers are magical.', '2025-11-17 22:30:00'),
+      ('c0010012-0000-4000-8000-000000000012', 'c9999999-9999-4999-8999-999999999998', '018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09', 'Hope you made a wish!', '2025-11-17 22:45:00'),
+      ('c0010013-0000-4000-8000-000000000013', 'daaaaaaa-aaaa-4aaa-9aaa-aaaaaaaaaaaa', '018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a', 'Delphi is so rich in history.', '2025-11-18 10:15:00'),
+      ('c0010014-0000-4000-8000-000000000014', 'daaaaaaa-aaaa-4aaa-9aaa-aaaaaaaaaaab', '018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', 'Panoramic shots must be stunning.', '2025-11-18 10:30:00'),
+      ('c0010015-0000-4000-8000-000000000015', 'ebbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbb', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', 'Athena’s story is fascinating.', '2025-11-18 13:45:00'),
+      ('c0010016-0000-4000-8000-000000000016', 'ebbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbc', '018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', 'Did they have interactive exhibits?', '2025-11-18 14:00:00'),
+      ('c0010017-0000-4000-8000-000000000017', 'fccccccc-cccc-4ccc-9ccc-cccccccccccc', '018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', 'Huntington Beach is a classic.', '2025-11-19 11:15:00'),
+      ('c0010018-0000-4000-8000-000000000018', 'fccccccc-cccc-4ccc-9ccc-cccccccccccd', '018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', 'So what is the deal with balloons?', '2025-11-22 11:34:41'),
+      ('c0010019-0000-4000-8000-000000000019', 'adededed-dede-4ded-9ded-dededededede', '018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06', 'Craft stories are so inspiring.', '2025-11-24 11:15:00'),
+      ('c0010020-0000-4000-8000-000000000020', 'adededed-dede-4ded-9ded-dedededededf', '018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07', 'Did you get any footage?', '2025-11-24 11:30:00'),
+      ('c0010021-0000-4000-8000-000000000021', 'befecefe-fefe-4efe-9efe-fefefefefefe', '018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08', 'Jewish Quarter has deep history.', '2025-11-24 13:15:00'),
+      ('c0010022-0000-4000-8000-000000000022', 'befecefe-fefe-4efe-9efe-fefefefefeff', '018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09', 'Did you visit the synagogues?', '2025-11-24 13:30:00'),
+      ('c0010023-0000-4000-8000-000000000023', 'c0c0c0c0-0c0c-40c0-90c0-c0c0c0c0c0c0', '018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a', 'Time-lapse sunsets are mesmerizing.', '2025-11-24 17:45:00'),
+      ('c0010024-0000-4000-8000-000000000024', 'c0c0c0c0-0c0c-40c0-90c0-c0c0c0c0c0c1', '018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', 'Did you use a tripod?', '2025-11-24 18:00:00'),
+      ('c0010025-0000-4000-8000-000000000025', 'd1d1d1d1-1d1d-41d1-91d1-d1d1d1d1d1d1', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', 'Long exposure shots are tricky.', '2025-11-24 22:00:00'),
+      ('c0010026-0000-4000-8000-000000000026', 'd1d1d1d1-1d1d-41d1-91d1-d1d1d1d1d1d2', '018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', 'Which constellations did you capture?', '2025-11-24 22:15:00'),
+      ('c0010027-0000-4000-8000-000000000027', 'e2e2e2e2-2e2e-42e2-92e2-e2e2e2e2e2e2', '018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', 'Ruins with a historian? That’s gold.', '2025-11-25 09:15:00'),
+      ('c0010028-0000-4000-8000-000000000028', 'e2e2e2e2-2e2e-42e2-92e2-e2e2e2e2e2e3', '018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', 'Did they share any myths?', '2025-11-25 09:30:00'),
+      ('c0010029-0000-4000-8000-000000000029', 'f3f3f3f3-3f3f-43f3-93f3-f3f3f3f3f3f3', '018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06', 'Santa Cruz surf is legendary.', '2025-11-25 07:45:00'),
+      ('c0010030-0000-4000-8000-000000000030', 'f3f3f3f3-3f3f-43f3-93f3-f3f3f3f3f3f4', '018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07', 'Did you catch any dolphins?', '2025-11-25 08:00:00'),
+      ('c0010031-0000-4000-8000-000000000031', 'a4a4a4a4-4a4a-44a4-94a4-a4a4a4a4a4a4', '018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08', 'Tokyo Tower sketch sounds peaceful.', '2025-11-25 16:15:00'),
+      ('c0010032-0000-4000-8000-000000000032', 'a4a4a4a4-4a4a-44a4-94a4-a4a4a4a4a4a5', '018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09', 'Did you use ink or pencil?', '2025-11-25 16:30:00'),
+      ('c0010033-0000-4000-8000-000000000033', 'b5b5b5b5-5b5b-45b5-95b5-b5b5b5b5b5b5', '018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a', 'Black sand beaches are surreal.', '2025-11-25 10:15:00'),
+      ('c0010034-0000-4000-8000-000000000034', 'b5b5b5b5-5b5b-45b5-95b5-b5b5b5b5b5b6', '018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01', 'Did you fly low over the waves?', '2025-11-25 10:30:00'),
+      ('c0010035-0000-4000-8000-000000000035', 'c6c6c6c6-6c6c-46c6-96c6-c6c6c6c6c6c6', '018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02', 'Camping under stars is the best.', '2025-11-25 21:15:00'),
+      ('c0010036-0000-4000-8000-000000000036', 'c6c6c6c6-6c6c-46c6-96c6-c6c6c6c6c6c7', '018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03', 'Did you see any shooting stars?', '2025-11-25 21:30:00'),
+      ('c0010037-0000-4000-8000-000000000037', 'd7d7d7d7-7d7d-47d7-97d7-d7d7d7d7d7d7', '018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04', 'Teton moose sightings are rare!', '2025-11-26 08:15:00'),
+      ('c0010038-0000-4000-8000-000000000038', 'd7d7d7d7-7d7d-47d7-97d7-d7d7d7d7d7d8', '018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05', 'Did you get close-up shots?', '2025-11-26 08:30:00')
+ON CONFLICT (id) DO NOTHING;
+
+
+INSERT INTO media (id, post_id, url) VALUES
+                                         ('11111111-1111-4111-8111-111111111111', 'a1111111-1111-4111-8111-111111111111', 'https://via.placeholder.com/600x400?text=Shiprock'),
+                                         ('22222222-2222-4222-8222-222222222222', 'a1111111-1111-4111-8112-111111111112', 'https://via.placeholder.com/600x400?text=Roadside+Coffee'),
+                                         ('33333333-3333-4333-8333-333333333333', 'b2222222-2222-4222-8222-222222222221', 'https://via.placeholder.com/600x400?text=Euro+Arrival'),
+                                         ('44444444-4444-4444-8444-444444444444', 'b2222222-2222-4222-8222-222222222222', 'https://via.placeholder.com/600x400?text=River+Reflections'),
+                                         ('55555555-5555-4555-8555-555555555555', 'c3333333-3333-4333-8333-333333333333', 'https://via.placeholder.com/600x400?text=Trail+Triumph'),
+                                         ('66666666-6666-4666-8666-666666666666', 'c3333333-3333-4333-8333-333333333334', 'https://via.placeholder.com/600x400?text=Local+Stories'),
+                                         ('77777777-7777-4777-8777-777777777777', 'd4444444-4444-4444-8444-444444444444', 'https://via.placeholder.com/600x400?text=Cultural+Stops'),
+                                         ('88888888-8888-4888-8888-888888888888', 'd4444444-4444-4444-8444-444444444445', 'https://via.placeholder.com/600x400?text=Market+Days'),
+                                         ('99999999-9999-4999-8999-999999999999', 'e5555555-5555-4555-8555-555555555555', 'https://via.placeholder.com/600x400?text=Prague+Morning'),
+                                         ('aaaaaaaa-aaaa-4aaa-9aaa-aaaaaaaaaaaa', 'e5555555-5555-4555-8555-555555555556', 'https://via.placeholder.com/600x400?text=Cafe+Find'),
+                                         ('bbbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbb', 'f6666666-6666-4666-8666-666666666666', 'https://via.placeholder.com/600x400?text=Castle+Walk'),
+                                         ('cccccccc-cccc-4ccc-9ccc-cccccccccccc', 'f6666666-6666-4666-8666-666666666667', 'https://via.placeholder.com/600x400?text=Sunset+Stroll'),
+                                         ('dddddddd-dddd-4ddd-9ddd-dddddddddddd', 'a7777777-7777-4777-8777-777777777777', 'https://via.placeholder.com/600x400?text=Bend+Glow'),
+                                         ('eeeeeeee-eeee-4eee-9eee-eeeeeeeeeeee', 'a7777777-7777-4777-8777-777777777778', 'https://via.placeholder.com/600x400?text=Overlook+Sketch'),
+                                         ('ffffffff-ffff-4fff-9fff-ffffffffffff', 'b8888888-8888-4888-8888-888888888888', 'https://via.placeholder.com/600x400?text=Canyon+Shadows'),
+                                         ('01234567-89ab-4cde-9f01-23456789abcd', 'b8888888-8888-4888-8888-888888888889', 'https://via.placeholder.com/600x400?text=Hidden+View'),
+                                         ('89abcdef-0123-4abc-9def-0123456789ab', 'c9999999-9999-4999-8999-999999999999', 'https://via.placeholder.com/600x400?text=White+Sands+Stars'),
+                                         ('fedcba98-7654-4fed-9cba-87654321fedc', 'c9999999-9999-4999-8999-999999999998', 'https://via.placeholder.com/600x400?text=Constellation+Watch'),
+                                         ('13579bdf-2468-4ace-9bdf-13579bdf2468', 'daaaaaaa-aaaa-4aaa-9aaa-aaaaaaaaaaaa', 'https://via.placeholder.com/600x400?text=Meteor+Moment'),
+                                         ('2468ace0-1357-4bdf-9ace-2468ace01357', 'daaaaaaa-aaaa-4aaa-9aaa-aaaaaaaaaaab', 'https://via.placeholder.com/600x400?text=Hot+Cocoa+Night'),
+                                         ('0f0f0f0f-0f0f-4f0f-9f0f-0f0f0f0f0f0f', 'ebbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbb', 'https://via.placeholder.com/600x400?text=Surf+Session'),
+                                         ('1e1e1e1e-1e1e-4e1e-9e1e-1e1e1e1e1e1e', 'ebbbbbbb-bbbb-4bbb-9bbb-bbbbbbbbbbbc', 'https://via.placeholder.com/600x400?text=Beach+Jam'),
+                                         ('2d2d2d2d-2d2d-4d2d-9d2d-2d2d2d2d2d2d', 'fccccccc-cccc-4ccc-9ccc-cccccccccccc', 'https://via.placeholder.com/600x400?text=Shibuya+Sketch'),
+                                         ('3c3c3c3c-3c3c-4c3c-9c3c-3c3c3c3c3c3c', 'fccccccc-cccc-4ccc-9ccc-cccccccccccd', 'https://via.placeholder.com/600x400?text=Neon+Nights'),
+                                         ('4b4b4b4b-4b4b-4b4b-9b4b-4b4b4b4b4b4b', 'adededed-dede-4ded-9ded-dededededede', 'https://via.placeholder.com/600x400?text=Glacier+Flight'),
+                                         ('5a5a5a5a-5a5a-4a5a-9a5a-5a5a5a5a5a5a', 'adededed-dede-4ded-9ded-dedededededf', 'https://via.placeholder.com/600x400?text=Waterfall+Roar'),
+                                         ('6c6c6c6c-6c6c-4c6c-9c6c-6c6c6c6c6c6c', 'befecefe-fefe-4efe-9efe-fefefefefefe', 'https://via.placeholder.com/600x400?text=Volcano+Rim'),
+                                         ('7d7d7d7d-7d7d-4d7d-9d7d-7d7d7d7d7d7d', 'befecefe-fefe-4efe-9efe-fefefefefeff', 'https://via.placeholder.com/600x400?text=Geothermal+Soak'),
+                                         ('8e8e8e8e-8e8e-4e8e-9e8e-8e8e8e8e8e8e', 'c0c0c0c0-0c0c-40c0-90c0-c0c0c0c0c0c0', 'https://via.placeholder.com/600x400?text=Ridge+Summit'),
+                                         ('9f9f9f9f-9f9f-4f9f-9f9f-9f9f9f9f9f9f', 'c0c0c0c0-0c0c-40c0-90c0-c0c0c0c0c0c1', 'https://via.placeholder.com/600x400?text=Morning+Climb'),
+                                         ('abcdefab-cdef-4abc-9def-abcdefabcdef', 'd1d1d1d1-1d1d-41d1-91d1-d1d1d1d1d1d1', 'https://via.placeholder.com/600x400?text=Snowshoe+Silence'),
+                                         ('bcdefabc-defa-4bcd-9efa-bcdefabcdefa', 'd1d1d1d1-1d1d-41d1-91d1-d1d1d1d1d1d2', 'https://via.placeholder.com/600x400?text=Track+Follow'),
+                                         ('cdefabcd-efab-4cde-9fab-cdefabcdefab', 'e2e2e2e2-2e2e-42e2-92e2-e2e2e2e2e2e2', 'https://via.placeholder.com/600x400?text=Monument+Sunrise'),
+                                         ('defabcde-fabc-4def-9abc-defabcdefabc', 'e2e2e2e2-2e2e-42e2-92e2-e2e2e2e2e2e3', 'https://via.placeholder.com/600x400?text=Horizon+Sketch'),
+                                         ('efabcdef-0abc-4efa-9bcd-efabcdefabcd', 'f3f3f3f3-3f3f-43f3-93f3-f3f3f3f3f3f3', 'https://via.placeholder.com/600x400?text=Yellowstone+Camp')
+ON CONFLICT (id) DO NOTHING;
+
+
+INSERT INTO follow (followed_profile_id, follower_profile_id) VALUES
+                                                                  ('018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02','018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01'),
+                                                                  ('018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03','018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01'),
+                                                                  ('018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04','018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02'),
+                                                                  ('018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05','018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02'),
+                                                                  ('018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06','018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03'),
+                                                                  ('018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07','018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03'),
+                                                                  ('018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08','018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04'),
+                                                                  ('018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09','018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04'),
+                                                                  ('018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a','018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05'),
+                                                                  ('018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01','018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06'),
+                                                                  ('018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02','018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06'),
+                                                                  ('018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03','018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07'),
+                                                                  ('018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04','018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07'),
+                                                                  ('018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05','018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08'),
+                                                                  ('018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06','018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08'),
+                                                                  ('018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07','018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09'),
+                                                                  ('018d3f9e-8c5b-7cc7-bc3a-9a6b9b8f1a08','018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09'),
+                                                                  ('018d3f9e-8c5b-7cc8-bc3a-9a6b9b8f1a09','018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a'),
+                                                                  ('018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01','018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a'),
+                                                                  ('018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02','018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a'),
+                                                                  ('018d3f9e-8c5b-7cc3-bc3a-9a6b9b8f1a04','018d3f9e-8c5b-7cc0-bc3a-9a6b9b8f1a01'),
+                                                                  ('018d3f9e-8c5b-7cc4-bc3a-9a6b9b8f1a05','018d3f9e-8c5b-7cc2-bc3a-9a6b9b8f1a03'),
+                                                                  ('018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06','018d3f9e-8c5b-7cc1-bc3a-9a6b9b8f1a02'),
+                                                                  ('018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07','018d3f9e-8c5b-7cc5-bc3a-9a6b9b8f1a06'),
+                                                                  ('018d3f9e-8c5b-7cc9-bc3a-9a6b9b8f1a0a','018d3f9e-8c5b-7cc6-bc3a-9a6b9b8f1a07')
+ON CONFLICT DO NOTHING;
+
+
+
+
+
