@@ -7,6 +7,7 @@ import type { Route } from "./+types/sign-up";
 import type {SignUp} from "~/utils/models/profile.model";
 import type {FormActionResponse} from "~/utils/interfaces/FormActionResponse";
 import {useState} from "react";
+import {StatusMessage} from "~/components/StatusMessage";
 /**
  * Steps so far
  * 1. created a schema and model for profile
@@ -131,6 +132,7 @@ export default function SignUp(){
                                                             className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login
                                 here</a>
                             </p>
+                            <StatusMessage actionData={actionData} />
                         </Form>
                     </div>
                 </div>
