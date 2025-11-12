@@ -1,4 +1,53 @@
+import {Form, Route} from "react-router";
+import {SignUpSchema} from "../../../utils/models/profile.model";
+import {zodResolver} from '@hookform/resolvers/zod'
+import {getValidatedFormData, useRemixForm} from "remix-hook-form";
+import {postSignUp} from '~/utils/models/profile.model'
+/**
+ * Steps so far
+ * 1. created a schema and model for profile
+ * 2. we modified the schema to work with our form data that we will be sending to the backend
+ * 3. Created a type to use with React and the form on both the action and component
+ * 4. registered our schema to work with remix-hook-form
+ * 5. initialized the remix-form-hook in our component
+ * 6. registered the form with remix-form-hook
+ * 7. created an action and preform a fetch request to the backend
+ * 8. Displaying the result in the browser.
+ *
+ *
+ */
+
+
+
+export function meta({}: Route.MetaArgs) {
+    return[
+        {title: 'Sign Up - Wanderlist'},
+        {name: 'Wanderlist App', content: 'Create your personal bucket list' }
+    ]
+}
+// 4
+const resolver = zodResolver(SignUpSchema)
+
+//7
+export async function action({request} : Route.ActionArgs) {
+    const {errors, data, receivedValues: defaultValues} = await getValidatedFormData<SignUp>(request, resolver)
+
+    if(errors) {
+        return {errors, defaultValues}
+    }
+
+    const response = await postSignUp(data)
+
+    return response
+
+}
+
+
 export default function SignUp(){
+
+    //6
+    const {handleSubmit, formState: {errors}, register} = useRemixForm<SignUp>({mode: 'onSubmit', resolver})
+
     return (
 <>
 
@@ -13,12 +62,16 @@ export default function SignUp(){
                         <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
                             Create an account
                         </h1>
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        <Form onSubmit={handleSubmit}
+                              noValidate={true}
+                              method={'POST'}
+                              className="space-y-4 md:space-y-6" action="#">
                             <div>
                                 <label htmlFor="name"
                                        className="block mb-2 text-sm font-medium text-gray-900 ">Your
                                     Name</label>
-                                <input type="name" name="name" id="name"
+                                <input  {...register('email')}
+                                        type="name" name="name" id="name"
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                        placeholder="name@company.com" required/>
                             </div>
@@ -33,7 +86,8 @@ export default function SignUp(){
                             <div>
                                 <label htmlFor="password"
                                        className="block mb-2 text-sm font-medium text-gray-900 ">Password</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••"
+                                <input  {...register('password')}
+                                        type="password" name="password" id="password" placeholder="••••••••"
                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                        required/>
                             </div>
@@ -68,7 +122,7 @@ export default function SignUp(){
                                                             className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login
                                 here</a>
                             </p>
-                        </form>
+                        </Form>
                     </div>
                 </div>
             </div>

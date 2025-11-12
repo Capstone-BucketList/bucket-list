@@ -1,0 +1,59 @@
+import z from "zod/v4"
+import type {Status} from "~/utils/interfaces/Status";
+import {v7 as uuidv7} from 'uuid';
+
+
+//1
+/**
+ * Schema for validating profile objects
+ * @shape id: string the primary key for the profile
+ * @shape email: string the email for the profile
+ * @shape userName: string the name for the profile
+ */
+
+export const ProfileSchema = z.object({
+    id: z.uuidv7('please provide a valid uuid for id'),
+
+    email: z.email('please provide a valid email')
+        .max(128, 'please provide a valid email (max 128 characters)' ),
+
+    userName: z.string('please provide a valid user name')
+        .min(1, 'please provide a valid user name')
+        .max(32, 'please provide a valid user name(max 32 characters)')
+        .trim(),
+
+})
+
+export type Profile = z.infer<typeof ProfileSchema>
+
+//2
+export const SignUpSchema = ProfileSchema
+    .omit({ id: true, passwordHash: true, activationToken: true, profilePicture: true, bio: true, dateCreated: true, visibility: true})
+    .extend({
+        passwordConfirm: z.string('password confirmation is required')
+            .min(8, 'Password confirm cannot be less than 8 characters')
+            .max(32, 'profile password '),
+        password: z.string('password is required')
+            .min(8,  'profile password cannot be less than 8 characters' )
+            .max(32,  'profile password cannot be over 32 characters' )
+    })
+    .refine(
+        data => data.password === data.passwordConfirm, {
+            message: 'passwords do not match'
+        })
+
+export type SignUp = z.infer<typeof SignUpSchema>
+
+export async function postSignUp(data: SignUp): Promise<{result: Status, headers: Headers}> {
+    const response = await fetch(`${process.env.REST_API_URL}/sign-up`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+
+    const result = await response.json()
+
+    return {result, headers: response.headers}
+}
