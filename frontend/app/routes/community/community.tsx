@@ -8,7 +8,7 @@ export default function Community () {
             <section className=" border-2 border-b-gray-500 bg-turquoise rounded-xl my-16 mx-2">
                 <div
                     className="flex flex-col items-center text-center md:flex-row md:items-start md:text-left md:max-w-5xl md:mx-auto md:gap-8 rounded-xl">
-                    <img className="mt-4 mb-4 border-2 w-[450px] rounded-2xl" src='img.png' alt="placeholder image"/>
+                    <img className="mt-4 mb-4 border-2 w-[450px] rounded-2xl" src='../../../public/scrapbook/img.png' alt="placeholder image"/>
                     <div className="flex flex-col bg-pale-tan rounded-lg mt-4 mb-4">
                         <p className="md:container md:mx-auto mt-4 mb-2 p-4">Someday, I'm going to Hawaii, or I'm going to ride in a Hot Air Balloon.  With your community, you can collectively go on that Hawaii trip, or as a group take a Hot Air Balloon ride. <strong>It's much more possible if you write down your goals and make a plan to accomplish them</strong>. Communities can enjoy these accomplishments and even make changes for their own community.</p>
                         <p className="md:container md:mx-auto p-4"> For each of us, we find our community everywhere. Within social networks, our circle of friends, and with our family are such places. <strong>Wander List app</strong> can help you develop/connect with your community and we can start moving forward with our goals.</p>
@@ -62,18 +62,18 @@ export default function Community () {
             <section
                 className="w-full flex flex-col md:flex-row justify-between items-start gap-6 mt-4 bg-turquoise p-4">
                 <div className='flex flex-col items-center gap-4'>
-                    <img className="w-[250px] h-[250px] border-2 m-2" src='img_1.png' alt='Categories in red button'/>
+                    <img className="w-[250px] h-[250px] border-2 m-2" src='../../../public/scrapbook/img_1.png' alt='Categories in red button'/>
                     <p className='text-xl'>Categories</p>
                     <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Go to Categories</Button>
                 </div>
                 <div className='flex flex-col items-center gap-4'>
-                    <img className="w-[250px] h-[250px] border-2 m-2" src='img_2.png'
+                    <img className="w-[250px] h-[250px] border-2 m-2" src='../../../public/scrapbook/img_2.png'
                          alt='social network logos collection'/>
                     <p className='text-xl whitespace-nowrap'>Social Network</p>
                     <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Connect your Bucket List</Button>
                 </div>
                 <div className='flex flex-col items-center gap-4'>
-                    <img className="w-[250px] h-[250px] border-2 m-2" src='img_3.png'
+                    <img className="w-[250px] h-[250px] border-2 m-2" src='../../../public/scrapbook/img_3.png'
                          alt='people figures surrounding goal'/>
                     <p className='text-xl whitespace-nowrap'>Group Goal(s)</p>
                     <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Group Goal Experiences</Button>
