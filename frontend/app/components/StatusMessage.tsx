@@ -1,17 +1,13 @@
-
 import type {FormActionResponse} from "~/utils/interfaces/FormActionResponse";
-
 
 /**
  * StatusMessage Component
  *
  * Displays a styled status message based on action data from form submissions.
  * Shows green styling for success messages and red styling for error messages.
- *
  * @param actionData - Object containing success status and optional message
  * @param actionData.success - Boolean indicating if the action was successful
  * @param actionData.status.message - Optional message to display
- *
  * @returns A styled message box or empty fragment if no valid action data
  */
 

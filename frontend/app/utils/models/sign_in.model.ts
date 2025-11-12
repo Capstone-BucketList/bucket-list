@@ -36,5 +36,6 @@ export async function postSignIn(data: SignIn):Promise<{result:Status, headers: 
     }
     const headers = response.headers
     const result = await response.json()
+    console.log("RESULT", result)
     return {result, headers}
 }
