@@ -1,6 +1,6 @@
 import z from "zod/v4"
 import type {Status} from "~/utils/interfaces/Status";
-import {v7 as uuidv7} from 'uuid';
+import {v7 as uuid} from 'uuid'
 
 
 //1
@@ -45,6 +45,8 @@ export const SignUpSchema = ProfileSchema
 export type SignUp = z.infer<typeof SignUpSchema>
 
 export async function postSignUp(data: SignUp): Promise<{result: Status, headers: Headers}> {
+
+    const modifiedSignUp = {id: uuid(), ...data}
     const response = await fetch(`${process.env.REST_API_URL}/sign-up`, {
         method: 'POST',
         headers: {
