@@ -9,6 +9,7 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@react-router/node": "^7.9.2",
     "@react-router/serve": "^7.9.2",
     "flowbite-react": "^0.12.9",
