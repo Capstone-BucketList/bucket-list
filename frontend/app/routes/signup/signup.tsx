@@ -1,5 +1,5 @@
 import {Form, Route} from "react-router";
-import {SignUpSchema} from "../../../utils/models/profile.model";
+import {SignUpSchema} from "../../utils/models/profile.model";
 import {zodResolver} from '@hookform/resolvers/zod'
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
 import {postSignUp} from '~/utils/models/profile.model'
