@@ -3,7 +3,7 @@ import {SignUpSchema} from "../../utils/models/profile.model";
 import {zodResolver} from '@hookform/resolvers/zod'
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
 import {postSignUp} from '~/utils/models/profile.model';
-import type { Route } from "./+types/sign-up";
+import type { Route } from "./+types/signup";
 import type {SignUp} from "~/utils/models/profile.model";
 import type {FormActionResponse} from "~/utils/interfaces/FormActionResponse";
 import {useState} from "react";

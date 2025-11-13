@@ -26,7 +26,7 @@ export async function signUpProfileController (request:Request, response: Respon
             zodErrorResponse(response, validationResult.error)
             return
         }
-
+    console.log(validationResult.data)
         //deconstruct the name, email and password from the request body
         const {userName, email, password, id} = validationResult.data
 

@@ -13,7 +13,7 @@ import {wanderlistRoute} from "./apis/wanderlist/wanderlist.route.ts";
 import {mediaRoute} from "./apis/media/media.route.ts";
 import {postRoute} from "./apis/post/post.route.ts";
 import {commentRoute} from "./apis/comment/comment.route.ts";
-import helmet from "helmet";
+//import helmet from "helmet";
 
 
 export class App {
@@ -25,7 +25,7 @@ export class App {
 	) {
 		this.redisStore = new RedisStore({client: redisClient})
 		this.app = express()
-        this.app.use(helmet())
+       // this.app.use(helmet())
 		this.settings()
 		this.middlewares()
 		this.routes()
