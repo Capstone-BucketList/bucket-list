@@ -24,7 +24,7 @@ const {getSession, commitSession, destroySession} = createCookieSessionStorage< 
             maxAge: 10800,
             path: "/",
             sameSite: "strict",
-            secrets: [process.env.SESSION_SECRET as string],
+            secrets: [process.env.SESSION_SECRET_1 as string],
             secure: true,
         },
     });

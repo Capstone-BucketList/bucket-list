@@ -59,10 +59,10 @@ export async function action({request}: Route.ActionArgs):Promise<FormActionResp
 
         // extract the authorization token from the headers
         const authorization = headers.get('authorization')
-console.log("authorization", authorization)
+
         //extract the express cookie from response headers
         const  expressSessionCookie = headers.get('Set-Cookie')
-console.log("express cookie", expressSessionCookie)
+
          // Check if authentication was successful
         if (result.status !== 200 || !authorization ) {
             return {success: false, status: result}
@@ -137,7 +137,7 @@ export default function  Login (){
                     )}
                 </button>
                 <div>
-                    <FieldError error={errors} field={'password'} />
+                    {/*<FieldError error={errors} field={'password'} />*/}
                 </div>
             </div>
             {/*<div className="flex items-start mb-5">*/}
