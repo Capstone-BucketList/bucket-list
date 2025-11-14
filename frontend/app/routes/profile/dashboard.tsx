@@ -1,8 +1,59 @@
 import {ListItems} from "~/routes/profile/list-items";
 import {ProgressBars} from "~/routes/profile/progress-bars";
 import {Timeline} from "~/routes/profile/timeline";
+import {getSession} from "~/utils/session.server";
+import {Route} from "../../../.react-router/types/app/routes/profile/+types/dashboard";
+import {getWanderListByProfileId, WanderListSchema} from "~/utils/models/wanderlist.model";
+import {redirect} from "react-router";
 
-export default function Dashboard() {
+export async function loader({request}: Route.LoaderArgs) {
+    //Get existing session from cookie
+    const session = await getSession(request.headers.get('Cookie'))
+
+    const profile = session?.get('profile') ?? null ;
+
+    if(! profile) {
+        return {profile:null, wanderList: []};
+    }
+    //  get wonderlist items by profileId
+  //  const wanderList  =await getWanderListByProfileId("019a3191-a7f4-735d-af0a-1042ea19a399") //profile.id)
+
+
+    const requestHeaders = new Headers()
+    requestHeaders.append('Content-Type', 'application/json')
+      requestHeaders.append('Authorization', session.data?.authorization || '')
+      const cookie = request.headers.get('Cookie')
+      if (cookie) {
+          requestHeaders.append('Cookie', cookie)
+      }
+
+    const response = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/019a3191-a7f4-735d-af0a-1042ea19a399`,{
+        method: 'GET',
+        headers: requestHeaders,
+    }) .then(res => {
+        if (!res.ok) {
+            throw new Error('failed to fetch unread messages')
+        }
+        return res.json()
+    })
+
+    const wanderList = WanderListSchema.array().parse(response.data)
+    console.log("wanderList",wanderList)
+
+
+     return {profile, wanderList}
+
+}
+
+export default function Dashboard({loaderData} :Route.ComponentProps) {
+
+    const {profile, wanderList} = loaderData
+
+    if(!profile){
+        redirect('/')
+    }
+
+    const {userName, email, bio, profilePicture} = profile
     return (
         < >
             {/*USER DETAILS*/}
@@ -14,12 +65,12 @@ export default function Dashboard() {
 
             {/*Bio*/}
             <div className="flex justify-center-safe items-center mx-auto my-22 max-w-2/3 gap-10">
-                <img className="rounded-full w-50 h-50 float-right" src="https://placehold.co/300x300"
+                <img className="rounded-full w-50 h-50 float-right" src={profilePicture}
                      alt="image description"/>
                 <div>
-                    <h2 className="text-lg font-extrabold leading-none tracking-tight text-gray-900 font-baga">Violet Evergarden</h2>
-                    <h3 className="italic font-baga">Username</h3>
-                    <p className="text-lg font-normal font-eaves text-gray-500 lg:text-xl">Viatorem per terras incognitas ambulantem, montes altissimi et valles profundae expectant. Itinera longa et ardua trans oceanos vastos ducunt, ubi stellae nocturnas vias illuminant. In urbibus antiquis, mercatores exotici merces mirabiles vendunt, dum templa vetusta historias saeculorum narrant. Pontes lapidei super flumina crystallina extendunt, et viae serpentinae ad horizontes infinitos perveniunt. Adventurae novae in quaque porta expectant, promittentes memorias quae in perpetuum in corde manebunt.</p>
+                    <h2 className="text-lg font-extrabold leading-none tracking-tight text-gray-900 font-baga">{userName}</h2>
+                    <h3 className="italic font-baga">{email}</h3>
+                    <p className="text-lg font-normal font-eaves text-gray-500 lg:text-xl">{bio}</p>
 
                 </div>
 
@@ -48,19 +99,15 @@ export default function Dashboard() {
                     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6 ">
                         <div className="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
                             <h2 className="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold font-baga text-gray-900">My Wanderlist</h2>
-                            <p className="tracking-wide font-eaves text-black lg:mb-16 sm:text-xl">Explore the
-                                whole collection of open-source web components and elements built with the utility
-                                classes from Tailwind</p>
+                            <div className="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2">
+                            {wanderList.map((wander) => (
+
+                                    <ListItems  wanderList={wander}/>
+
+                            ))}
+                            </div>
                         </div>
-                        <div className="grid gap-8 mb-6 lg:mb-16 md:grid-cols-2">
-                            <ListItems/>
-                            <ListItems/>
-                            <ListItems/>
-                            <ListItems/>
-                            <ListItems/>
-                            <ListItems/>
-                            <ListItems/>
-                        </div>
+
                     </div>
                 </section>
 

@@ -21,6 +21,15 @@ export const ProfileSchema = z.object({
         .min(1, 'please provide a valid user name')
         .max(32, 'please provide a valid user name(max 32 characters)')
         .trim(),
+    bio: z.string('please provide a valid profile about')
+        .max(160, 'please provide a valid about (max 160 characters)' )
+        .trim()
+        .nullable(),
+
+    profilePicture: z.string('Please provide a valid image source')
+        .max(255, 'Please Provide a valid profile picture (max 255 characters)')
+        .nullable(),
+
 
 })
 

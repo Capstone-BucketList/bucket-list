@@ -9,7 +9,7 @@ export async function loader({request}: Route.LoaderArgs) {
     const session = await getSession(request.headers.get('Cookie'))
 
     const profile = session?.get('profile') ?? null ;
-    console.log('main profile', profile)
+    //console.log('main profile', profile)
    // profileProps ={ profile}
 return {profile}
 
@@ -18,7 +18,7 @@ return {profile}
 export default function MainLayout({loaderData}:Route.ComponentProps) {
 
     const profile = loaderData?.profile
-    console.log('main layout profile', profile)
+   // console.log('main layout profile', profile)
 
     return (<>
         <Navigation profile={profile} />

@@ -67,13 +67,13 @@ export async function action({request}: Route.ActionArgs):Promise<FormActionResp
         if (result.status !== 200 || !authorization ) {
             return {success: false, status: result}
         }
-
+console.log(result)
         //Decode JWT token to extract user profile
         const parsedJwtToken = jwtDecode(authorization) as any
-
+console.log(parsedJwtToken)
         //Validate profile data from JWT
         const validationResult = ProfileSchema.safeParse(parsedJwtToken.auth)
-
+console.log(validationResult)
         //Handle invalid profile data
         if (!validationResult.success) {
             session.flash('error', 'profile is malformed')

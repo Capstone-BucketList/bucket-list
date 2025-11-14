@@ -1,21 +1,27 @@
+import type {WanderList} from "~/utils/models/wanderlist.model";
 
+type wanderListProps={
+    wanderList : WanderList
+}
 
-export function ListItems() {
+export function ListItems(props:wanderListProps) {
+
+    const {wanderList} = props;
+    console.log("listitem", wanderList);
     return (
         <>
             <div
-                className="items-center bg-gray-50 rounded-lg shadow sm:flex">
+                className="items-center bg-gray-50 rounded-lg shadow sm:flex" id={wanderList.id}>
                 <a href="#">
                     <img className="w-full rounded-lg sm:rounded-none sm:rounded-l-lg"
                          src="https://placehold.co/200x200" alt="" />
                 </a>
                 <div className="p-5">
                     <h3 className="text-xl tracking-tight text-gray-900 font-baga">
-                        <a href="#">Backpack across Europe</a>
+                        <a href="#">{wanderList.title}</a>
                     </h3>
                     {/*<span className="text-gray-500 dark:text-gray-400">CEO & Web Developer</span>*/}
-                    <p className="mt-3 mb-4 font-light text-gray-500 font-eaves">Bonnie drives
-                        the technical strategy of the flowbite platform and brand.</p>
+                    <p className="mt-3 mb-4 font-light text-gray-500 font-eaves"> {wanderList.description}</p>
                     <ul className="flex space-x-4 sm:mt-0">
                         <li>
                             <a href=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

@@ -4,7 +4,7 @@ import {zodResolver} from '@hookform/resolvers/zod'
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
 import {postSignUp} from '~/utils/models/profile.model';
 import type { Route } from "./+types/signup";
-import type {SignUp} from "~/utils/models/profile.model";
+import type {WanderList} from "~/utils/models/profile.model";
 import type {FormActionResponse} from "~/utils/interfaces/FormActionResponse";
 import {useState} from "react";
 import {StatusMessage} from "~/components/StatusMessage";
@@ -35,7 +35,7 @@ const resolver = zodResolver(SignUpSchema)
 
 //7
 export async function action({request} : Route.ActionArgs):Promise<FormActionResponse> {
-    const {errors, data, receivedValues: defaultValues} = await getValidatedFormData<SignUp>(request, resolver)
+    const {errors, data, receivedValues: defaultValues} = await getValidatedFormData<WanderList>(request, resolver)
 
     if (errors) {
         return { errors, defaultValues}
@@ -56,7 +56,7 @@ export async function action({request} : Route.ActionArgs):Promise<FormActionRes
 export default function SignUp(){
 
     //6
-    const {handleSubmit, formState: {errors}, register} = useRemixForm<SignUp>({mode: 'onSubmit', resolver})
+    const {handleSubmit, formState: {errors}, register} = useRemixForm<WanderList>({mode: 'onSubmit', resolver})
 console.log(errors)
     const actionData = useActionData<typeof action>();
     console.log(actionData)
