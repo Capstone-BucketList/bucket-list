@@ -1,6 +1,6 @@
 import {Button, Carousel} from "flowbite-react";
 import PhotoCard from "../../components/photo-card";
-import React, { useState, useState } from 'react';
+import React, { useState } from 'react';
 import {DivSlider} from "~/components/div_slider";
 
 
@@ -35,13 +35,6 @@ export type PhotoData = {
     imageSrc: string;
     altText?: string;
 };
-
-export function useModal(initial = false) {
-    const [isOpen, setIsOpen] = useState(initial);
-    const open = useCallback(() => setIsOpen(true), []);
-    const close = useCallback(() => setIsOpen(false), []);
-    return { isOpen, open, close };
-}
 
 export default function Scrapbook () {
     const [activeCard, setActiveCard] = useState<PhotoData | null>(null);
