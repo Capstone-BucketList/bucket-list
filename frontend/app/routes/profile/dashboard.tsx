@@ -2,7 +2,7 @@ import {ListItems} from "~/routes/profile/list-items";
 import {ProgressBars} from "~/routes/profile/progress-bars";
 import {Timeline} from "~/routes/profile/timeline";
 import {getSession} from "~/utils/session.server";
-import {Route} from "../../../.react-router/types/app/routes/profile/+types/dashboard";
+import type { Route } from "./+types/dashboard";
 import {getWanderListByProfileId, WanderListSchema} from "~/utils/models/wanderlist.model";
 import {redirect} from "react-router";
 
