@@ -72,6 +72,7 @@ export async function signInController(request: Request, response: Response) : P
             bio,
             profilePicture,
             userName,
+            email
         }, signature)
 
         //set the session variables
