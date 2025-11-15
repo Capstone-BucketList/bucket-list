@@ -37,7 +37,7 @@ export type Profile = z.infer<typeof ProfileSchema>
 
 //2
 export const SignUpSchema = ProfileSchema
-    .omit({ id: true})
+    .omit({ id: true,bio:true, profilePicture: true})
     .extend({
         passwordConfirm: z.string('password confirmation is required')
             .min(8, 'Password confirm cannot be less than 8 characters')
@@ -53,7 +53,7 @@ export const SignUpSchema = ProfileSchema
 
 export type SignUp = z.infer<typeof SignUpSchema>
 
-export async function postSignUp(data: SignUp): Promise<{result: Status, headers: Headers}> {
+export async function postSignUp(data: SignUp): Promise<Status> {
 
     const modifiedSignUp = {id: uuid(), ...data }
     const response = await fetch(`${process.env.REST_API_URL}/signup`, {
@@ -63,12 +63,12 @@ export async function postSignUp(data: SignUp): Promise<{result: Status, headers
         },
         body: JSON.stringify(modifiedSignUp)
     })
-console.log(response)
+console.log("response signup",response)
     if( !response.ok) {
         throw new Error('Failed to sign up')
     }
 
     const result = await response.json()
-
+console.log("result form post signup",result)
     return result
 }
