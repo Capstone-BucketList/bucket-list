@@ -1,7 +1,8 @@
 import {Button, Carousel} from "flowbite-react";
 import PhotoCard from "../../components/photo-card";
-import React, { useState } from 'react';
+import React, { useState, useState } from 'react';
 import {DivSlider} from "~/components/div_slider";
+
 
 const travelPhotos: PhotoData[] = [
     { title: 'Balloon Fiesta', description: 'hot air balloon view.', imageSrc: '/img_4.png' },
@@ -34,6 +35,13 @@ export type PhotoData = {
     imageSrc: string;
     altText?: string;
 };
+
+export function useModal(initial = false) {
+    const [isOpen, setIsOpen] = useState(initial);
+    const open = useCallback(() => setIsOpen(true), []);
+    const close = useCallback(() => setIsOpen(false), []);
+    return { isOpen, open, close };
+}
 
 export default function Scrapbook () {
     const [activeCard, setActiveCard] = useState<PhotoData | null>(null);
@@ -204,3 +212,173 @@ export default function Scrapbook () {
         </>
     )
 }
+
+// File: components/div_slider.tsx
+// import React from "react";
+// import type { ReactNode } from "react";
+//
+// export type PhotoData = {
+//     title: string;
+//     description: string;
+//     imageSrc: string;
+//     altText?: string;
+// };
+//
+// export type WhyWanderList = {
+//     icon: ReactNode;
+//     title: string;
+//     description: string;
+// };
+//
+// type DivSliderProps = {
+//     photo?: PhotoData[];
+//     wanderListProp?: WhyWanderList[];
+//     onItemClick?: (item: PhotoData | WhyWanderList) => void;
+//     className?: string;
+// };
+//
+// export const DivSlider: React.FC<DivSliderProps> = ({
+//                                                         photo,
+//                                                         wanderListProp,
+//                                                         onItemClick,
+//                                                         className = "",
+//                                                     }) => {
+//     const items = photo ?? wanderListProp ?? [];
+//
+//     return (
+//         <div className={`overflow-x-auto whitespace-nowrap py-4 ${className}`}>
+//             {items.map((item, idx) => {
+//                 const isPhoto = Boolean((item as PhotoData).imageSrc);
+//                 return (
+//                     <div
+//                         key={idx}
+//                         onClick={() => onItemClick && onItemClick(item)}
+//                         role="button"
+//                         tabIndex={0}
+//                         onKeyDown={() => onItemClick && onItemClick(item)}
+//                         className="inline-block mr-4 w-64 rounded-lg shadow-md bg-white cursor-pointer"
+//                     >
+//                         {isPhoto ? (
+//                             <div className="h-40 overflow-hidden rounded-t-lg">
+//                                 <img
+//                                     src={(item as PhotoData).imageSrc}
+//                                     alt={(item as PhotoData).altText ?? (item as PhotoData).title}
+//                                     className="w-full h-full object-cover"
+//                                 />
+//                             </div>
+//                         ) : (
+//                             <div className="p-6 text-center">
+//                                 <div className="mb-3">{(item as WhyWanderList).icon}</div>
+//                             </div>
+//                         )}
+//                         <div className="p-4">
+//                             <h3 className="font-semibold text-lg">
+//                                 {("title" in item && item.title) ?? ""}
+//                             </h3>
+//                             <p className="text-sm text-gray-600 mt-2">
+//                                 {("description" in item && item.description) ?? ""}
+//                             </p>
+//                         </div>
+//                     </div>
+//                 );
+//             })}
+//         </div>
+//     );
+// };
+//
+// export default DivSlider;
+
+// File: frontend/app/routes/scrapbook/scrapbook.tsx
+// import React, { useState } from "react";
+// import { Button } from "flowbite-react";
+// import DivSlider, { PhotoData as SliderPhoto } from "~/components/div_slider";
+// import PhotoCard from "~/components/photo_card"; // if you still use PhotoCard anywhere
+//
+// // Example photo arrays (keep yours)
+// const travelPhotos: SliderPhoto[] = [
+//     { title: "Beach", description: "Sunny beach", imageSrc: "/img_1.png", altText: "beach" },
+//     { title: "Mountain", description: "Snowy peak", imageSrc: "/img_2.png", altText: "mountain" },
+// ];
+//
+// const healthPhotos: SliderPhoto[] = [
+//     { title: "Run", description: "Morning run", imageSrc: "/img_3.png" },
+// ];
+//
+// export default function Scrapbook() {
+//     const [activeCard, setActiveCard] = useState<SliderPhoto | null>(null);
+//
+//     function handleSubmitEdits() {
+//         alert("Changes submitted!");
+//         setActiveCard(null);
+//     }
+//
+//     async function handleShare(card: SliderPhoto) {
+//         if (navigator.share) {
+//             try {
+//                 await navigator.share({
+//                     title: card.title,
+//                     text: card.description,
+//                     url: window.location.href,
+//                 });
+//             } catch (_) {}
+//         } else {
+//             alert("Share not supported on this browser");
+//         }
+//     }
+//
+//     return (
+//         <>
+//             <section className="max-w-6xl mx-auto py-8">
+//                 <h2 className="text-2xl font-bold mb-4">Travel</h2>
+//
+//                 {/* Replace Carousel with DivSlider and wire clicks to open modal */}
+//                 <DivSlider photo={travelPhotos} onItemClick={(item) => setActiveCard(item as SliderPhoto)} />
+//
+//                 <h2 className="text-2xl font-bold mt-10 mb-4">Health & Fitness</h2>
+//                 <DivSlider photo={healthPhotos} onItemClick={(item) => setActiveCard(item as SliderPhoto)} />
+//
+//                 {/* add other sections similarly */}
+//             </section>
+//
+//             {/* Modal - unchanged behavior, opens when activeCard is set */}
+//             {activeCard && (
+//                 <div className="fixed inset-0 z-50 flex items-center justify-center">
+//                     <div className="absolute inset-0 bg-black/50" onClick={() => setActiveCard(null)} />
+//                     <div className="relative bg-white rounded-lg max-w-3xl w-full p-6 z-60">
+//                         <button
+//                             className="absolute top-3 right-3 text-gray-600"
+//                             onClick={() => setActiveCard(null)}
+//                         >
+//                             Close
+//                         </button>
+//
+//                         <div className="grid md:grid-cols-2 gap-6">
+//                             <img
+//                                 src={activeCard.imageSrc}
+//                                 alt={activeCard.altText ?? activeCard.title}
+//                                 className="w-full h-64 object-cover rounded"
+//                             />
+//
+//                             <div>
+//                                 <input
+//                                     defaultValue={activeCard.title}
+//                                     className="w-full border rounded px-3 py-2 mb-3"
+//                                 />
+//                                 <textarea
+//                                     defaultValue={activeCard.description}
+//                                     className="w-full border rounded px-3 py-2 mb-3"
+//                                 />
+//                                 <div className="flex gap-3">
+//                                     <Button onClick={handleSubmitEdits}>Submit</Button>
+//                                     <Button color="light" onClick={() => handleShare(activeCard)}>
+//                                         Share
+//                                     </Button>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             )}
+//         </>
+//     );
+// }
