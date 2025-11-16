@@ -77,7 +77,9 @@ export function Navigation(props: ProfileProps) {
                         <NavbarLink href="/scrapbook" className="text-white hover:text-burnt-orange">
                             Scrapbook
                         </NavbarLink>
-
+                        <NavbarLink href="/settings" className="text-white hover:text-burnt-orange font-semibold">
+                            Settings
+                        </NavbarLink>
                         <NavbarLink href="/logout" className="text-white hover:text-burnt-orange font-semibold">
                             Logout
                         </NavbarLink>

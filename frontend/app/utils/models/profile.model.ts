@@ -1,6 +1,7 @@
 import z from "zod/v4"
 import type {Status} from "~/utils/interfaces/Status";
 import {v7 as uuid} from 'uuid'
+import type {SignIn} from "~/utils/models/sign_in.model";
 
 
 //1
@@ -70,5 +71,24 @@ console.log("response signup",response)
 
     const result = await response.json()
 console.log("result form post signup",result)
+    return result
+}
+
+export async function profileUpdate(data: Profile): Promise<Status> {
+
+    const response = await fetch(`${process.env.REST_API_URL}/profile/${data.id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    console.log("response signup",response)
+    if( !response.ok) {
+        throw new Error('Failed to sign up')
+    }
+
+    const result = await response.json()
+    console.log("result form post signup",result)
     return result
 }
