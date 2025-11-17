@@ -32,7 +32,7 @@ export async function postFollow(followedProfileId:string,authorization:string, 
     return  await fetch(`${process.env.REST_API_URL}${followBasePath}/${followedProfileId}`, {
         method: 'POST',
         headers:  addHeaders(authorization,cookie),
-        body: JSON.stringify(data)
+
     }).then( res => {
         if(!res.ok){
             throw new Error(res.statusText)
@@ -52,7 +52,6 @@ export async function deleteFollowedProfileId(profileId: string, authorization:s
     return  await fetch(`${process.env.REST_API_URL}${followBasePath}/${profileId}`, {
         method: 'DELETE',
         headers: addHeaders(authorization, cookie),
-        body: JSON.stringify(data)
     }).then(res => {
         if (!res.ok) {
             throw new Error(res.statusText)

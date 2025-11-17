@@ -50,7 +50,7 @@ export async function postComment(comment: Comment, authorization:string, cookie
      return  await fetch(`${process.env.REST_API_URL}${commentBasePath}`, {
             method: 'POST',
             headers:  addHeaders(authorization,cookie),
-            body: JSON.stringify(data)
+            body: JSON.stringify(comment)
         }).then( res => {
             if(!res.ok){
                 throw new Error(res.statusText)
@@ -70,7 +70,7 @@ export async function deleteComment(commentId: string, authorization:string, coo
     return  await fetch(`${process.env.REST_API_URL}${commentBasePath}/${commentId}`, {
         method: 'DELETE',
         headers: addHeaders(authorization, cookie),
-        body: JSON.stringify(data)
+
     }).then(res => {
         if (!res.ok) {
             throw new Error(res.statusText)
@@ -89,7 +89,6 @@ export async function getPostsByPostId(postId: string, authorization:string, coo
     return await fetch(`${process.env.REST_API_URL}${commentBasePath}/${postId}`, {
         method: 'GET',
         headers: addHeaders(authorization, cookie),
-        body: JSON.stringify(data)
     }).then(res => {
         if (!res.ok) {
             throw new Error(res.statusText)
@@ -108,7 +107,7 @@ export async function getCommentByProfileId(profileId: string, authorization:str
     return await fetch(`${process.env.REST_API_URL}${commentBasePath}/profile/${profileId}`, {
         method: 'GET',
         headers: addHeaders(authorization, cookie),
-        body: JSON.stringify(data)
+
     }).then(res => {
         if (!res.ok) {
             throw new Error(res.statusText)
@@ -127,7 +126,6 @@ export async function getCommentByPostId(postId: string, authorization:string, c
     return await fetch(`${process.env.REST_API_URL}${commentBasePath}/post/${postId}`, {
         method: 'GET',
         headers: addHeaders(authorization, cookie),
-        body: JSON.stringify(data)
     }).then(res => {
         if (!res.ok) {
             throw new Error(res.statusText)

@@ -1,4 +1,6 @@
 import {z} from "zod/v4";
+import type {Status} from "~/utils/interfaces/Status";
+import {addHeaders, mediaBasePath} from "~/utils/utility";
 
 /**
  * Schema for validating media objects
@@ -22,14 +24,11 @@ export const MediaSchema = z.object({
 export type Media = z.infer<typeof MediaSchema>
 
 export async function getMediaByPostId(postId: string, authorization: string, cookie: string): Promise<Media[]> {
-    const requestHeaders = new Headers()
-    requestHeaders.append('Content-Type', 'application/json')
-    requestHeaders.append('Authorization', authorization)
-    requestHeaders.append('Cookie', cookie)
+
 
     const response = await fetch(`${process.env.REST_API_URL}/media/post/${postId}`, {
         method: 'GET',
-        headers: requestHeaders,
+        headers: addHeaders(authorization, cookie),
     }).then(response => {
         if (!response.ok) {
             throw new Error('Failed to fetch media by post id')
@@ -42,14 +41,9 @@ export async function getMediaByPostId(postId: string, authorization: string, co
 }
 
 export async function getMediaByPrimaryKey(id: string, authorization: string, cookie: string): Promise<Media> {
-    const requestHeaders = new Headers()
-    requestHeaders.append('Content-Type', 'application/json')
-    requestHeaders.append('Authorization', authorization)
-    requestHeaders.append('Cookie', cookie)
-
-    const response = await fetch (`${process.env.REST_API_URL}/media/${id}`, {
+     const response = await fetch (`${process.env.REST_API_URL}${mediaBasePath}/${id}`, {
         method: 'GET',
-        headers: requestHeaders,
+        headers: addHeaders(authorization, cookie),
     }) .then(res => {
        if(!res.ok) { throw new Error('Failed to fetch media by primary key')
     }
@@ -59,15 +53,11 @@ export async function getMediaByPrimaryKey(id: string, authorization: string, co
     return result
 }
 
-export async function getAllmediaForVisiblePosts(authorization: string, cookie: string): Promise<Media[]> {
-    const requestHeaders = new Headers()
-    requestHeaders.append('Content-Type', 'application/json')
-    requestHeaders.append('Authorization', authorization)
-    requestHeaders.append('Cookie', cookie)
+export async function getAllMediaForVisiblePosts(authorization: string, cookie: string): Promise<Media[]> {
 
-    const response = await fetch (`${process.env.REST_API_URL}/media`, {
+    const response = await fetch (`${process.env.REST_API_URL}${mediaBasePath}`, {
         method: 'GET',
-        headers: requestHeaders,
+        headers: addHeaders(authorization,cookie),
     }) .then(res => {
         if (!res.ok) {
             throw new Error('failed to fetch all media for visible posts')
@@ -78,20 +68,18 @@ export async function getAllmediaForVisiblePosts(authorization: string, cookie: 
     return result
 }
 
-export async function postMedia(postId: string, url: string, authorization: string, cookie: string): Promise<Media> {
-    const response = await fetch(`${process.env.RES_API_URL}/media`, {
+export async function postMedia(media: Media, url: string, authorization: string, cookie: string): Promise<Status> {
+    const response = await fetch(`${process.env.RES_API_URL}${mediaBasePath}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': authorization,
             'Cookie': cookie},
-        body: JSON.stringify
+        body: JSON.stringify(media)
     })
     if(!response.ok) {
         throw new Error('Failed to post media')
     }
-    const headers = response.headers
-    const result = await response.json()
-    const media = MediaSchema.parse(result.data)
-    return (result, media)
+   return await response.json()
+
 }
