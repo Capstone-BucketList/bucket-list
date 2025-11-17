@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Button, Card } from "flowbite-react";
 import type { WhyWanderList } from "~/routes/home/home";
-import type { PhotoData } from "~/routes/scrapbook/scrapbook";
+import type { PhotoData } from "~/routes/scrapbook/photoData";
 
 export type DivSliderProps = {
     photo?: PhotoData[];
@@ -31,8 +31,8 @@ export function DivSlider(props: DivSliderProps) {
     // sensible defaults for compact (Home) and large (Scrapbook)
     const defaults = {
         compact: {
-            slideWidthClass: "w-64 sm:w-72 md:w-80",
-            imageHeightClass: "h-40 md:h-56",
+            slideWidthClass: "w-74 sm:w-82 md:w-90",
+            imageHeightClass: "h-60 md:h-76",
         },
         large: {
             slideWidthClass: "w-11/12 sm:w-3/4 md:w-2/3 lg:w-1/2",
@@ -68,7 +68,7 @@ export function DivSlider(props: DivSliderProps) {
         <div className="relative">
             <div
                 ref={containerRef}
-                className="flex gap-4 overflow-x-auto scrollbar-hide px-4 py-2"
+                className="flex gap-4 overflow-x-hidden scrollbar-width:none px-4 py-2"
                 style={{ scrollSnapType: "x mandatory" }}
             >
                 {items.map((item, i) => {
