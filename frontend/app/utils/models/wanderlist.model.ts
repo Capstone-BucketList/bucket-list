@@ -48,15 +48,14 @@ export const WanderListSchema =  z.object({
 export  type WanderList = z.infer<typeof WanderListSchema>
 
 
-export  async function getWanderListByProfileId(profileId: string): Promise<WanderList[]> {
+export  async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string): Promise<WanderList[]> {
 
     const requestHeaders = new Headers()
     requestHeaders.append('Content-Type', 'application/json')
-  /*  requestHeaders.append('Authorization', session.data?.authorization || '')
-    const cookie = request.headers.get('Cookie')
-    if (cookie) {
-        requestHeaders.append('Cookie', cookie)
-    }*/
+    requestHeaders.append('Authorization', authorization)
+
+    requestHeaders.append('Cookie', cookie)
+
 
     const response = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/${profileId}`,{
         method: 'GET',

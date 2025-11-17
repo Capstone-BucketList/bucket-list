@@ -8,37 +8,18 @@ import {redirect} from "react-router";
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
-    const session = await getSession(request.headers.get('Cookie'))
+    const cookie = request.headers.get('Cookie')
+    const session = await getSession(cookie)
 
-    const profile = session?.get('profile') ?? null ;
+    const profile = session.get("profile");
+    const authorization = session.get("authorization");
 
-    if(! profile) {
-        return {profile:null, wanderList: []};
+
+    if (!profile || !authorization) {
+        return redirect("/sign-in");
     }
     //  get wonderlist items by profileId
-  //  const wanderList  =await getWanderListByProfileId("019a3191-a7f4-735d-af0a-1042ea19a399") //profile.id)
-
-
-    const requestHeaders = new Headers()
-    requestHeaders.append('Content-Type', 'application/json')
-      requestHeaders.append('Authorization', session.data?.authorization || '')
-      const cookie = request.headers.get('Cookie')
-      if (cookie) {
-          requestHeaders.append('Cookie', cookie)
-      }
-
-    const response = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/019a3191-a7f4-735d-af0a-1042ea19a399`,{
-        method: 'GET',
-        headers: requestHeaders,
-    }) .then(res => {
-        if (!res.ok) {
-            throw new Error('failed to fetch unread messages')
-        }
-        return res.json()
-    })
-
-    const wanderList = WanderListSchema.array().parse(response.data)
-    console.log("wanderList",wanderList)
+  const wanderList  =await getWanderListByProfileId(profile.id, authorization, cookie) //profile.id)
 
 
      return {profile, wanderList}
