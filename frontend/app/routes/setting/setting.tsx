@@ -90,7 +90,7 @@ export default function SettingsPage({loaderData} :Route.ComponentProps) {
                 <div className="flex items-center gap-4">
                     <Avatar rounded size="xl" img={preview || profilePicture} />
                     <div>
-                        <Label htmlFor="image"  > "Profile Image"</Label>
+                        <Label htmlFor="image"  > Profile Image</Label>
                         <input {...register('profilePicture')}
                             type="file"
 
