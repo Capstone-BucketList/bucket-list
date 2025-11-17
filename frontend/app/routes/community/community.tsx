@@ -1,5 +1,7 @@
 import { Button } from "flowbite-react";
-import { Link } from "@remix-run/react";
+
+
+
 
 export default function Community () {
     return(
@@ -22,35 +24,35 @@ export default function Community () {
 
             <section className='bg-blue-500'>
                 <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-                    <div className="max-w-screen-md mb-8 lg:mb-10 bg-pale-tan rounded-lg p-4">
+                    <div className="max-w-screen-md mb-8 lg:mb-10 bg-gray-100 rounded-lg p-4">
                         <p className="text-black sm:text-xl "> What motivates you to start checking things off your own bucket list? What motivates you to get out of bed each day, or to continue learning a new topic? Being inspired happens every moment; to do or create something. Finding the ideas for motivation can help by listing them. Connecting with like-minded people leads to shared goals, shared advice on accomplishing your goals. Do list out what motivates you.</p>
                     </div>
                     <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
-                        <div className='bg-pale-tan rounded-lg p-2'>
+                        <div className='bg-gray-100 rounded-lg p-2 shadow-lg hover:shadow-xl transition-shadow hover:bg-emerald-300'>
                             <h3 className="mb-2 text-xl font-bold text-black">Friends/Family</h3>
                             <p className="text-black">Friends & Family can be your audience; your motivation; your community to share accomplishments with. They can also be your cheerleaders,for completing your goals.</p>
                         </div>
-                        <div className='bg-pale-tan rounded-lg p-2'>
+                        <div className='bg-gray-100 rounded-lg p-2 shadow-lg hover:shadow-xl transition-shadow hover:bg-amber-300'>
                             <h3 className="mb-2 text-xl font-bold text-black">Sharing Accomplishments</h3>
                             <p className="text-black">Having space to share your accomplishments, virtually and physically motivates to continue with more goals,
                             more experiences.</p>
                         </div>
-                        <div className='bg-pale-tan rounded-lg p-2'>
+                        <div className='bg-gray-100 rounded-lg p-2 shadow-lg hover:shadow-xl transition-shadow hover:bg-emerald-300'>
                             <h3 className="mb-2 text-xl font-bold text-black">Did that happen?</h3>
                             <p className="text-black">If there's no picture or video, did you complete your goals?
                             Wander List provides space to store all your pictures of your accomplishments.</p>
                         </div>
-                        <div className='bg-pale-tan rounded-lg p-2'>
+                        <div className='bg-gray-100 rounded-lg p-2  hover:shadow-xl transition-shadow hover:bg-amber-300'>
                             <h3 className="mb-2 text-xl font-bold text-black">Vision Board</h3>
                             <p className="text-black">Take post-its, or index cards to create
                             a visual board containing your goals. Categorize them as you want. Travel Goals, low-costs goals, etc.</p>
                         </div>
-                        <div className='bg-pale-tan rounded-lg p-2'>
+                        <div className='bg-gray-100 rounded-lg p-2 hover:shadow-xl transition-shadow hover:bg-emerald-300'>
                             <h3 className="mb-2 text-xl font-bold text-black">Group Goals</h3>
                             <p className="text-black">Wander List allows the sharing of your goals, where other users of the
                                 app can share in completing the goal. Group Goals can lead to growing your community.</p>
                         </div>
-                        <div className='bg-pale-tan rounded-lg p-2'>
+                        <div className='bg-gray-100 rounded-lg p-2 hover:shadow-xl transition-shadow hover:bg-amber-300'>
                             <h3 className="mb-2 text-xl font-bold text-black">Role Model, Mentor</h3>
                             <p className="text-black">Keep your people that inspire you in mind when planning out your
                             goals. Role models have behaviors/successes that you want to emulate and are a good example to
@@ -65,36 +67,39 @@ export default function Community () {
                 <div className='flex flex-col items-center gap-4'>
                     <img className="w-[250px] h-[250px] border-2 m-2" src='/scrapbook/img_1.png' alt='Categories in red button'/>
                     <p className='text-xl'>Categories</p>
-                    <Link to="/dashboard">
-                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Go to Categories</Button></Link>
+                    {/*<Link to="/dashboard">*/}
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Go to Categories</Button>
                 </div>
                 <div className='flex flex-col items-center gap-4'>
                     <img className="w-[250px] h-[250px] border-2 m-2" src='/scrapbook/img_2.png'
                          alt='social network logos collection'/>
                     <p className='text-xl whitespace-nowrap'>Social Network</p>
-                    <Link to="/dashboard">
-                        <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Connect your Bucket List</Button></Link>
+                    {/*<Link to="/dashboard">*/}
+                        <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Connect your Bucket List</Button>
                 </div>
                 <div className='flex flex-col items-center gap-4'>
                     <img className="w-[250px] h-[250px] border-2 m-2" src='/scrapbook/img_3.png'
                          alt='people figures surrounding goal'/>
                     <p className='text-xl whitespace-nowrap'>Group Goal(s)</p>
-                    <Link to="/dashboard">
-                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Group Goal Experiences</Button></Link>
+                    {/*<Link to="/dashboard">*/}
+                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600'>Group Goal Experiences</Button>
                 </div>
             </section>
 
             <section className='w-full relative flex flex-col justify-start md:flex md:flex-col-3 mt-4'>
                 <div className='gap-4 mt-2 ml-10'>
                     <p className='font-extrabold text-xl'>Your City</p>
-                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2'>Click Me</Button>
+                    {/*<Link to="/dashboard">*/}
+                        <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2'>Click Me</Button>
                 </div>
                 <div className='gap-4 mt-2 ml-10'>
+                    {/*<Link to="/dashboard">*/}
                     <p className='font-extrabold text-xl'>Your Network</p>
-                    <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2'>Click Me</Button>
+                        <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2'>Click Me</Button>
                 </div>
                 <div className='gap-4 mt-2 ml-10'>
                     <p className='font-extrabold text-xl'>Shared Goals</p>
+                    {/*<Link to="/dashboard">*/}
                     <Button className='bg-gradient-to-r from-cyan-500 to-purple-600 mt-2 mb-20'>Click Me</Button>
                 </div>
             </section>

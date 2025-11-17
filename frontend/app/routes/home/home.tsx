@@ -222,7 +222,7 @@ console.log(images.length);
                          {/*         <p className="text-gray-600 text-sm"> {item.description} </p>*/}
                          {/*     </Card>*/}
                          {/* )) }*/}
-                          <DivSlider  wanderListProp={whyWanderList} scrollImages={scrollImages} />
+                      <DivSlider wanderListProp={whyWanderList} />
 
                   </div>
 
