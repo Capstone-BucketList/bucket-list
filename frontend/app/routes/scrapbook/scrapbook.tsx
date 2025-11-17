@@ -10,7 +10,7 @@ const travelPhotos: PhotoData[] = [
     { title: 'Road trip on route 66', description: 'Driving west for 10 days on route 66.', imageSrc: '/scrapbook/img_6.png' },
     {title: 'Backpacking Europe', description: 'much more scenery while hiking.', imageSrc: '/scrapbook/img_16.png' },
     {title: 'Hawaii Beaches', description: 'Relaxing on the sandy shores.', imageSrc: '/scrapbook/img_17.png' },
-    {title: 'San Francsico', description: 'hilltop views of Alcatraz', imageSrc:'/scrapbook/img_18.png' },
+    {title: 'San Fransisco', description: 'hilltop views of Alcatraz', imageSrc:'/scrapbook/img_18.png' },
     {title: 'South Lake Tahoe', description: 'snow mountains and lake views', imageSrc: '/scrapbook/img_19.png' },
 ];
 
