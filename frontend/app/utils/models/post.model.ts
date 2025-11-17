@@ -1,8 +1,4 @@
 import {z} from "zod/v4";
-import {FollowSchema} from "../follow/follow.model.ts";
-import {sql} from "../../utils/database.utils.ts";
-import {PublicProfileSchema} from "../profile/profile.model.ts";
-import {WanderListSchema} from "../wanderlist/wanderlist.model.ts";
 
 /**
  * Schema for validating post objects

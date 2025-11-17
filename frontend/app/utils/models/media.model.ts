@@ -1,6 +1,4 @@
 import {z} from "zod/v4";
-import {sql} from "../../utils/database.utils.ts";
-import {PostSchema} from "../post/post.model.ts";
 
 /**
  * Schema for validating media objects

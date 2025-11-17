@@ -1,5 +1,5 @@
 import {z} from "zod/v4";
-import {sql} from "../../utils/database.utils.ts";
+
 
 /**
  * Schema for validating follow objects
