@@ -215,14 +215,14 @@ console.log(images.length);
                           more meaningful life.
                       </p>
 
-                        {/*  { whyWanderList.map((item, index) => (
-                              <Card className=" text-center hover:shadow-lg transition duration-200">
-                                  {item.icon}
-                                  <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-                                  <p className="text-gray-600 text-sm"> {item.description} </p>
-                              </Card>
-                          )) }*/}
-                          <DivSlider  wanderListProp={whyWanderList} />
+                         {/*{ whyWanderList.map((item, index) => (*/}
+                         {/*     <Card className=" text-center hover:shadow-lg transition duration-200">*/}
+                         {/*         {item.icon}*/}
+                         {/*         <h3 className="text-lg font-semibold mb-2">{item.title}</h3>*/}
+                         {/*         <p className="text-gray-600 text-sm"> {item.description} </p>*/}
+                         {/*     </Card>*/}
+                         {/* )) }*/}
+                      <DivSlider wanderListProp={whyWanderList} />
 
                   </div>
 
