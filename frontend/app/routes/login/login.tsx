@@ -137,7 +137,7 @@ export default function  Login (){
                     )}
                 </button>
                 <div>
-                    {/*<FieldError error={errors} field={'password'} />*/}
+                    <FieldError error={errors} field={'password'} />
                 </div>
             </div>
             {/*<div className="flex items-start mb-5">*/}
