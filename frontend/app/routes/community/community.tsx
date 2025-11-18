@@ -32,7 +32,7 @@ interface Post {
     likes: number;
 }
 
-interface WanderGoal {
+interface Wanderlist {
     id: number;
     title: string;
     image: string;
@@ -53,7 +53,7 @@ interface InspirationItem {
 
 export default function Community() {
     const [posts, setPosts] = useState<Post[]>([]);
-    const [wanderGoals, setWanderGoals] = useState<WanderGoal[]>([]);
+    const [wanderlist, setWanderlist] = useState<Wanderlist[]>([]);
     const [suggestions, setSuggestions] = useState<FollowSuggestion[]>([]);
     const [inspiration, setInspiration] = useState<InspirationItem[]>([]);
 
@@ -89,7 +89,7 @@ export default function Community() {
             },
         ]);
 
-        setWanderGoals([
+        setWanderlist([
             { id: 1, title: "Visit Iceland", image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" },
             { id: 2, title: "Build Fitness Routine", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b" },
             { id: 3, title: "Learn Guitar", image: "https://images.unsplash.com/photo-1511376777868-611b54f68947" },
@@ -214,9 +214,9 @@ export default function Community() {
 
                     {/* Wander Goals */}
                     <Card>
-                        <h2 className="text-xl font-bold mb-4">Featured Wander Goals</h2>
+                        <h2 className="text-xl font-bold mb-4">Featured Wanderlist</h2>
                         <div className="flex flex-col gap-4">
-                            {wanderGoals.map((g) => (
+                            {wanderlist.map((g) => (
                                 <div key={g.id} className="flex items-center gap-3">
                                     <img src={g.image} className="w-20 h-20 rounded-lg object-cover" />
                                     <p className="font-semibold">{g.title}</p>

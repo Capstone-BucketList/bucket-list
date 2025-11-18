@@ -48,7 +48,7 @@ export const WanderListSchema =  z.object({
 export  type WanderList = z.infer<typeof WanderListSchema>
 
 
-export  async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string): Promise<WanderList[]> {
+export  async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string | null): Promise<WanderList[]> {
 
     const requestHeaders = new Headers()
     requestHeaders.append('Content-Type', 'application/json')
