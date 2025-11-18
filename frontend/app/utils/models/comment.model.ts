@@ -1,4 +1,8 @@
 import {z} from "zod/v4";
+import type {Status} from "~/utils/interfaces/Status";
+import {data} from "react-router";
+import * as process from "node:process";
+import {addHeaders, commentBasePath} from "~/utils/utility";
 
 /**
  * Schema for validating the comment object
@@ -36,3 +40,96 @@ export const CommentSchema = z.object({
  */
 
 export type Comment = z.infer<typeof CommentSchema>
+
+/**
+ * insert the comment
+ * @param comment
+ */
+export async function postComment(comment: Comment, authorization:string, cookie:string): Promise<Status> {
+
+     return  await fetch(`${process.env.REST_API_URL}${commentBasePath}`, {
+            method: 'POST',
+            headers:  addHeaders(authorization,cookie),
+            body: JSON.stringify(comment)
+        }).then( res => {
+            if(!res.ok){
+                throw new Error(res.statusText)
+            }
+            return res.json()
+        })
+}
+
+/**
+ * delete the comment
+ * @param commentId
+ * @param authorization
+ * @param cookie
+ */
+export async function deleteComment(commentId: string, authorization:string, cookie:string): Promise<Status> {
+
+    return  await fetch(`${process.env.REST_API_URL}${commentBasePath}/${commentId}`, {
+        method: 'DELETE',
+        headers: addHeaders(authorization, cookie),
+
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return res.json()
+    })
+}
+
+/**
+ * get the posts by ID
+ * @param postId
+ * @param authorization
+ * @param cookie
+ */
+export async function getPostsByPostId(postId: string, authorization:string, cookie:string): Promise<Comment> {
+    return await fetch(`${process.env.REST_API_URL}${commentBasePath}/${postId}`, {
+        method: 'GET',
+        headers: addHeaders(authorization, cookie),
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return CommentSchema.parse(res.json())
+    })
+}
+
+/**
+ * get the posts by ID
+ * @param postId
+ * @param authorization
+ * @param cookie
+ */
+export async function getCommentByProfileId(profileId: string, authorization:string, cookie:string): Promise<Comment> {
+    return await fetch(`${process.env.REST_API_URL}${commentBasePath}/profile/${profileId}`, {
+        method: 'GET',
+        headers: addHeaders(authorization, cookie),
+
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return CommentSchema.parse(res.json())
+    })
+}
+
+/**
+ * get the posts by ID
+ * @param postId
+ * @param authorization
+ * @param cookie
+ */
+export async function getCommentByPostId(postId: string, authorization:string, cookie:string): Promise<Comment> {
+    return await fetch(`${process.env.REST_API_URL}${commentBasePath}/post/${postId}`, {
+        method: 'GET',
+        headers: addHeaders(authorization, cookie),
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return CommentSchema.parse(res.json())
+    })
+}
