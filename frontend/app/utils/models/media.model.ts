@@ -83,3 +83,16 @@ export async function postMedia(media: Media, url: string, authorization: string
    return await response.json()
 
 }
+
+export async function deleteMedia(id: string, authorization: string, cookie: string): Promise<Status> {
+
+    return await fetch(`${process.env.REST_API_URL}${mediaBasePath}/${id}`, {
+        method: 'DELETE',
+        headers: addHeaders(authorization, cookie),
+    }) .then(RES => {
+        if(!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return res.json()
+    })
+}

@@ -1,7 +1,7 @@
 import z from "zod/v4"
 import type {Status} from "~/utils/interfaces/Status";
 import {v7 as uuid} from 'uuid'
-import type {SignIn} from "~/utils/models/sign_in.model";
+import {addHeaders, profileBasePath} from "~/utils/utility";
 
 
 //1
@@ -90,5 +90,20 @@ export async function profileUpdate(data: Profile): Promise<Status> {
 
     const result = await response.json()
     console.log("result form post signup",result)
+    return result
+}
+
+export async function getFollwersByProfileId(profileId: string, authorization: string, cookie: string): Promise<Profile> {
+
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/profile/followers/${profileId}`, {
+        method: 'GET',
+        headers: addHeaders(authorization,cookie),
+    })  .then(res => {
+        if(!res.ok) {
+            throw new Error('failed to fetch followers by profile id')
+        }
+        return res.json()
+    })
+    const result = ProfileSchema.parse(response.data)
     return result
 }

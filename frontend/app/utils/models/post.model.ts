@@ -136,3 +136,44 @@ export async function getAllVisiblePostbyLoggedInProfileFollow(profileId: string
 
         return result
 }
+
+export async function postPost(PostId: string, authorization: string, cookie: string) : Promise<Post> {
+
+    return await fetch(`${process.env.REST_API_URL}${postBasePath}/${PostId}`, {
+        method: 'POST',
+        headers: addHeaders(authorization,cookie),
+
+    }) .then(res => {
+    if(!res.ok) {
+         throw new Error(res.statusText)
+    }
+    return res.json()
+})
+
+export async function deletePost(postId: string, authorization: string, cookie: string): Promise<Post> {
+
+    return await fetch(`${process.env.REST_API_URL}${postBasePath}/${postId}`, {
+        method: 'DELETE',
+        headers: addHeaders(authorization, cookie),
+
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return res.json()
+    })
+}
+
+export async function putPost(post: Post, authorization: string, cookie: string): Promise<Post> {
+    return await fetch(`${process.env.REST_API_URL}${postBasePath}`, {
+        method: 'PUT',
+        headers: addHeaders(authorization,cookie),
+        body: JSON.stringify(post)
+
+    }) .then(res => {
+        if(!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return res.json()
+    })
+} }
