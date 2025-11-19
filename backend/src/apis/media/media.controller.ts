@@ -82,7 +82,7 @@ export async function deleteMediaController(request:Request, response:Response):
             message: error.message,
             data: null
         }
-        response.status(500).json(status)
+        response.status(200).json(status)
     }
 
 }
@@ -162,7 +162,7 @@ export async function getMediaByPostIdController(request:Request, response:Respo
             message: error.message,
             data: null
         }
-        response.status(500).json(status)
+        response.status(200).json(status)
     }
 
 }
