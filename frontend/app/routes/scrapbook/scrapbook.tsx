@@ -20,6 +20,29 @@ const travelPhotos: PhotoData[] = [
     { title: "South Lake Tahoe", description: "snow mountains and lake views", imageSrc: "/scrapbook/img_19.png" },
 ];
 
+export const timelinePhotos: PhotoData[] = [
+    { title: "Month 1 — Start of the journey", description: "First week exploring new places.", imageSrc: "/timeline/img.png" },
+    { title: "Month 1 — Sandia Peak", description: "Breathtaking hikes early on.", imageSrc: "/timeline/img_1.png" },
+    { title: "Month 2 — Community project", description: "Joined the neighborhood cleanup.", imageSrc: "/timeline/img_2.png" },
+    { title: "Month 2 — Bootcamp progress", description: "Building the Wanderlist app.", imageSrc: "/timeline/img_3.png" },
+    { title: "Month 2 — New friendships", description: "Met amazing people along the way.", imageSrc: "/timeline/img_4.png" },
+    { title: "Month 3 - Foodie experience", description: "Red or Green options ", imageSrc: "/timeline/img_5.png"},
+    { title: "Month 3 — First album creation", description: "Organizing memories into albums.", imageSrc: "/timeline/img_6.png" },
+    { title: "Month 3 — Sharing moments", description: "Sharing photos with friends and family.", imageSrc: "/timeline/img_7.png" },
+    { title: "Month 4 — Reflecting on the journey", description: "Looking back at all the memories made.", imageSrc: "/timeline/img_8.png" },
+    { title: "Month 4 — New adventures", description: "Planning the next chapter of the journey.", imageSrc: "/timeline/img_9.png" },
+    { title: "Month 5 - Soda rock trip", description: "see running river and wilderness ", imageSrc: "/timeline/img_10.png"},
+    { title: "Month 5 — Celebrating milestones", description: "Celebrating the progress and growth.", imageSrc: "/timeline/img_11.png" },
+    { title: "Month 5 — Looking forward", description: "Excited for the next adventures ahead.", imageSrc: "/timeline/img_12.png" },
+    { title: "Month 5 — Sharing the story", description: "Sharing the journey with the world.", imageSrc: "/timeline/img_13.png" },
+    { title: "Month 6 — Tent Rocks", description: "Setting new goals for the next phase.", imageSrc: "/timeline/img_14.png" },
+    { title: "Month 6 — Autumn Santa Fe", description: "Reflecting on an incredible year of Wanderlist.", imageSrc: "/timeline/img_15.png" },
+    { title: "Month 6 — Volcano hike", description: "Excited for the next chapter of the journey.", imageSrc: "/timeline/img_16.png" },
+    { title: "Month 6 — Sharing the chile", description: "Sharing the aroma with friends and family.", imageSrc: "/timeline/img_17.png" },
+    { title: "Month 6 — Final reflections", description: "Grateful for the incredible journey and memories made.", imageSrc: "/timeline/img_18.png" },
+];
+
+
 interface Album {
     id: string;
     title: string;
@@ -190,9 +213,9 @@ export default function Scrapbook() {
                         <div className="grid grid-cols-3 gap-2">
                             {timelinePhotos.slice(0, 9).map((photo) => (
                                 <img
-                                    key={photo.id}
-                                    src={photo.url}
-                                    alt="timeline"
+                                    key={photo.imageSrc}
+                                    src={photo.imageSrc}
+                                    alt={photo.title}
                                     className="w-full h-20 object-cover rounded-md cursor-pointer hover:opacity-80"
                                     onClick={() => onPhotoClick(photo)}
                                 />
@@ -210,12 +233,13 @@ export default function Scrapbook() {
 
             {showTimelineModal && (
                 <div
-                    className="fixed inset-0 backdrop-blur-sm bg-opacity-80 flex flex-col items-center justify-center z-50 p-6"
+                    className="fixed inset-0 backdrop-blur-sm flex flex-col items-center justify-start overflow-y z-[999] p-6"
                     role="dialog"
                     aria-modal="true">
                     <button
                         onClick={() => setShowTimelineModal(false)}
-                        className="self-end mb-4 text-white text-3xl font-bold"
+                        className="ml-auto mb-4 text-amber-400 te
+                        xt-6xl font-bold"
                         aria-label="Close Timeline Modal">
                         &times;
                     </button>
