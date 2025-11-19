@@ -37,7 +37,7 @@ export const PostSchema = z.object ({
 
 export type Post = z.infer<typeof PostSchema>
 
-export async function getPostsByWanderListId(wanderListId: string, authorization: string, cookie: string): Promise<Post[]> {
+export async function getPostByWanderListId(wanderListId: string, authorization: string, cookie: string): Promise<Post[]> {
 
 
     const response = await fetch(`${process.env.REST_API_URL}/post/wanderlist/${wanderListId}`, {
@@ -86,10 +86,10 @@ export async function getPostByPrimaryKey(postId: string, authorization: string,
     return result
 }
 
-export async function getPostsByWanderlistIdAndVisibility (wanderlistId: string, authorization: string, cookie: string): Promise<Post[]> {
+export async function getPostByWanderlistIdAndVisibility (wanderlistId: string, authorization: string, cookie: string): Promise<Post[]> {
 
 
-    const response = await fetch (`${process.env.REST_API_URL}/post?wanderlistId=${wanderlistId}&visibility=public}`, {
+    const response = await fetch (`${process.env.REST_API_URL}/post?wanderlistId=${wanderlistId}&visibility=public`, {
          method: 'GET',
         headers: addHeaders(authorization,cookie),
 })  .then(res => {
@@ -120,7 +120,7 @@ export async function getAllVisiblePosts(authorization: string, cookie: string):
     return result
 }
 
-export async function getAllVisiblePostbyLoggedInProfileFollow(profileId: string, authorization: string, cookie: string): Promise<Post[]> {
+export async function getVisiblePostsByLoggedInProfileFollow(profileId: string, authorization: string, cookie: string): Promise<Post[]> {
 
     const response = await fetch(`${process.env.REST_API_URL}${postBasePath}/follow/${profileId}`, {
         method: 'GET',

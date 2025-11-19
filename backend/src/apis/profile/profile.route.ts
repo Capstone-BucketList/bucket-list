@@ -27,4 +27,3 @@ router.route('/following/:id')
 
 //export the router with the basePath and router object
 export const profileRoute = {basePath, router}
-
