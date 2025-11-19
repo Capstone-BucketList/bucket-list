@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Card } from "flowbite-react";
-import { FaCameraRetro, FaHeartbeat, FaBookOpen, FaUsers } from "react-icons/fa";
+import { FaCameraRetro, FaHeartbeat, FaBookOpen, FaUsers, FaTimes, FaShareAlt, FaTrash } from "react-icons/fa";
 import { DivSlider } from "~/components/div_slider";
 import PhotoCard from "~/components/photo-card";
 import {
@@ -42,25 +42,18 @@ export const timelinePhotos: PhotoData[] = [
     { title: "Month 6 — Final reflections", description: "Grateful for the incredible journey and memories made.", imageSrc: "/timeline/img_18.png" },
 ];
 
-
-interface Album {
-    id: string;
-    title: string;
-    description?: string;
-    photoCount?: number;
-}
-
 type AlbumData = {
     id: string;
     title: string;
     createdAt: Date;
     coverImage?: string;
+    description?: string;
+    photoCount?: number;
 };
 
 export default function Scrapbook() {
     const [activeCard, setActiveCard] = useState<PhotoData | null>(null);
     const [albums, setAlbums] = useState<Album[]>([]);
-    // const [timelinePhotos, setTimelinePhotos] = useState<PhotoData[]>([]);
     const [showCreateAlbumModal, setShowCreateAlbumModal] = useState(false);
 
     const [newAlbumTitle, setNewAlbumTitle] = useState("");
@@ -80,19 +73,22 @@ export default function Scrapbook() {
             id: crypto.randomUUID(),
             title: `New Album ${albums.length + 1}`,
             createdAt: new Date(),
-            coverImage: "/placeholder.jpg"
+            coverImage: "/placeholder.jpg",
+            description: newAlbumDescription || "",
+            photoCount: 0
         };
 
         setAlbums([newAlbum, ...albums]);
+        setNewAlbumTitle("");
+        setNewAlbumDescription("")
     };
 
     const [showTimelineModal, setShowTimelineModal] = useState(false);
 
-
     return (
 
 
-        <div className="w-full min-h-screen bg-gray-100 pb-20">
+        <main className="w-full min-h-screen bg-gray-100 pb-20">
 
             {/* HERO SECTION */}
             <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-20 px-6">
@@ -109,6 +105,7 @@ export default function Scrapbook() {
 
                 {/* LEFT PHOTO FEED */}
                 <div className="lg:col-span-9 flex flex-col gap-8">
+
                     {/* — Travel — */}
                     <Card className="shadow-md hover:shadow-lg transition p-6">
                         <div className="flex items-center gap-3 mb-6">
@@ -238,10 +235,10 @@ export default function Scrapbook() {
                     aria-modal="true">
                     <button
                         onClick={() => setShowTimelineModal(false)}
-                        className="ml-auto mb-4 text-amber-400 te
-                        xt-6xl font-bold"
-                        aria-label="Close Timeline Modal">
-                        &times;
+                        className="ml-auto mb-4 text-amber-400 text-6xl font-bold"
+                        aria-label="Close Timeline Modal"
+                    >
+                        <FaTimes className="text-amber-400" size={28} />
                     </button>
 
                     <div className="w-full max-w-5xl">
@@ -259,8 +256,8 @@ export default function Scrapbook() {
                         <button
                             onClick={() => setActiveCard(null)}
                             className="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl font-bold"
-                        >
-                            &times;
+                            aria-label="Close Photo Modal">
+                            <FaTimes />
                         </button>
 
                         <img
@@ -291,7 +288,7 @@ export default function Scrapbook() {
                             </Button>
 
                             <Button
-                                className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                                className="bg-blue-600 hover:bg-blue-700 text-white w-full flex items-center justify-center gap-2"
                                 onClick={() =>
                                     navigator.share
                                         ? navigator.share({
@@ -299,24 +296,21 @@ export default function Scrapbook() {
                                             text: activeCard.description,
                                             url: window.location.href
                                         })
-                                        : alert("Sharing not supported")
-                                }
-                            >
-                                Share
+                                        : alert("Sharing not supported")}>
+                                <FaShareAlt/> Share
                             </Button>
 
                             <Button
-                                className="bg-red-600 hover:bg-red-700 text-white w-full"
+                                className="bg-red-600 hover:bg-red-700 text-white w-full flex items-center justify-center gap-2"
                                 onClick={() => {
                                     if (confirm("Delete this photo?")) setActiveCard(null);
-                                }}
-                            >
-                                Delete
+                                }}>
+                                <FaTrash /> Delete
                             </Button>
                         </div>
                     </Card>
                 </div>
             )}
-        </div>
+        </main>
     );
 }
