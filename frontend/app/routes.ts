@@ -10,7 +10,8 @@ export default [
     route('/signup','routes/signup/signup.tsx'),
     route('/login','routes/login/login.tsx'),
         route('/logout','routes/logout/logout.tsx'),
-        route('/settings','routes/setting/setting.tsx')
+        //route('/settings','routes/setting/setting.tsx')
+        route("/settings", "routes/setting/my-profile.tsx")
     ]),
 ] satisfies RouteConfig;
 
