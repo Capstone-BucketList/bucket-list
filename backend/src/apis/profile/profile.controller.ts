@@ -110,7 +110,7 @@ export async function putProfileController(request:Request, response: Response) 
     }
 
     //grab the profile data off of the validated request body
-    const {bio, userName, visibility} = validationResult.data
+    const {bio, userName, visibility, profilePicture} = validationResult.data
 
     //grab the profile by id
     const profile: PrivateProfile|null = await selectPrivateProfileByProfileId(id)
@@ -122,14 +122,14 @@ export async function putProfileController(request:Request, response: Response) 
     }
     //update the profile in the database
     profile.bio = bio
-    // profile.profilePicture = profilePicture
+    profile.profilePicture = profilePicture
     profile.userName = userName
     profile.visibility = visibility
 
 
     //update the profile in the database
     await updateProfile(profile)
-
+console.log(profile)
     //reissue the jwt token with the updated profile
     const jwt = request.session.jwt ?? ' '
 
@@ -143,17 +143,25 @@ export async function putProfileController(request:Request, response: Response) 
         response.json({status: 400, message: "invalid jwt token", data: null})
         return
     }
-
-    //generate a new jwt token with the updated profile
-    const newJwt = generateJwt(parsedJwt.auth, signature)
-
-    //refresh the session profile with the updated profile
-    request.session.profile = {
+    const updatedProfile:  PublicProfile =  {
         id: profile.id,
         bio: profile.bio,
         profilePicture: profile.profilePicture,
-        username: profile.userName
+        userName: profile.userName,
+        visibility:profile.visibility,
+        email:profile.email
+
+
     }
+
+    //generate a new jwt token with the updated profile
+    const newJwt = generateJwt(updatedProfile, signature)
+
+
+
+    //refresh the session profile with the updated profile
+    request.session.profile  = updatedProfile
+
 
     //set the new jwt token in the session
     request.session.jwt = newJwt
@@ -161,8 +169,9 @@ export async function putProfileController(request:Request, response: Response) 
     //set the authorization header with the new kwt token
     response.header({authorization: newJwt})
 
+    console.log("auth: ",response.getHeader('authorization'))
     //return a response to the client with a success message
-    response.json({status: 200, message: "profile successfully updated", data: null})
+    response.json({status: 200, message: "profile successfully updated", data: updatedProfile})
 
 
     // catch any errors that occurred during the id validation process and return a response to the client
