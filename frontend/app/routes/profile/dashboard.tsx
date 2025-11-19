@@ -20,11 +20,11 @@ export async function loader({request}: Route.LoaderArgs) {
         return redirect("/sign-in");
     }
     //  get wonderlist items by profileId
-    const wanderList  =[]//await getWanderListByProfileId(profile.id, authorization, cookie) //profile.id)
+  const wanderList  =[]//await getWanderListByProfileId(profile.id, authorization, cookie) //profile.id)
 
 
 
-    return {profile, wanderList}
+     return {profile, wanderList}
 
 }
 
@@ -80,10 +80,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
     };
 
     const handleSave = () => {
-        if (!modalInput.trim()) {
-            alert("Please enter a name");
-            return;
-        }
+
 
         if (editingItem) {
             // Edit existing
@@ -93,6 +90,16 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                 )
             );
         } else {
+            if (!modalInputTitle) {
+                alert("Please enter a title");
+                openAddModal()
+            } else if (!modalInputDescription) {
+                alert("Please enter a description");
+                openAddModal()
+            } else {
+                closeModal();
+            }
+
             // Add new
             setWanderList((prev) => [
                 ...prev,
@@ -102,7 +109,6 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                 },
             ]);
         }
-        closeModal();
     };
 
     const statusOptions = [
@@ -114,14 +120,14 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
     return (
         <>
             <div
-                className="min-h-screen bg-gradient-to-tr from-indigo-50 via-white to-indigo-100 relative overflow-hidden px-4 sm:px-6 md:px-10 lg:px-16 py-12 w-full"
-                style={{
-                    backgroundImage:
-                        `url('https://www.transparenttextures.com/patterns/asfalt-light.png'), linear-gradient(to top right, #e0e7ff, #fef3c7)`,
-                    backgroundRepeat: "repeat, no-repeat",
-                    backgroundSize: "auto, cover",
-                    backgroundPosition: "center",
-                }}
+                className="min-h-screen bg-gray-100 relative overflow-hidden px-4 sm:px-6 md:px-10 lg:px-16 py-12 w-full"
+                // style={{
+                //     backgroundImage:
+                //         `url('https://www.transparenttextures.com/patterns/asfalt-light.png'), linear-gradient(to top right, #e0e7ff, #fef3c7)`,
+                //     backgroundRepeat: "repeat, no-repeat",
+                //     backgroundSize: "auto, cover",
+                //     backgroundPosition: "center",
+                // }}
             >
                 {/* Profile header */}
                 <header className="mb-12 flex flex-col sm:flex-row items-center gap-6 w-full">
@@ -159,7 +165,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                 </header>
 
                 {/* Main grid - FULL WIDTH */}
-                <main
+                <section
                     className="w-full grid grid-cols-1 lg:grid-cols-4 gap-10"
                     style={{ minHeight: "70vh" }}
                 >
@@ -269,7 +275,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 </a>
                             </div>
 
-                            <div className="flex flex-wrap justify-start">
+                            <div className="flex flex-wrap justify-start lg:grid lg:grid-cols-2 gap-4 p-2">
                                 {/* Example friend cards */}
                                 <FriendCard name="Bonnie" role="CEO" img="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png" />
                                 <FriendCard name="Helene" role="CTO" img="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/helene-engels.png" />
@@ -308,12 +314,12 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                             </ol>
                         </section>
                     </aside>
-                </main>
+                </section>
 
                 {/* MODAL */}
                 {isModalOpen && (
                     <div
-                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm"
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-transparent backdrop-blur-sm"
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="modal-title"
@@ -323,7 +329,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                         }}
                     >
                         <div
-                            className="bg-white rounded-2xl max-w-lg w-full p-8 shadow-lg relative"
+                            className="bg-white rounded-2xl max-w-lg w-full p-8 shadow-lg max-h-3/4 m-12 relative overflow-hidden overflow-y-scroll"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <h3
@@ -388,7 +394,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                     checked={modalInputPinned}
                                     onChange={(e) => setModalInputPinned(e.target.checked)}
                                 />
-                                <span className="ml-2 text-gray-700 font-medium">Pinned as Favorite</span>
+                                <span className="ml-2 text-gray-700 font-medium">Pin as Favorite</span>
                             </label>
 
                             {/* Wanderlist Status */}
@@ -476,26 +482,26 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
     );
 
 
-    function FriendCard({
-                            name,
-                            role,
-                            img,
-                        }: {
-        name: string;
-        role: string;
-        img: string;
-    }) {
-        return (
-            <div className="flex items-center gap-4">
-                <img
-                    className="w-12 h-12 rounded-full object-cover"
-                    src={img}
-                    alt={`${name} avatar`}
-                />
-                <div>
-                    <p className="font-semibold text-gray-900">{name}</p>
-                    <p className="text-sm text-gray-500">{role}</p>
-                </div>
+function FriendCard({
+                        name,
+                        role,
+                        img,
+                    }: {
+    name: string;
+    role: string;
+    img: string;
+}) {
+    return (
+        <div className="flex items-center gap-4">
+            <img
+                className="w-12 h-12 rounded-full object-cover"
+                src={img}
+                alt={`${name} avatar`}
+            />
+            <div>
+                <p className="font-semibold text-gray-900">{name}</p>
+                <p className="text-sm text-gray-500">{role}</p>
             </div>
-        );
-    } }
+        </div>
+    );
+} }
