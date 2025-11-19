@@ -9,9 +9,10 @@ import {addHeaders, mediaBasePath} from "~/utils/utility";
  * @shape url: string the url for the image
  */
 export const MediaSchema = z.object({
-    id: z.uuidv7('Please provide valid uuid for id'),
+    id: z.uuid('Please provide valid uuid for id'),
     postId: z.uuidv7('Please provide valid uuid for post'),
-    url: z.url('Please provide valid url').max(255, 'please provide valid url(max 255 characters long)')
+    url: z.url('Please provide valid url')
+        .max(255, 'please provide valid url(max 255 characters long)')
 })
 
 
@@ -69,7 +70,7 @@ export async function getAllMediaForVisiblePosts(authorization: string, cookie: 
 }
 
 export async function postMedia(media: Media, url: string, authorization: string, cookie: string): Promise<Status> {
-    const response = await fetch(`${process.env.RES_API_URL}${mediaBasePath}`, {
+    const response = await fetch(`${process.env.REST_API_URL}${mediaBasePath}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
