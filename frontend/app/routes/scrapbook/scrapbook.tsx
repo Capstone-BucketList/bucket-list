@@ -60,7 +60,7 @@ type AlbumData = {
 export default function Scrapbook() {
     const [activeCard, setActiveCard] = useState<PhotoData | null>(null);
     const [albums, setAlbums] = useState<Album[]>([]);
-    const [timelinePhotos, setTimelinePhotos] = useState<PhotoData[]>([]);
+    // const [timelinePhotos, setTimelinePhotos] = useState<PhotoData[]>([]);
     const [showCreateAlbumModal, setShowCreateAlbumModal] = useState(false);
 
     const [newAlbumTitle, setNewAlbumTitle] = useState("");
