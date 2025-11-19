@@ -30,6 +30,7 @@ export const ProfileSchema = z.object({
     profilePicture: z.string('Please provide a valid image source')
         .max(255, 'Please Provide a valid profile picture (max 255 characters)')
         .nullable(),
+    visibility: z.string('please provide public or private setting')
 
 
 })
