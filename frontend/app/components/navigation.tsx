@@ -33,15 +33,15 @@ export function Navigation(props: ProfileProps) {
           Wander<span className="text-yellow-300">List</span>
         </span>
                     </NavbarBrand>
-                    <NavbarToggle/>
-                    <NavbarCollapse className="text-white hover:text-blue-500">
-                        <NavbarLink href="/" className="text-white hover:text-burnt-orange">
+                    <NavbarToggle className="text-white hover:text-purple-600" />
+                    <NavbarCollapse>
+                        <NavbarLink href="/" className="text-white hover:text-cyan-500">
                             Home
                         </NavbarLink>
-                        <NavbarLink href="/login" className="text-white hover:text-burnt-orange">
+                        <NavbarLink href="/login" className="text-white hover:text-cyan-500">
                             Login
                         </NavbarLink>
-                        <NavbarLink href="/signup" className="text-white hover:text-burnt-orange font-semibold">
+                        <NavbarLink href="/signup" className="text-white hover:text-cyan-500 font-semibold">
                             Sign Up
                         </NavbarLink>
                         {/*<NavbarLink href="/logout" className="text-white hover:text-burnt-orange font-semibold">*/}
@@ -63,24 +63,24 @@ export function Navigation(props: ProfileProps) {
           Wander<span className="text-yellow-300">List</span>
         </span>
                     </NavbarBrand>
-                    <NavbarToggle/>
-                    <NavbarCollapse className="text-white hover:text-blue-500">
+                    <NavbarToggle className="text-white hover:text-purple-600" />
+                    <NavbarCollapse>
                         {/*<NavbarLink href="/" className="text-white hover:text-burnt-orange">*/}
                         {/*    Home*/}
                         {/*</NavbarLink>*/}
-                        <NavbarLink href="/dashboard" className="text-white hover:text-burnt-orange">
+                        <NavbarLink href="/dashboard" className="text-white hover:text-cyan-500">
                             Dashboard
                         </NavbarLink>
-                        <NavbarLink href="/community" className="text-white hover:text-burnt-orange">
+                        <NavbarLink href="/community" className="text-white hover:text-cyan-500">
                             Community
                         </NavbarLink>
-                        <NavbarLink href="/scrapbook" className="text-white hover:text-burnt-orange">
+                        <NavbarLink href="/scrapbook" className="text-white hover:text-cyan-500">
                             Scrapbook
                         </NavbarLink>
-                        <NavbarLink href="/settings" className="text-white hover:text-burnt-orange font-semibold">
+                        <NavbarLink href="/settings" className="text-white hover:text-cyan-500 font-semibold">
                             Settings
                         </NavbarLink>
-                        <NavbarLink href="/logout" className="text-white hover:text-burnt-orange font-semibold">
+                        <NavbarLink href="/logout" className="text-white hover:text-cyan-500 font-semibold">
                             Logout
                         </NavbarLink>
                     </NavbarCollapse>
