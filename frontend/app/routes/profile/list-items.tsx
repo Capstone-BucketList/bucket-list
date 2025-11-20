@@ -17,28 +17,6 @@ export function ListItems(props:wanderListProps) {
                         {wanderList.title}
                     </h3>
                     <p className="mt-3 mb-4 font-light text-gray-500 font-eaves"> {wanderList.description}</p>
-                    {/*<ul className="flex space-x-4 sm:mt-0">*/}
-                    {/*    <li>*/}
-                    {/*        /!*<a href=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">*!/*/}
-                    {/*        /!*    <path fill-rule="evenodd" d="M8.586 2.575A2.004 2.004 0 0 1 10 1.99h4a2.001 2.001 0 0 1 2 1.992v1.991h3c.552 0 1 .446 1 .996s-.448.995-1 .995v11.948c0 .528-.21 1.035-.586 1.408a2.004 2.004 0 0 1-1.414.584H7c-.53 0-1.04-.21-1.414-.584A1.987 1.987 0 0 1 5 19.913V7.965c-.552 0-1-.445-1-.995s.448-.996 1-.996h3V3.983c0-.528.21-1.035.586-1.408ZM10 5.974h4V3.983h-4v1.991Zm1 3.983a.998.998 0 0 0-1-.996c-.552 0-1 .446-1 .996v7.965c0 .55.448.996 1 .996s1-.446 1-.996V9.957Zm4 0a.998.998 0 0 0-1-.996c-.552 0-1 .446-1 .996v7.965c0 .55.448.996 1 .996s1-.446 1-.996V9.957Z" clip-rule="evenodd"/>*!/*/}
-                    {/*        /!*</svg>*!/*/}
-                    {/*        /!*</a>*!/*/}
-                    {/*    </li>*/}
-                    {/*    <li>*/}
-                    {/*        <a href="">*/}
-                    {/*        </a>*/}
-                    {/*    </li>*/}
-                    {/*    <li>*/}
-                    {/*        <a href="">*/}
-                    {/*        </a>*/}
-                    {/*    </li>*/}
-                    {/*    <li>*/}
-                    {/*        <a href="">*/}
-                    {/*        </a>*/}
-
-                    {/*    </li>*/}
-                    {/*</ul>*/}
-                     {/* Modal toggle */}
                     <div className="flex justify-center m-5">
                         <button id="deleteButton" data-modal-target="deleteModal" data-modal-toggle="deleteModal" className="block text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

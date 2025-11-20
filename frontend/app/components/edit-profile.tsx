@@ -3,6 +3,7 @@ import {IconContext} from "react-icons";
 import {CgProfile} from "react-icons/cg";
 import React, {useState} from "react";
 import type {Profile} from "~/utils/models/profile.model";
+import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 
 type Props = {
     profile: Profile;
@@ -10,16 +11,7 @@ type Props = {
 };
 
 
-interface VisibilityOption {
-    id: string;
-    name:string;
-}
 
-const visibilityOptions: VisibilityOption[] = [
-    { id: "public" , name: "Public"},
-    { id: "friends" ,name: "Friends"},
-    { id: "private",name: "Private"},
-];
 
 /**
  * EditProfile component renders a form for editing user profile details.
@@ -111,7 +103,7 @@ export function EditProfile (props: Props) {
                                <div className="border border-gray-200 rounded-xl p-5 bg-gray-50 shadow-sm">
                                     <label className="block text-gray-700 font-semibold mb-2">Visibility</label>
                                     <div className="flex flex-col gap-3">
-                                        {visibilityOptions.map((option) => (
+                                        {VisibilityOptions.map((option) => (
                                             <label
                                                 key={option.id}
                                                 className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition

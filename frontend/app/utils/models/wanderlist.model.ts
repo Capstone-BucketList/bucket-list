@@ -1,6 +1,7 @@
 import z from "zod/v4";
 import type {Status} from "~/utils/interfaces/Status";
 import {v7 as uuid} from 'uuid'
+import {addHeaders, wanderlistBasepath} from "~/utils/utility";
 
 /**
 * Schema for validating the wanderlist object
@@ -47,6 +48,9 @@ export const WanderListSchema =  z.object({
  */
 export  type WanderList = z.infer<typeof WanderListSchema>
 
+export const WanderListFormSchema = WanderListSchema.omit({ id: true, profileId: true })
+
+export type WanderListForm = z.infer<typeof WanderListFormSchema>
 
 export  async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string | null): Promise<WanderList[]> {
 
@@ -72,14 +76,19 @@ console.log("result",result)
     return result
 }
 
-/*
-export async function postWanderList(data: WanderList): Promise<{result: Status, headers: Headers}> {
-    const modifiedWanderList = {id: uuid(), ...data }
-    const response = await fetch(`${process.env.REST_API_URL}/wanderlist`, {
+/**
+ * insert wanderlist
+ * @param data
+ * @param authorization
+ * @param cookie
+ */
+export async function postWanderList(data: WanderList,authorization: string, cookie: string, profileId:string): Promise<Status> {
+    const modifiedWanderList = {id: uuid(), profileId:profileId, ...data }
+
+    console.log("modifiedWanderList", modifiedWanderList)
+    const response = await fetch(`${process.env.REST_API_URL}${wanderlistBasepath}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers:  addHeaders(authorization,cookie),
         body: JSON.stringify(modifiedWanderList)
     })
     console.log(response)
@@ -88,6 +97,6 @@ export async function postWanderList(data: WanderList): Promise<{result: Status,
     }
 
     const result = await response.json()
-
+console.log("result",result)
     return result
-}*/
+}
