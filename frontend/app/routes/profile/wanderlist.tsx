@@ -2,21 +2,23 @@ import {ListItems} from "~/routes/profile/list-items";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {
     getWanderListByProfileId,
-    postWanderList,
+    postWanderList, updateWanderList,
     type WanderListForm,
     WanderListFormSchema,
 } from "~/utils/models/wanderlist.model";
 import type {FormActionResponse} from "~/utils/interfaces/FormActionResponse";
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
-import {Form, redirect, useActionData} from "react-router";
+import {Form, redirect, useActionData, useRevalidator} from "react-router";
 import React, {useState,useEffect} from "react";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 import {getSession} from "~/utils/session.server";
 import type {Route} from "../../../.react-router/types/app/routes/profile/+types/dashboard";
 import {getFollwersByProfileId} from "~/utils/models/profile.model";
+import {FaPencil} from "react-icons/fa6";
+import {StatusMessage} from "~/components/StatusMessage";
 
 
-const resolver = zodResolver(WanderListFormSchema)
+const resolver =  zodResolver(WanderListFormSchema)
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
@@ -28,44 +30,52 @@ export async function loader({request}: Route.LoaderArgs) {
 
 
     if (!profile || !authorization || !cookie) {
-        return redirect("/sign-in");
+        return redirect("/login");
     }
     //  get wonderlist items by profileId
     const wanderList  =await getWanderListByProfileId(profile.id, authorization, cookie) //profile.id)
 
-
-    return {profile, wanderList}
+    return { wanderList}
 
 }
+export async function action({ request }: Route.ActionArgs) {
 
-export async function action ({request} : Route.ActionArgs) :Promise<FormActionResponse>{
-/*    const formData = await request.formData()
-console.log(formData);*/
+    const { error, data } =   await getValidatedFormData<WanderListForm>(request, resolver);
 
-    console.log("wanderlist action")
-    const  {error, data, receivedValues:defaultValues} = await getValidatedFormData<WanderListForm>(request, resolver)
+    if (error) {
+        return { errors: error, defaultValues: data };
+    }
 
-    console.log("DATA",data)
-  //  console.log("RECEIVED DATA",receivedValues)
-        if(error){
-            return {errors, defaultValues}
-        }
-    const cookie = request.headers.get('Cookie')
+    const cookie = request.headers.get("Cookie");
     const session = await getSession(cookie);
     const profile = session.get("profile");
     const authorization = session.get("authorization");
+
     if (!profile || !authorization) return redirect("/login");
 
+    let response;
 
-    const response = await postWanderList(data,authorization,cookie,profile.id)
-
-    if (response.status !== 200) {
-        return {success: false, status: response}
+    console.log("action update: ",data)
+    if (data?.id) {
+        /** EDIT MODE */
+        response = await updateWanderList(data, authorization, cookie,profile.id);
+    } else {
+        /** ADD MODE */
+        response = await postWanderList(data, authorization, cookie, profile.id);
     }
 
-    return {success: true, status: response}
+    if (response.status !== 200) {
+        return { success: false, status: response };
+    }
+   /* return {
+        success: true,
+        status: response
+    };*/
 
+    // ⬅️ redirect back to dashboard
+    return redirect(request.url);
 }
+
 
 const statusOptions = [
     "Not Started",
@@ -73,18 +83,24 @@ const statusOptions = [
     "On Hold",
     "Completed",
 ];
+type Props = {
+    wanderList: WanderListForm[];
+    errorMessage?: string;
+};
 
-export default function WanderList({loaderData}:Route.ComponentProps) {
-    const { wanderList} = loaderData;
-    console.log("wanderList loading",wanderList)
+/*export default function WanderList(props: Props) {
+    const { wanderList} = props;*/
+export default function WanderList({ loaderData }: Route.ComponentProps) {
+    const { wanderList } = loaderData ?? {};
+   // const {title, description, targetDate, pinned, wanderlistStatus, visibility}  = wanderList
     const {handleSubmit, formState: {errors}, register} = useRemixForm<WanderListForm>({mode: 'onSubmit', resolver})
-    console.log("errors in form ",errors)
-    const actionData = useActionData<typeof action>();
+     const actionData = useActionData<typeof action>();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingItem, setEditingItem] = useState(null as null | { id: string; name: string });
+    const [editingItem, setEditingItem] = useState(null as null | WanderListForm);
     const [modalInput, setModalInput] = useState("");
 
+    const revalidator = useRevalidator();
     // Lock scroll when modal open
     useEffect(() => {
         if (isModalOpen) {
@@ -92,7 +108,14 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
         } else {
             document.body.style.overflow = "";
         }
-    }, [isModalOpen]);
+
+console.log('actionData?.success', actionData)
+        if (actionData?.success) {
+            setIsModalOpen(false)
+            revalidator.revalidate('/dashboard'); // refresh loader data
+        }
+    }, [isModalOpen,actionData]);
+
 
 // Open modal for adding new item
     const openAddModal = () => {
@@ -102,9 +125,10 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
     };
 
 // Open modal for editing existing item
-    const openEditModal = (item: { id: string; name: string }) => {
+    const openEditModal = (item) => {
+        console.log("open itam",item);
         setEditingItem(item);
-        setModalInput(item.name);
+        setModalInput(item.title);
         setIsModalOpen(true);
     };
 
@@ -122,6 +146,15 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-semibold text-gray-900">My Wanderlist</h2>
                 <div className="text-sm text-gray-500">{wanderList?.length} items</div>
+                <button
+                    type="button"
+                    onClick={openAddModal}
+                    className="inline-flex items-center gap-2 rounded-md px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-medium shadow transition"
+                >
+                    <FaPencil/>
+
+                    Add Wander
+                </button>
             </div>
 
             {!wanderList ? (
@@ -149,16 +182,16 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                 </div>
             ) : (
                 <div className="grid gap-8 md:grid-cols-2">
-                    {wanderList?.map((item) => (
+                    {wanderList?.map((item:WanderListForm) => (
                         <div
-                            key={item.id}
+                            id = {item.id}
                             className="bg-gray-50 border border-gray-100 rounded-xl p-6 shadow-sm flex flex-col"
                         >
                             <ListItems wanderList={item} />
 
                             {/* Controls - Edit button */}
                             <div className="mt-4 flex justify-end">
-                                <button
+                                <button id = {item.id}
                                     onClick={() => openEditModal(item)}
                                     className="px-4 py-2 rounded-md bg-amber-500 text-white hover:bg-amber-600 transition"
                                 >
@@ -198,11 +231,15 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                       noValidate={true}
                       method={'POST'}
                       className="space-y-4 md:space-y-6" >
-
-                {/* Title */}
+                    {/* if editing */}
+                    {editingItem && (
+                        <input {...register('id')} type="hidden" id="id" value={editingItem?.id} />
+                    )}
+                        {/* Title */}
                 <label className="block mb-4">
                     <span className="text-gray-700 font-medium">Title</span>
                     <input {...register('title')}
+                        defaultValue={editingItem?.title}
                         type="text"
                         placeholder="Enter title"
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -217,6 +254,7 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                 <label className="block mb-4">
                     <span className="text-gray-700 font-medium">Description</span>
                     <textarea {...register('description')}
+                        defaultValue={editingItem?.description ?? ''}
                         placeholder="Enter description"
                         rows={4}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-y"
@@ -231,7 +269,7 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                 {/* Target Date */}
                 <label className="block mb-4">
                     <span className="text-gray-700 font-medium">Target Completion Date</span>
-                    <input {...register('targetDate')}
+                    <input {...register('targetDate')} defaultValue={editingItem?.targetDate?.toISOString()?.slice(0, 10)}
                         type="date"
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
 
@@ -243,7 +281,7 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
 
                 {/* Pinned */}
                 <label className="inline-flex items-center mb-4 cursor-pointer">
-                    <input {...register('pinned')}
+                    <input {...register('pinned')} defaultChecked={editingItem?.pinned}
                         type="checkbox"
                         className="form-checkbox h-5 w-5 text-amber-500"
 
@@ -259,7 +297,7 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                     <span className="text-gray-700 font-medium">Wanderlist Status</span>
                     <select {...register('wanderlistStatus')}
                         className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                       defaultValue={ wanderList?.wanderlistStatus }
+                       defaultValue={ editingItem?.wanderlistStatus }
                     >
                         {statusOptions.map((status) => (
                             <option key={status} value={status}>{status}</option>
@@ -278,7 +316,7 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                             key={option.id}
                             className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition
                                                   ${
-                                wanderList?.visibility === option.id
+                                editingItem?.visibility === option.id
                                     ? "border-blue-500 bg-blue-50"
                                     : "border-gray-300 hover:bg-gray-50"
                             }`}
@@ -287,7 +325,7 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                                 type="radio"
                                 name="visibility"
                                 value={option.id}
-                                   defaultChecked={wanderList?.visibility === option.id}
+                                   defaultChecked={editingItem?.visibility === option.id}
                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                             />
                             <span className="text-gray-800 font-medium">{option.name}</span>
@@ -297,7 +335,7 @@ export default function WanderList({loaderData}:Route.ComponentProps) {
                         <p className="mt-1 text-sm text-red-500">{errors.visibility.message}</p>
                     )}
                 </fieldset>
-
+                    <StatusMessage actionData={actionData} />
                 <div className="flex justify-end gap-4">
                     <button
                         onClick={closeModal}

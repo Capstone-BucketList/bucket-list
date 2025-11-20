@@ -7,7 +7,6 @@ type wanderListProps={
 export function ListItems(props:wanderListProps) {
 
     const {wanderList} = props;
-    console.log("listitem", wanderList);
     return (
         <>
             <div

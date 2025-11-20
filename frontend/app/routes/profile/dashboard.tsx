@@ -86,7 +86,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                     style={{ minHeight: "70vh" }}
                 >
                     {/* LEFT + MIDDLE - Wanderlist + Posts */}
-                 <WanderList />
+                 <WanderList wanderList ={wanderList}/>
 
                     {/* RIGHT Sidebar - Friends + Progress + Timeline */}
                     <aside className="space-y-10">

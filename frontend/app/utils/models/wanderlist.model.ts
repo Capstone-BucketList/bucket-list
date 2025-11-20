@@ -16,8 +16,8 @@ import {addHeaders, wanderlistBasepath} from "~/utils/utility";
 */
 export const WanderListSchema =  z.object({
 
-    id: z.uuidv7('Please provide a valid uuid for id'),
-    profileId: z.uuidv7('Please provide a valid uuid for profile id'),
+    id: z.uuidv7('Please provide a valid uuid for id').optional(),
+    profileId: z.uuidv7('Please provide a valid uuid for profile id').optional(),
 
     description: z.string('Please provide a valid description')
         .max(256, 'please provide a valid description (max 256 characters)')
@@ -48,7 +48,7 @@ export const WanderListSchema =  z.object({
  */
 export  type WanderList = z.infer<typeof WanderListSchema>
 
-export const WanderListFormSchema = WanderListSchema.omit({ id: true, profileId: true })
+export const WanderListFormSchema = WanderListSchema
 
 export type WanderListForm = z.infer<typeof WanderListFormSchema>
 
@@ -72,7 +72,6 @@ export  async function getWanderListByProfileId(profileId: string, authorization
     })
 
    const result = WanderListSchema.array().parse(response.data)
-console.log("result",result)
     return result
 }
 
@@ -98,5 +97,29 @@ export async function postWanderList(data: WanderList,authorization: string, coo
 
     const result = await response.json()
 console.log("result",result)
+    return result
+}
+
+/**
+ * insert wanderlist
+ * @param data
+ * @param authorization
+ * @param cookie
+ */
+export async function updateWanderList(data: WanderList,authorization: string, cookie: string, profileId:string): Promise<Status> {
+    const modifiedWanderList = {profileId:profileId, ...data }
+    console.log("modifiedWanderList", modifiedWanderList)
+    const response = await fetch(`${process.env.REST_API_URL}${wanderlistBasepath}`, {
+        method: 'PUT',
+        headers:  addHeaders(authorization,cookie),
+        body: JSON.stringify(modifiedWanderList)
+    })
+    console.log(response)
+    if( !response.ok) {
+        throw new Error('Failed to update wanderlist')
+    }
+
+    const result = await response.json()
+    console.log("result",result)
     return result
 }
