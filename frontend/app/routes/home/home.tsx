@@ -10,7 +10,7 @@ import {
     FaGlobeAmericas, FaHeart,
     FaLightbulb,
     FaListAlt,
-    FaMedal,
+    FaMedal,git pu
     FaMountain,
     FaUsers
 } from "react-icons/fa";
