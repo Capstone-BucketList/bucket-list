@@ -10,7 +10,7 @@ import {
     FaGlobeAmericas, FaHeart,
     FaLightbulb,
     FaListAlt,
-    FaMedal,git pu
+    FaMedal,
     FaMountain,
     FaUsers
 } from "react-icons/fa";
@@ -53,16 +53,16 @@ const features = [
         description: "Find inspiration from others and add them to your list.",
     },
 ];
-const scrollImages = [
-    "/adventures.jpg",
-    "/adventures1.jpg",
-    "/adventures2.jpg",
-    "/adventures3.jpg",
-    "/adventures4.jpg",
-    "/adventures5.jpg",
-    "/adventures6.jpg",
-    "/travel.webp"
-    ]
+// const scrollImages = [
+//     "/adventures.jpg",
+//     "/adventures1.jpg",
+//     "/adventures2.jpg",
+//     "/adventures3.jpg",
+//     "/adventures4.jpg",
+//     "/adventures5.jpg",
+//     "/adventures6.jpg",
+//     "/travel.webp"
+//     ]
 const whyWanderList: WhyWanderList[] =[
     {
 

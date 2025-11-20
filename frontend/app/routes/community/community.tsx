@@ -12,6 +12,7 @@ import {
     FaLayerGroup,
     FaPhotoVideo
 } from "react-icons/fa";
+import { TripCard, BucketListExamplesSection} from "~/components/Example-trips";
 
 interface Profile {
     id: number;
@@ -196,6 +197,9 @@ export default function Community() {
                 </div>
             </section>
 
+            {/* example trips */}
+            <BucketListExamplesSection/>
+
             {/*Story Sharing from Users*/}
             <section className="max-w-7xl mx-auto px-6 py-10">
                 <div className="flex items-center justify-between mb-6">
@@ -207,7 +211,7 @@ export default function Community() {
                     </Button>
                 </div>
 
-                <div className="flex gap-6 overflow-x-auto pb-4">
+                <div className="flex gap-6 overflow-y-visible overflow-x-auto pb-4">
                     {stories.map((s) => (
                         <Card key={s.id} className="min-w-[260px] shadow-md">
                             <div className="flex items-center gap-3 mb-3">
@@ -231,6 +235,7 @@ export default function Community() {
                     ))}
                 </div>
             </section>
+
 
             {/* MAIN GRID LAYOUT (FEED + SIDEBAR) */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 px-4">

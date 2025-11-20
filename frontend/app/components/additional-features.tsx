@@ -12,7 +12,7 @@ export function HeroSection() {
         <section className="relative w-full h-[550px] md:h-[650px] overflow-hidden">
 
             {/* Background Image */}
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 z-30">
                 <img
                     src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1950&q=80"
                     alt="Shiprock landscape"
@@ -23,7 +23,7 @@ export function HeroSection() {
             </div>
 
             {/* Text Content */}
-            <div className="relative z-10 flex flex-col justify-center items-center text-center h-full px-4 sm:px-6 md:px-10">
+            <div className="relative z-40 flex flex-col justify-center items-center text-center h-full px-4 sm:px-6 md:px-10">
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
                     Turn <span className="relative inline-block"><span className="relative z-10">your Dreams</span>    <span className="absolute inset-0 rounded-full border-4 border-amber-400 opacity-70 -translate-x-1 -translate-y-1"></span></span>Into Adventures
@@ -83,9 +83,9 @@ export function SidebarChat() {
 
             {/* Sidebar chat panel */}
             <div
-                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg z-40 transform transition-transform duration-300 ${
+                className={`fixed bottom-25 right-0 h-[600px] w-80 bg-white shadow-lg z-40 transform transition-transform duration-300 ${
                     isOpen ? "translate-x-0" : "translate-x-full"
-                } flex flex-col`}
+                } flex flex-col rounded-tl-lg rounded-bl-lg overflow-hidden`}
             >
                 <header className="flex items-center justify-between p-4 border-b border-gray-200">
                     <h2 className="text-lg font-semibold text-gray-900">Wanderlist Chat</h2>
@@ -102,26 +102,26 @@ export function SidebarChat() {
                     {messages.map((msg) => (
                         <div
                             key={msg.id}
-                            className={`p-2 rounded-lg max-w-[75%] ${
+                            className={`p-3 rounded-lg max-w-[75%] ${
                                 msg.user === "You" ? "bg-amber-100 ml-auto" : "bg-gray-200"
                             }`}
                         >
-                            <p className="text-sm font-medium">{msg.user}</p>
-                            <p>{msg.text}</p>
+                            <p className="text-sm font-medium text-gray-700">{msg.user}</p>
+                            <p className="text-sm">{msg.text}</p>
                         </div>
                     ))}
                     <div ref={messagesEndRef} />
                 </main>
 
                 <footer className="p-4 border-t border-gray-200 flex gap-2">
-                    <TextInput
+                    <input
                         placeholder="Type a message..."
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                         className="flex-1"
                     />
-                    <Button onClick={sendMessage} color="amber">
+                    <Button onClick={sendMessage} className="bg-amber-300">
                         Send
                     </Button>
                 </footer>
