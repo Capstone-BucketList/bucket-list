@@ -17,6 +17,7 @@ import {
 import type {Route} from "../../../.react-router/types/app/routes/home/+types/home";
 import {DivSlider} from "~/components/div_slider";
 import type { ReactNode } from "react";
+import {HeroSection, SidebarChat} from "~/components/additional-features";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -131,7 +132,7 @@ export default function Home() {
   const location = useLocation();
     useEffect( () => {
         const images = document.querySelectorAll('[data-carousel-item]');
-console.log(images.length);
+
         if(images.length == 0) return;
         let index = 0;
         const interval = setInterval( () => {
@@ -145,49 +146,50 @@ console.log(images.length);
     }, [location.pathname]);
     return(
         <>
-            <section className="relative">
-                <div className="relative w-full" data-carousel="slide" id="adventure-data-carousel">
-                    <div className="relative h-[550px] overflow-hidden z-0 object-cover">
-                    {
-                        scrollImages.map((image, index) => (
-                            <div className="hidden ease-in-out duration-700" key ={index+1} data-carousel-item>
-                                <img src={image} className="absolute block w-full h-full object-cover" alt={image} key ={index+1}/>
-                            </div>
-                        ))
-                    }
-                    </div>
-                    <div className="absolute flex z-30 bottom-5 space-x-3 left-1/2 -translate-x-1/2 ">
-                        {
-                            scrollImages.map((_, index) => (
-                                <button type="button" className="w-3 h-3 rounded-full bg-white/50 hover:bg-white"
-                                        aria-label={`slide ${index+1}`} data-carsousel-slide-to ={index} key={`slide ${index+1}`}>
-                                </button>
-                            ))
-                        }
+            {/*<section className="relative">*/}
+            {/*    <div className="relative w-full" data-carousel="slide" id="adventure-data-carousel">*/}
+            {/*        <div className="relative h-[550px] overflow-hidden z-0 object-cover">*/}
+            {/*        {*/}
+            {/*            scrollImages.map((image, index) => (*/}
+            {/*                <div className="hidden ease-in-out duration-700" key ={index+1} data-carousel-item>*/}
+            {/*                    <img src={image} className="absolute block w-full h-full object-cover" alt={image} key ={index+1}/>*/}
+            {/*                </div>*/}
+            {/*            ))*/}
+            {/*        }*/}
+            {/*        </div>*/}
+            {/*        <div className="absolute flex z-30 bottom-5 space-x-3 left-1/2 -translate-x-1/2 ">*/}
+            {/*            {*/}
+            {/*                scrollImages.map((_, index) => (*/}
+            {/*                    <button type="button" className="w-3 h-3 rounded-full bg-white/50 hover:bg-white"*/}
+            {/*                            aria-label={`slide ${index+1}`} data-carsousel-slide-to ={index} key={`slide ${index+1}`}>*/}
+            {/*                    </button>*/}
+            {/*                ))*/}
+            {/*            }*/}
 
-                    </div>
-                    <div className="absolute inset-0 bg-black/50"></div>
+            {/*        </div>*/}
+            {/*        <div className="absolute inset-0 bg-black/50"></div>*/}
 
-                </div>
-               {/* <div className="absolute inset-0 w-full top-0 m-5">
-                    <h2 className="text-blue-500 text-center text-5xl font-extrabold">Wander List App</h2>
-                </div>*/}
-                <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-10">
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
-                        Turn your Dreams Into Adventures
-                    </h2>
+            {/*    </div>*/}
+            <HeroSection/>
+            {/*   /!* <div className="absolute inset-0 w-full top-0 m-5">*/}
+            {/*        <h2 className="text-blue-500 text-center text-5xl font-extrabold">Wander List App</h2>*/}
+            {/*    </div>*!/*/}
+            {/*    <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4 sm:px-6 md:px-10">*/}
+            {/*        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">*/}
+            {/*            Turn your Dreams Into Adventures*/}
+            {/*        </h2>*/}
 
-                    <p className="text-base sm:text-lg md:text-xl text-gray-100 font-medium mb-8 max-w-2xl">
-                        Create your Wander list, share with friends, and start checking off your dreams today!
-                        Connect with a community of adventurers and make every moment count.
-                    </p>
+            {/*        <p className="text-base sm:text-lg md:text-xl text-gray-100 font-medium mb-8 max-w-2xl">*/}
+            {/*            Create your Wander list, share with friends, and start checking off your dreams today!*/}
+            {/*            Connect with a community of adventurers and make every moment count.*/}
+            {/*        </p>*/}
 
-                    <Button href="/signup" size="lg" className="bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 rounded-lg text-white font-semibold hover:opacity-90 transition">
-                        Start your journey
-                    </Button>
-                </div>
+            {/*        <Button href="/signup" size="lg" className="bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 rounded-lg text-white font-semibold hover:opacity-90 transition">*/}
+            {/*            Start your journey*/}
+            {/*        </Button>*/}
+            {/*    </div>*/}
 
-            </section>
+            {/*</section>*/}
           <div className="text-gray-900">
                 <section className="py-16 bg-white">
                     <h2 className="text-3xl font-bold text-center mb-10">What You Can Do</h2>
@@ -205,7 +207,7 @@ console.log(images.length);
                         }
                     </div>
                 </section>
-
+                <SidebarChat/>
               <section className="bg-blue-600 p-5">
                   <div className="max-w-6xl mx-auto px-6 text-center">
                       <h2 className="text-4xl font-extrabold mb-4 "> Why Choose <span className="text-white">Wander List? </span></h2>

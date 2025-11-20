@@ -77,7 +77,7 @@ export default function Community() {
         setPosts([
             {
                 id: 1,
-                user: {id: 101, name: "Ava Carter", avatarUrl: "https://i.pravatar.cc/150?img=32", avatarUrl: "https://i.pravatar.cc/150?img=32"},
+                user: {id: 101, name: "Ava Carter", avatarUrl: "https://i.pravatar.cc/150?img=32"},
                 content: "Exploring the mountains this weekend! 🏔️✨",
                 createdAt: "2025-02-01",
                 media: [{url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470"}],
@@ -107,9 +107,8 @@ export default function Community() {
         setStories([
             {
                 id: 1,
-                user: {id: 555, name: "Bobby Manuelito"},
+                user: {id: 555, name: "Bobby Manuelito", avatarUrl: ""},
                 text: "Just completed my first 5K run! Feeling amazing! Never did I think I could complete such a distance. Wanderlist motivated me in other tasks and now I'm able to run this distance. 🏃‍♂️💨",
-                avatarUrl: "",
                 image: "http://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
                 category: "healthy living",
                 createdAt: "2025-11-11"
