@@ -13,7 +13,7 @@ import {addHeaders, postBasePath} from "~/utils/utility";
  **/
 
 export const PostSchema = z.object ({
-    id: z.uuidv7('please provide a valid uuid'),
+    id: z.uuidv7('please provide a valid uuid').optional(),
 
     wanderlistId: z.uuidv7('please provide a valid uuid'),
 
@@ -23,17 +23,17 @@ export const PostSchema = z.object ({
         .nullable(),
 
     datetimeCreated:z.coerce.date('please provide a valid datetime created')
-        .nullable(),
+        .optional(),
 
     datetimeModified:z.coerce.date('please provide a valid date time modified')
-        .nullable(),
+        .optional(),
 
     title: z.string('please provide a valid title')
         .max(64, 'please provide a valid title (max 64 characters)'),
 
     visibility: z.string('please provide a valid visibility')
         .max(32, 'please provide a valid visibility (max 32 characters)')
-}).omit({datetimeCreated:true, datetimeModified : true})
+})
 
 export type Post = z.infer<typeof PostSchema>
 

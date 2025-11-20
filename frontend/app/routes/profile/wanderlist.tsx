@@ -8,7 +8,7 @@ import {
 } from "~/utils/models/wanderlist.model";
 import type {FormActionResponse} from "~/utils/interfaces/FormActionResponse";
 import {getValidatedFormData, useRemixForm} from "remix-hook-form";
-import {Form, redirect, useActionData, useRevalidator} from "react-router";
+import {Form, Link, redirect, useActionData, useRevalidator} from "react-router";
 import React, {useState,useEffect} from "react";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 import {getSession} from "~/utils/session.server";
@@ -33,7 +33,7 @@ export async function loader({request}: Route.LoaderArgs) {
         return redirect("/login");
     }
     //  get wonderlist items by profileId
-    const wanderList  =await getWanderListByProfileId(profile.id, authorization, cookie) //profile.id)
+    const wanderList  = await getWanderListByProfileId(profile.id, authorization, cookie) //profile.id)
 
     return { wanderList}
 
@@ -197,6 +197,11 @@ console.log('actionData?.success', actionData)
                                 >
                                     Edit
                                 </button>
+                                <Link to={`/create-post/${item.id}`}>
+                                    <button className="px-4 py-2 mx-2 rounded-md bg-violet-700 text-white hover:bg-violet-600 transition">
+                                        Add post to this wanderList
+                                    </button>
+                                </Link>
                             </div>
                         </div>
                     ))}

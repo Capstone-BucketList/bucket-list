@@ -52,7 +52,7 @@ export const WanderListFormSchema = WanderListSchema
 
 export type WanderListForm = z.infer<typeof WanderListFormSchema>
 
-export  async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string | null): Promise<WanderList[]> {
+export async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string | null): Promise<WanderList[]> {
 
     const requestHeaders = new Headers()
     requestHeaders.append('Content-Type', 'application/json')
@@ -121,5 +121,28 @@ export async function updateWanderList(data: WanderList,authorization: string, c
 
     const result = await response.json()
     console.log("result",result)
+    return result
+}
+
+export async function getWanderListById(id: string, authorization: string, cookie: string | null): Promise<WanderList | null> {
+
+    const requestHeaders = new Headers()
+    requestHeaders.append('Content-Type', 'application/json')
+    requestHeaders.append('Authorization', authorization)
+
+    requestHeaders.append('Cookie', cookie)
+
+
+    const response = await fetch(`${process.env.REST_API_URL}/wanderlist/${id}`,{
+        method: 'GET',
+        headers: requestHeaders,
+    }) .then(res => {
+        if (!res.ok) {
+            throw new Error('failed to fetch unread messages')
+        }
+        return res.json()
+    })
+
+    const result = WanderListSchema.parse(response.data)
     return result
 }

@@ -12,7 +12,8 @@ export default [
     route('/login','routes/login/login.tsx'),
         route('/logout','routes/logout/logout.tsx'),
         //route('/settings','routes/setting/setting.tsx')
-        route("/settings", "routes/setting/my-profile.tsx")
+        route("/settings", "routes/setting/my-profile.tsx"),
+        route('/create-post/:wanderlistId', 'routes/create-post/create-post.tsx')
     ]),
 ] satisfies RouteConfig;
 
