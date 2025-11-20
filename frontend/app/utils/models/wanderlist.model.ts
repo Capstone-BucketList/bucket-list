@@ -1,6 +1,7 @@
 import z from "zod/v4";
 import type {Status} from "~/utils/interfaces/Status";
 import {v7 as uuid} from 'uuid'
+import {addHeaders, wanderlistBasepath} from "~/utils/utility";
 
 /**
 * Schema for validating the wanderlist object
@@ -15,8 +16,8 @@ import {v7 as uuid} from 'uuid'
 */
 export const WanderListSchema =  z.object({
 
-    id: z.uuidv7('Please provide a valid uuid for id'),
-    profileId: z.uuidv7('Please provide a valid uuid for profile id'),
+    id: z.uuidv7('Please provide a valid uuid for id').optional(),
+    profileId: z.uuidv7('Please provide a valid uuid for profile id').optional(),
 
     description: z.string('Please provide a valid description')
         .max(256, 'please provide a valid description (max 256 characters)')
@@ -47,6 +48,9 @@ export const WanderListSchema =  z.object({
  */
 export  type WanderList = z.infer<typeof WanderListSchema>
 
+export const WanderListFormSchema = WanderListSchema
+
+export type WanderListForm = z.infer<typeof WanderListFormSchema>
 
 export  async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string | null): Promise<WanderList[]> {
 
@@ -68,18 +72,22 @@ export  async function getWanderListByProfileId(profileId: string, authorization
     })
 
    const result = WanderListSchema.array().parse(response.data)
-console.log("result",result)
     return result
 }
 
-/*
-export async function postWanderList(data: WanderList): Promise<{result: Status, headers: Headers}> {
-    const modifiedWanderList = {id: uuid(), ...data }
-    const response = await fetch(`${process.env.REST_API_URL}/wanderlist`, {
+/**
+ * insert wanderlist
+ * @param data
+ * @param authorization
+ * @param cookie
+ */
+export async function postWanderList(data: WanderList,authorization: string, cookie: string, profileId:string): Promise<Status> {
+    const modifiedWanderList = {id: uuid(), profileId:profileId, ...data }
+
+    console.log("modifiedWanderList", modifiedWanderList)
+    const response = await fetch(`${process.env.REST_API_URL}${wanderlistBasepath}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers:  addHeaders(authorization,cookie),
         body: JSON.stringify(modifiedWanderList)
     })
     console.log(response)
@@ -88,6 +96,30 @@ export async function postWanderList(data: WanderList): Promise<{result: Status,
     }
 
     const result = await response.json()
-
+console.log("result",result)
     return result
-}*/
+}
+
+/**
+ * insert wanderlist
+ * @param data
+ * @param authorization
+ * @param cookie
+ */
+export async function updateWanderList(data: WanderList,authorization: string, cookie: string, profileId:string): Promise<Status> {
+    const modifiedWanderList = {profileId:profileId, ...data }
+    console.log("modifiedWanderList", modifiedWanderList)
+    const response = await fetch(`${process.env.REST_API_URL}${wanderlistBasepath}`, {
+        method: 'PUT',
+        headers:  addHeaders(authorization,cookie),
+        body: JSON.stringify(modifiedWanderList)
+    })
+    console.log(response)
+    if( !response.ok) {
+        throw new Error('Failed to update wanderlist')
+    }
+
+    const result = await response.json()
+    console.log("result",result)
+    return result
+}
