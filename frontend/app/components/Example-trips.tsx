@@ -7,17 +7,17 @@ const exampleTrips = [
         title: "Climb Mount ",
         description: "Experience the highest peak in Africa. 12 Invites x 8 days x 1 Awesome Roadtrip" +
             " February 20 - March 1, 2024",
-        image: "/trips/img.png",
+        image: "https://res.cloudinary.com/dgkckqptm/image/upload/v1763674511/img_zfathr.png",
     },
     {
         title: "Explore the Great Barrier Reef",
         description: "Dive into the world's largest coral reef system. 10 Invites x 7 days x 1 Unforgettable Journey",
-        image: "/trips/img_1.png",
+        image: "https://res.cloudinary.com/dgkckqptm/image/upload/v1763674511/img_1_duuvjf.png",
     },
     {
         title: "Visit Machu Picchu",
         description: "Discover the ancient Incan city in Peru. 8 Invites x 6 days x 1 Historic Adventure",
-        image: "/trips/img_2.png",
+        image: "https://res.cloudinary.com/dgkckqptm/image/upload/v1763674511/img_2_asor1q.png",
     },
     {
         title: "Swimming in Hawaii",

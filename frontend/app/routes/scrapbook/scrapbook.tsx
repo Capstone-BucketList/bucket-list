@@ -106,6 +106,23 @@ export default function Scrapbook() {
                 {/* LEFT PHOTO FEED */}
                 <div className="lg:col-span-9 flex flex-col gap-8">
 
+                    { /*create new album location*/}
+                    <Card className="shadow-md hover:shadow-lg transition p-6">
+                        <h2 className="text-3xl font-extrabold mb-4">Create New Album</h2>
+                        {albums.length === 0 ? (
+                            <p className="text-gray-600">No albums yet. Start your first one!</p>
+                            ) : (
+                                <ul className="flex flex-col gap-3">
+                                    {albums.map(album => (
+                                        <li key={album.id} className="p-3 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer">
+                                            <p className="font-semibold">{album.title}</p>
+                                            <p className="text-xs text-gray-500">{album.photoCount ?? 0} photos</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                        )}
+                    </Card>
+
                     {/* — Travel — */}
                     <Card className="shadow-md hover:shadow-lg transition p-6">
                         <div className="flex items-center gap-3 mb-6">

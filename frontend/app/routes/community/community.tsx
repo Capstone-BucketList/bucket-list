@@ -110,7 +110,7 @@ export default function Community() {
                 id: 1,
                 user: {id: 555, name: "Bobby Manuelito", avatarUrl: ""},
                 text: "Just completed my first 5K run! Feeling amazing! Never did I think I could complete such a distance. Wanderlist motivated me in other tasks and now I'm able to run this distance. 🏃‍♂️💨",
-                image: "http://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
+                image: "https://res.cloudinary.com/dgkckqptm/image/upload/v1763676923/img_4_cuwvlh.png",
                 category: "healthy living",
                 createdAt: "2025-11-11"
             }
@@ -201,7 +201,7 @@ export default function Community() {
             <BucketListExamplesSection/>
 
             {/*Story Sharing from Users*/}
-            <section className="max-w-7xl mx-auto px-6 py-10">
+            <section className="max-w-7xl px-6 py-10 bg-white">
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-3xl font-bold text-indigo-700">Community Stories</h2>
                     <Button
@@ -211,9 +211,9 @@ export default function Community() {
                     </Button>
                 </div>
 
-                <div className="flex gap-6 overflow-y-visible overflow-x-auto pb-4">
+                <div className="flex gap-6 pb-4 bg-indigo-50">
                     {stories.map((s) => (
-                        <Card key={s.id} className="min-w-[260px] shadow-md">
+                        <div key={s.id} className="rounded-xl shadow-md p-4">
                             <div className="flex items-center gap-3 mb-3">
                                 <Avatar img={s.user.avatarUrl} rounded/>
                                 <div>
@@ -228,10 +228,10 @@ export default function Community() {
                                 <img
                                     src={s.image}
                                     alt="story"
-                                    className="rounded-lg h-40 w-full object-cover"
+                                    className="rounded-lg w-full max-w-full max-h-60 object-contain"
                                 />
                             )}
-                        </Card>
+                        </div>
                     ))}
                 </div>
             </section>

@@ -15,7 +15,7 @@ export function HeroSection() {
             <div className="absolute inset-0 z-30">
                 <img
                     src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1950&q=80"
-                    alt="Shiprock landscape"
+                    alt="Coastal view"
                     className="w-full h-full object-cover"
                 />
                 {/* Dark overlay */}
@@ -26,7 +26,7 @@ export function HeroSection() {
             <div className="relative z-40 flex flex-col justify-center items-center text-center h-full px-4 sm:px-6 md:px-10">
 
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
-                    Turn <span className="relative inline-block"><span className="relative z-10">your Dreams</span>    <span className="absolute inset-0 rounded-full border-4 border-amber-400 opacity-70 -translate-x-1 -translate-y-1"></span></span>Into Adventures
+                    Turn <span className="relative inline-block"><span className="relative z-10"> your Dreams</span>    <span className="absolute inset-0 rounded-full border-7 border-amber-500 opacity-70 -translate-x-1 -translate-y-1"></span></span>Into Adventures
                 </h2>
 
                 <p className="text-base sm:text-lg md:text-xl text-gray-100 font-medium mb-8 max-w-2xl">
