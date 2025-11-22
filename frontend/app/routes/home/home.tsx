@@ -1,7 +1,7 @@
 
 import {Button, Card} from "flowbite-react";
 import {useLocation} from "react-router";
-import {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {
     FaBook,
     FaBullseye,
@@ -18,6 +18,7 @@ import type {Route} from "../../../.react-router/types/app/routes/home/+types/ho
 import {DivSlider} from "~/components/div_slider";
 import type { ReactNode } from "react";
 import {HeroSection, SidebarChat} from "~/components/additional-features";
+import {BucketListExamplesSection} from "~/components/Example-trips";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -31,6 +32,13 @@ export type WhyWanderList = {
     title: string;
     description: string;
 }
+
+export type PhotoData = {
+    imageSrc: string;
+    title: string;
+    description?: string;
+    altText?: string;
+};
 const features = [
     {
         icon: <FaListAlt className="w-10 h-10 text-indigo-600 mx-auto mb-3" />,
@@ -126,24 +134,89 @@ const whyWanderList: WhyWanderList[] =[
 
 ]
 
-
 export default function Home() {
 
-  const location = useLocation();
-    useEffect( () => {
-        const images = document.querySelectorAll('[data-carousel-item]');
+    const location = useLocation();
+    const [isCarouselReady, setIsCarouselReady] = useState(false);
 
-        if(images.length == 0) return;
+    useEffect(() => {
+        const container = document.getElementById("carousel-images");
+        const images = document.querySelectorAll("#inspiration [data-carousel-item] img");
+
+        if (!container || images.length === 0) return;
+
         let index = 0;
-        const interval = setInterval( () => {
-            images.forEach((image,i) => {
-                image.classList.toggle('hidden' , i !==index);
-            })
-            index = (index+1) % images.length;
+        let interval: ReturnType<typeof setInterval>;
+        let startDelay: ReturnType<typeof setTimeout>;
+        let rafId: number;
 
-        }, 3000)
-        return () => clearInterval(interval);
+        rafId = requestAnimationFrame(() => {
+            // Show all images initially in grid
+            images.forEach((img) => {
+                img.classList.remove("hidden");
+                img.classList.remove("h-[500px]");
+                if (!img.classList.contains("h-60")) {
+                    img.classList.add("h-60");
+                }
+            });
+
+            container.classList.remove("flex", "justify-center");
+            container.classList.add("grid", "md:grid-cols-3", "gap-6");
+            container.style.visibility = "";
+
+            startDelay = setTimeout(() => {
+                container.style.visibility = "hidden";
+
+                container.classList.remove("grid", "md:grid-cols-3", "gap-6");
+                container.classList.add("flex", "justify-center");
+
+                // Show only first image initially
+                images.forEach((img, i) => {
+                    img.classList.toggle("hidden", i !== 0);
+                    if (i === 0) {
+                        img.classList.remove("h-60");
+                        img.classList.add("h-[500px]");
+                    } else {
+                        img.classList.remove("h-[500px]");
+                        if (!img.classList.contains("h-60")) {
+                            img.classList.add("h-60");
+                        }
+                    }
+                });
+
+                setTimeout(() => {
+                    container.style.visibility = "";
+
+                    interval = setInterval(() => {
+                        images.forEach((img, i) => {
+                            const isVisible = i === index;
+
+                            img.classList.toggle("hidden", !isVisible);
+
+                            if (isVisible) {
+                                img.classList.remove("h-60");
+                                img.classList.add("h-[500px]");
+                            } else {
+                                img.classList.remove("h-[500px]");
+                                if (!img.classList.contains("h-60")) {
+                                    img.classList.add("h-60");
+                                }
+                            }
+                        });
+
+                        index = (index + 1) % images.length;
+                    }, 3000);
+                }, 30);
+            }, 2000);
+        });
+
+        return () => {
+            clearTimeout(startDelay);
+            clearInterval(interval);
+            cancelAnimationFrame(rafId);
+        };
     }, [location.pathname]);
+
     return(
         <>
             {/*<section className="relative">*/}
@@ -208,6 +281,9 @@ export default function Home() {
                     </div>
                 </section>
                 <SidebarChat/>
+
+              {/* Example group goal trips*/}
+              <BucketListExamplesSection/>
               <section className="bg-blue-600 p-5">
                   <div className="max-w-6xl mx-auto px-6 text-center">
                       <h2 className="text-4xl font-extrabold mb-4 "> Why Choose <span className="text-white">Wander List? </span></h2>
@@ -229,21 +305,23 @@ export default function Home() {
                   </div>
 
               </section>
-                <section id="inspiration" className="py-16 bg-indigo-50">
+                <section id="inspiration" className="py-16 bg-violet-400">
                     <h2 className="text-3xl font-bold text-center mb-10">Inspiration Gallery</h2>
-                    <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto px-6">
-                        {["mountain","travel","adventure","beaches","hiking","skiing"].map((place, i) => (
-                            <div key={i} className="relative group">
+                    <div id="carousel-container" className="max-w-5xl mx-auto px-6" style={{minHeight: '280px'}}>
+                    <div id="carousel-images" className=" grid md:grid-cols-3 gap-6 transition-opacity duration-300" data-carousel="slide">
+                        {["mountain","travel","adventure","beaches","hiking","skiing", "balloon-fiesta", "sanddunes", "santafe"].map((place, i) => (
+                            <div key={i} className="relative group" data-carousel-item style={{ transition: "all 0.5s ease" }}>
                                 <img
                                     src={`/inspirationGallery/${place}.jpg`}
                                     alt={place}
-                                    className="rounded-2xl shadow-md group-hover:scale-105 transition w-90 h-60"
+                                    className="rounded-2xl shadow-md group-hover:scale-105 transition w-full h-60 object-cover"
                                 />
                                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
                                     <p className="text-white text-lg font-semibold capitalize">{place}</p>
                                 </div>
                             </div>
                         ))}
+                    </div>
                     </div>
                 </section>
 

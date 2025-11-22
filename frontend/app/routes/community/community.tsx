@@ -12,7 +12,7 @@ import {
     FaLayerGroup,
     FaPhotoVideo
 } from "react-icons/fa";
-import { TripCard, BucketListExamplesSection} from "~/components/Example-trips";
+
 
 interface Profile {
     id: number;
@@ -196,9 +196,6 @@ export default function Community() {
                     ))}
                 </div>
             </section>
-
-            {/* example trips */}
-            <BucketListExamplesSection/>
 
             {/*Story Sharing from Users*/}
             <section className="max-w-7xl px-6 py-10 bg-white">

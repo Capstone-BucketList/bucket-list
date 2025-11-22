@@ -205,17 +205,17 @@ export default function Scrapbook() {
                     </Card>
 
                     {/* -create new album location - */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {albums.map(album => (
-                            <PhotoCard
-                                key={album.id}
-                                title={album.title}
-                                description={`Created: ${album.createdAt.toDateString()}`}
-                                imageSrc={album.coverImage}
-                                onClick={() => setActiveCard(album)}
-                            />
-                        ))}
-                    </div>
+                    {/*<div className="grid grid-cols-2 md:grid-cols-3 gap-4">*/}
+                    {/*    {albums.map(album => (*/}
+                    {/*        <PhotoCard*/}
+                    {/*            key={album.id}*/}
+                    {/*            title={album.title}*/}
+                    {/*            description={`Created: ${album.createdAt.toDateString()}`}*/}
+                    {/*            imageSrc={album.coverImage}*/}
+                    {/*            onClick={() => setActiveCard(album)}*/}
+                    {/*        />*/}
+                    {/*    ))}*/}
+                    {/*</div>*/}
 
                     {/* TIMELINE */}
                     <Card className="p-6 shadow-md">
