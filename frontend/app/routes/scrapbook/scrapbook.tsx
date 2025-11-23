@@ -53,7 +53,7 @@ type AlbumData = {
 
 export default function Scrapbook() {
     const [activeCard, setActiveCard] = useState<PhotoData | null>(null);
-    const [albums, setAlbums] = useState<Album[]>([]);
+    const [albums, setAlbums] = useState<AlbumData[]>([]);
     const [showCreateAlbumModal, setShowCreateAlbumModal] = useState(false);
 
     const [newAlbumTitle, setNewAlbumTitle] = useState("");
@@ -69,18 +69,20 @@ export default function Scrapbook() {
     };
 
     const handleCreateNewAlbum = () => {
+        if (!newAlbumTitle.trim()) return;  // basic validation
+
         const newAlbum: AlbumData = {
             id: crypto.randomUUID(),
-            title: `New Album ${albums.length + 1}`,
+            title: newAlbumTitle.trim(),
             createdAt: new Date(),
             coverImage: "/placeholder.jpg",
-            description: newAlbumDescription || "",
+            description: newAlbumDescription.trim(),
             photoCount: 0
         };
 
         setAlbums([newAlbum, ...albums]);
         setNewAlbumTitle("");
-        setNewAlbumDescription("")
+        setNewAlbumDescription("");
     };
 
     const [showTimelineModal, setShowTimelineModal] = useState(false);
@@ -195,27 +197,24 @@ export default function Scrapbook() {
                                 ))}
                             </ul>
                         )}
-
+                        <input
+                            type="text"
+                            placeholder="Album Title"
+                            value={newAlbumTitle}
+                            onChange={e => setNewAlbumTitle(e.target.value)}
+                            className="mb-2 p-2 border rounded w-full"/>
+                        <textarea
+                            placeholder="Description"
+                            value={newAlbumDescription}
+                            onChange={e => setNewAlbumDescription(e.target.value)}
+                            className="mb-2 p-2 border rounded w-full"/>
                         <Button
                             className="mt-4 bg-indigo-600 w-full text-white"
                             onClick= {handleCreateNewAlbum}
-                        >
+                            disabled={!newAlbumTitle.trim()}>
                             Create New Album
                         </Button>
                     </Card>
-
-                    {/* -create new album location - */}
-                    {/*<div className="grid grid-cols-2 md:grid-cols-3 gap-4">*/}
-                    {/*    {albums.map(album => (*/}
-                    {/*        <PhotoCard*/}
-                    {/*            key={album.id}*/}
-                    {/*            title={album.title}*/}
-                    {/*            description={`Created: ${album.createdAt.toDateString()}`}*/}
-                    {/*            imageSrc={album.coverImage}*/}
-                    {/*            onClick={() => setActiveCard(album)}*/}
-                    {/*        />*/}
-                    {/*    ))}*/}
-                    {/*</div>*/}
 
                     {/* TIMELINE */}
                     <Card className="p-6 shadow-md">
@@ -280,15 +279,13 @@ export default function Scrapbook() {
                         <img
                             src={activeCard.imageSrc}
                             alt={activeCard.altText || activeCard.title}
-                            className="w-full h-auto rounded mb-4 max-h-[75vh] object-contain"
-                        />
+                            className="w-full h-auto rounded mb-4 max-h-[75vh] object-contain"/>
 
                         <input
                             type="text"
                             value={activeCard.title}
                             onChange={(e) => setActiveCard({ ...activeCard, title: e.target.value })}
-                            className="w-full mb-2 text-2xl font-bold border border-gray-300 rounded px-3 py-1"
-                        />
+                            className="w-full mb-2 text-2xl font-bold border border-gray-300 rounded px-3 py-1"/>
 
                         <textarea
                             value={activeCard.description}
@@ -296,8 +293,7 @@ export default function Scrapbook() {
                                 setActiveCard({ ...activeCard, description: e.target.value })
                             }
                             rows={3}
-                            className="w-full mb-6 border border-gray-300 rounded px-3 py-2"
-                        />
+                            className="w-full mb-6 border border-gray-300 rounded px-3 py-2"/>
 
                         <div className="flex gap-4">
                             <Button className="bg-green-600 hover:bg-green-700 text-white w-full">

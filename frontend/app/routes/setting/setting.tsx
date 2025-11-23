@@ -131,7 +131,7 @@ export default function SettingsPage({loaderData} :Route.ComponentProps) {
                     <Label htmlFor="bio" >Bio</Label>
                     <Textarea {...register('bio')}
                         id="bio"  rows={4} placeholder="Tell something about yourself..."
-                    value={bio}/>
+                    value = {bio}/>
                     {errors.bio && (
                         <p className="mt-1 text-sm text-red-500">{errors.bio.message}</p>
                     )}
