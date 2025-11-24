@@ -61,7 +61,7 @@ export async function signInController(request: Request, response: Response) : P
 
         //if sign in was successful, create a new session for the client and return a response to the client
         //deconstruct the id, bio, profilePicture and userName from the profile
-        const {id, bio,profilePicture, userName} = profile
+        const {id, bio,profilePicture, userName,visibility} = profile
 
         //generate a new signature for the session
         const signature: string = uuid()
@@ -72,7 +72,8 @@ export async function signInController(request: Request, response: Response) : P
             bio,
             profilePicture,
             userName,
-            email
+            email,
+            visibility
         }, signature)
 
         //set the session variables

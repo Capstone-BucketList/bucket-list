@@ -106,7 +106,7 @@ export default function  Login (){
               method="POST"
             className="max-w-sm mx-auto m-6">
             <div className="mb-5">
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your
                     email</label>
                 <input {...register('email')}
                     type="email" id="email" placeholder="name@flowbite.com" required
@@ -119,23 +119,26 @@ export default function  Login (){
             <div className="mb-5">
                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
                     password</label>
-                <input {...register('password')}
-                    type={showPassword ? "text" : "password"} id="password" required
-                       className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                <div className="flex" >
+                    <input {...register('password')}
+                           type={showPassword ? "text" : "password"} id="password" required
+                           className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                        ${errors.password
-                       ? 'border-red-500 focus:ring-red-500'
-                       : 'border-gray-300 focus:ring-slate-500'}`}/>
-                <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                >
-                    {showPassword ? (
-                        <EyeOff className="h-5 w-5 text-gray-400" />
-                    ) : (
-                        <Eye className="h-5 w-5 text-gray-400" />
-                    )}
-                </button>
+                               ? 'border-red-500 focus:ring-red-500'
+                               : 'border-gray-300 focus:ring-slate-500'}`}/>
+                    <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="inset-y-0 right-0 pr-3 flex items-center"
+                    >
+                        {showPassword ? (
+                            <EyeOff className="h-5 w-5 text-gray-400" />
+                        ) : (
+                            <Eye className="h-5 w-5 text-gray-400" />
+                        )}
+                    </button>
+                </div>
+
                 <div>
                     <FieldError error={errors} field={'password'} />
                 </div>
