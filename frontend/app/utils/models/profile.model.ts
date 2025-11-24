@@ -108,3 +108,19 @@ export async function getFollwersByProfileId(profileId: string, authorization: s
     const result = ProfileSchema.array().parse(response.data)
     return result
 }
+
+export async function getPublicProfiles(authorization: string, cookie: string): Promise<Profile[]> {
+
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/`, {
+        method: 'GET',
+        headers: addHeaders(authorization,cookie),
+    })  .then(res => {
+        if(!res.ok) {
+            throw new Error('failed to fetch followers by profile id')
+        }
+        return res.json()
+    })
+    console.log("response signup",response)
+    const result = ProfileSchema.array().parse(response.data)
+    return result
+}
