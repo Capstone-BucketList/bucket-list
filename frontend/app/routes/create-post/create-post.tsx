@@ -7,6 +7,10 @@ import React from "react";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 import {StatusMessage} from "~/components/StatusMessage";
 import {zodResolver} from "@hookform/resolvers/zod";
+import Undici from "undici-types";
+import errors = Undici.errors;
+import {register} from "node:module";
+import {PostSchema} from "~/utils/models/post.model";
 
 const resolver =  zodResolver(PostSchema)
 
@@ -25,7 +29,7 @@ console.log(wanderlistId)
         return redirect("/login");
     }
     //  get wanderlist by id
-    const wanderList  =await getWanderListById(wanderlistId, authorization, cookie)
+    const wanderList = await getWanderListById(wanderlistId, authorization, cookie)
 
     return { wanderList}
 
