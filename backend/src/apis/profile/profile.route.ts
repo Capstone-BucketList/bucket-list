@@ -1,6 +1,6 @@
 import {
     deleteProfileController,
-    getFollowersByProfileIdController, getFollowingByProfileIdController,
+    getFollowersByProfileIdController, getFollowingByProfileIdController, getPublicProfiles,
     profileController,
     putProfileController
 } from "./profile.controller.ts";
@@ -14,6 +14,8 @@ const basePath = '/apis/profile' as const
 //instantiate a new router object
 const router = Router()
 
+router.route('/')
+    .get(getPublicProfiles)
 //define signup route for this router
 router.route('/:id').get(profileController)
     .put(isLoggedInController, putProfileController)
