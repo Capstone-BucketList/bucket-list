@@ -1,5 +1,5 @@
 import { useEffect, useState} from "react";
-import { Button, Card, Avatar } from "flowbite-react";
+import { Button, Card, Avatar, TextInput, Textarea } from "flowbite-react";
 import {
     FaUsers,
     FaHeart,
@@ -51,11 +51,24 @@ interface InspirationItem {
     description: string;
 }
 
+interface SharedStory {
+    id: string;
+    title: string;
+    content: string;
+    userName: string;
+    dateCreated: string;
+}
+
 export default function Community() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [wanderlist, setWanderlist] = useState<Wanderlist[]>([]);
     const [suggestions, setSuggestions] = useState<FollowSuggestion[]>([]);
     const [inspiration, setInspiration] = useState<InspirationItem[]>([]);
+    const [sharedStories, setSharedStories] = useState<SharedStory[]>([]);
+    const [newTitle, setNewTitle] = useState("");
+    const [newContent, setNewContent] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // ===== STATIC DATA =====
     useEffect(() => {
@@ -134,6 +147,62 @@ export default function Community() {
         ]);
     }, []);
 
+    useEffect(() => {
+        // Fetch shared stories from your backend API
+        async function fetchSharedStories() {
+            try {
+                const response = await fetch("/apis/shared-stories");
+                if (!response.ok) throw new Error("Failed to fetch shared stories");
+                const data = await response.json();
+                setSharedStories(data.data || []); // adapt depending on API response shape
+            } catch (err: any) {
+                setError(err.message);
+            }
+        }
+        fetchSharedStories();
+    }, []);
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        setError(null);
+        setLoading(true);
+
+        // Generate a UUID for the new story ID (you can also do this backend side)
+        const id = crypto.randomUUID();
+
+        try {
+            const userName = "CurrentUser"; // Replace with actual logged-in username from context or auth
+
+            const body = JSON.stringify({
+                id,
+                title: newTitle,
+                content: newContent,
+                userName,
+                // dateCreated can be omitted if backend uses NOW()
+            });
+
+            const response = await fetch("http://localhost:8080/apis/shared-stories", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body,
+            });
+
+            if (!response.ok) throw new Error("Failed to post story");
+            console.log('failed to post story')
+            // Refresh shared stories list (or optimistically add new story)
+            const postedStory: SharedStory = await response.json().then(r => r.data);
+
+            setSharedStories(prev => [postedStory, ...prev]);
+            setNewTitle("");
+            setNewContent("");
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
     return (
         <div className="w-full min-h-screen bg-gray-100 pb-20">
 
@@ -167,6 +236,50 @@ export default function Community() {
                     ))}
                 </div>
             </section>
+
+            {/* Shared Stories section */}
+
+                <section className="max-w-7xl mx-auto px-6 py-16">
+                    <h2 className="text-4xl font-extrabold text-center text-indigo-700 mb-10">
+                        Shared Stories
+                    </h2>
+
+                    {/* New story form */}
+                    <form onSubmit={handleSubmit} className="mb-10 max-w-xl mx-auto flex flex-col gap-4">
+                        <TextInput
+                            placeholder="Title"
+                            value={newTitle}
+                            onChange={(e) => setNewTitle(e.target.value)}
+                            required
+                        />
+                        <Textarea
+                            placeholder="Write your story here..."
+                            value={newContent}
+                            onChange={(e) => setNewContent(e.target.value)}
+                            required
+                            rows={4}
+                        />
+                        <Button type="submit" disabled={loading}>
+                            {loading ? "Posting..." : "Post Story"}
+                        </Button>
+                        {error && <p className="text-red-600 mt-2">{error}</p>}
+                    </form>
+
+                    {/* Display list of shared stories */}
+                    <div className="space-y-6 max-w-xl mx-auto">
+                        {sharedStories.length === 0 && <p>No shared stories yet. Be the first!</p>}
+                        {sharedStories.map((story) => (
+                            <Card key={story.id} className="shadow-md">
+                                <h3 className="text-xl font-bold">{story.title}</h3>
+                                <p className="text-gray-700 whitespace-pre-wrap">{story.content}</p>
+                                <div className="text-sm text-gray-500 mt-2">
+                                    By <strong>{story.userName}</strong> on{" "}
+                                    {new Date(story.dateCreated).toLocaleDateString()}
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                </section>
 
             {/* ============================================
          MAIN GRID LAYOUT (FEED + SIDEBAR)
