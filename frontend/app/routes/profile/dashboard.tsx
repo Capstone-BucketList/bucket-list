@@ -31,16 +31,16 @@ export async function loader({request}: Route.LoaderArgs) {
 
 
     if (!profile || !authorization || !cookie) {
-        return redirect("/sign-in");
+        return redirect("/login");
     }
     //  get wonderlist items by profileId
     const wanderList  =await getWanderListByProfileId(profile.id, authorization, cookie)
     // followers profiles
     const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
-    const pulicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
+    const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
 
 
-     return {profile, wanderList,followingProfiles,pulicProfiles}
+     return {profile, wanderList,followingProfiles,publicProfiles}
 
 }
 
@@ -102,7 +102,7 @@ const statusOptions = [
 const resolver =  zodResolver(WanderListSchema)
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
-    const { profile, wanderList,followingProfiles } = loaderData ?? {};
+    const { profile, wanderList,followingProfiles,publicProfiles } = loaderData ?? {};
 
     if (!profile) {
         redirect("/");
@@ -385,6 +385,11 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                     <FriendCard name={profile.userName} img={profilePicture} />
                                 ))
                                 }
+                                {
+                                    publicProfiles.map(profile => (
+                                        <FriendCard name={profile.userName} img={profilePicture} />
+                                    ))
+                                }
 
                             </div>
                         </section>
@@ -434,7 +439,7 @@ function FriendCard({
     img: string;
 }) {
     return (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 overscroll-y-auto">
             <img
                 className="w-12 h-12 rounded-full object-cover"
                 src={img}
@@ -442,7 +447,7 @@ function FriendCard({
             />
             <div>
                 <p className="font-semibold text-gray-900">{name}</p>
-
+                <button type="button" >Follow</button>
             </div>
         </div>
     );
