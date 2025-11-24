@@ -30,11 +30,11 @@ export function Navigation(props: ProfileProps) {
                         className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 sticky top-0 z-50 shadow-md">
                     <NavbarBrand href="/">
         <span className="self-center whitespace-nowrap text-3xl font-extrabold text-white tracking-wide">
-          Wander <span className="text-yellow-300">List</span>
+          Wander<span className="text-yellow-300">List</span>
         </span>
                     </NavbarBrand>
                     <NavbarToggle/>
-                    <NavbarCollapse className="text-white">
+                    <NavbarCollapse className="text-white hover:text-blue-500">
                         <NavbarLink href="/" className="text-white hover:text-burnt-orange">
                             Home
                         </NavbarLink>
@@ -44,9 +44,9 @@ export function Navigation(props: ProfileProps) {
                         <NavbarLink href="/signup" className="text-white hover:text-burnt-orange font-semibold">
                             Sign Up
                         </NavbarLink>
-                        <NavbarLink href="/logout" className="text-white hover:text-burnt-orange font-semibold">
-                            Logout
-                        </NavbarLink>
+                        {/*<NavbarLink href="/logout" className="text-white hover:text-burnt-orange font-semibold">*/}
+                        {/*    Logout*/}
+                        {/*</NavbarLink>*/}
                     </NavbarCollapse>
                 </Navbar>
 
@@ -60,14 +60,14 @@ export function Navigation(props: ProfileProps) {
                         className="bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 sticky top-0 z-50 shadow-md">
                     <NavbarBrand href="/">
         <span className="self-center whitespace-nowrap text-3xl font-extrabold text-white tracking-wide">
-          Wander <span className="text-yellow-300">List</span>
+          Wander<span className="text-yellow-300">List</span>
         </span>
                     </NavbarBrand>
                     <NavbarToggle/>
-                    <NavbarCollapse className="text-white">
-                        <NavbarLink href="/" className="text-white hover:text-burnt-orange">
-                            Home
-                        </NavbarLink>
+                    <NavbarCollapse className="text-white hover:text-blue-500">
+                        {/*<NavbarLink href="/" className="text-white hover:text-burnt-orange">*/}
+                        {/*    Home*/}
+                        {/*</NavbarLink>*/}
                         <NavbarLink href="/dashboard" className="text-white hover:text-burnt-orange">
                             Dashboard
                         </NavbarLink>

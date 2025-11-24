@@ -51,7 +51,7 @@ export const PrivateProfileSchema = z.object({
  * @shape imageUrl: string | null the image URL for the profile
  * @shape name: string the name for the profile
  */
-export const PublicProfileSchema = PrivateProfileSchema.omit({passwordHash: true, activationToken: true, email: true, dateCreated: true, profilePicture: true})
+export const PublicProfileSchema = PrivateProfileSchema.omit({passwordHash: true, activationToken: true, dateCreated: true})
 
 /**
  * this type is used to represent a private profile object
@@ -107,8 +107,9 @@ export async function selectPrivateProfileByProfileActivationToken(activationTok
  * @returns {Promise<string>} 'Profile successfully updated
  */
 export async function updateProfile(profile: PrivateProfile): Promise<string> {
-    const {id,activationToken, bio,  email, passwordHash, profilePicture, userName, visibility} = profile
-    await sql `UPDATE profile SET bio = ${bio}, activation_token = ${activationToken}, email = ${email},password_hash = ${passwordHash}, profile_picture = ${profilePicture}, user_name = ${userName}, visibility = ${visibility} WHERE id = ${id}`
+    console.log(profile)
+    const {id,activationToken, bio,  email,  profilePicture,  visibility} = profile
+    await sql `UPDATE profile SET bio = ${bio}, activation_token = ${activationToken}, email = ${email}, profile_picture = ${profilePicture},   visibility = ${visibility} WHERE id = ${id}`
     return 'Profile successfully updated'
 }
 
@@ -200,6 +201,22 @@ export async function selectPublicFollowingByProfileId(id: string): Promise<Publ
 
     const rowList = await sql `SELECT ID, BIO, user_name,profile_picture,visibility FROM profile p
           inner join follow f on p.id = f.follower_profile_id where f.followed_profile_id = ${id} `
+
+    const result = PublicProfileSchema.array().parse(rowList)
+
+    return result ?? null
+}
+
+
+
+/**
+ * select following records associated with logged-in user
+ * @param id logged in profileID
+ * @returns follower profiles
+ */
+export async function selectPublicProfile(): Promise<PublicProfile[] |null > {
+
+    const rowList = await sql `SELECT ID, BIO, email, user_name,profile_picture,visibility FROM profile WHERE visibility = 'public'`
 
     const result = PublicProfileSchema.array().parse(rowList)
 

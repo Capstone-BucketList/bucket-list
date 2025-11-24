@@ -1,11 +1,11 @@
 
 
-export const commentBasePath = '/apis/comment'
-export const followBasePath = '/apis/follow'
-export const mediaBasePath = "/apis/media"
-export const postBasePath = '/apis/post'
-export const profileBasePath = '/apis/profile'
-export const sharedstoriesBasePath = '/apis/shared-stories'
+export const commentBasePath = '/comment'
+export const followBasePath = '/follow'
+export const mediaBasePath = "/media"
+export const postBasePath = '/post'
+export const profileBasePath = '/profile'
+export const wanderlistBasepath = '/wanderlist'
 
 export function addHeaders(authorization:string, cookie:string)   :Headers{
     const requestHeaders = new Headers()
