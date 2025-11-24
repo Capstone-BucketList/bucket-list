@@ -3,7 +3,7 @@ import {
     getPublicProfileByPrimaryKey,
     type PrivateProfile,
     PrivateProfileSchema, type PublicProfile, PublicProfileSchema, selectPrivateProfileByProfileId,
-    selectPublicFollowersByProfileId, selectPublicFollowingByProfileId,
+    selectPublicFollowersByProfileId, selectPublicFollowingByProfileId, selectPublicProfile,
     updateProfile
 } from "./profile.model.ts";
 import {zodErrorResponse} from "../../utils/response.utils.ts";
@@ -252,3 +252,26 @@ export async function getFollowingByProfileIdController(request:Request, respons
     }
 }
 
+/**
+ * get all following profiles associated with logged-in user
+ * @param request
+ * @param response
+ */
+export async function getPublicProfiles(request:Request, response: Response) : Promise<void>  {
+    try{
+
+        // grab the followers by id
+        const data = await selectPublicProfile()
+
+        // if the profile does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "profile does not exist", data: null})
+            return
+        }
+
+        response.json({status: 200, data: data, message: null})
+
+    }catch(error:any){
+        response.json({status: 500, data:null, message: error})
+    }
+}
