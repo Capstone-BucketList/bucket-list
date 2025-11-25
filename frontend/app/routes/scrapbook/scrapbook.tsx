@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Card } from "flowbite-react";
-import { FaCameraRetro, FaHeartbeat, FaBookOpen, FaUsers } from "react-icons/fa";
+import { FaCameraRetro, FaHeartbeat, FaBookOpen, FaUsers, FaTimes, FaShareAlt, FaTrash } from "react-icons/fa";
 import { DivSlider } from "~/components/div_slider";
 import PhotoCard from "~/components/photo-card";
 import {
@@ -20,24 +20,40 @@ const travelPhotos: PhotoData[] = [
     { title: "South Lake Tahoe", description: "snow mountains and lake views", imageSrc: "/scrapbook/img_19.png" },
 ];
 
-interface Album {
-    id: string;
-    title: string;
-    description?: string;
-    photoCount?: number;
-}
+export const timelinePhotos: PhotoData[] = [
+    { title: "Month 1 — Start of the journey", description: "First week exploring new places.", imageSrc: "/timeline/img.png" },
+    { title: "Month 1 — Sandia Peak", description: "Breathtaking hikes early on.", imageSrc: "/timeline/img_1.png" },
+    { title: "Month 2 — Community project", description: "Joined the neighborhood cleanup.", imageSrc: "/timeline/img_2.png" },
+    { title: "Month 2 — Bootcamp progress", description: "Building the Wanderlist app.", imageSrc: "/timeline/img_3.png" },
+    { title: "Month 2 — New friendships", description: "Met amazing people along the way.", imageSrc: "/timeline/img_4.png" },
+    { title: "Month 3 - Foodie experience", description: "Red or Green options ", imageSrc: "/timeline/img_5.png"},
+    { title: "Month 3 — First album creation", description: "Organizing memories into albums.", imageSrc: "/timeline/img_6.png" },
+    { title: "Month 3 — Sharing moments", description: "Sharing photos with friends and family.", imageSrc: "/timeline/img_7.png" },
+    { title: "Month 4 — Reflecting on the journey", description: "Looking back at all the memories made.", imageSrc: "/timeline/img_8.png" },
+    { title: "Month 4 — New adventures", description: "Planning the next chapter of the journey.", imageSrc: "/timeline/img_9.png" },
+    { title: "Month 5 - Soda rock trip", description: "see running river and wilderness ", imageSrc: "/timeline/img_10.png"},
+    { title: "Month 5 — Celebrating milestones", description: "Celebrating the progress and growth.", imageSrc: "/timeline/img_11.png" },
+    { title: "Month 5 — Looking forward", description: "Excited for the next adventures ahead.", imageSrc: "/timeline/img_12.png" },
+    { title: "Month 5 — Sharing the story", description: "Sharing the journey with the world.", imageSrc: "/timeline/img_13.png" },
+    { title: "Month 6 — Tent Rocks", description: "Setting new goals for the next phase.", imageSrc: "/timeline/img_14.png" },
+    { title: "Month 6 — Autumn Santa Fe", description: "Reflecting on an incredible year of Wanderlist.", imageSrc: "/timeline/img_15.png" },
+    { title: "Month 6 — Volcano hike", description: "Excited for the next chapter of the journey.", imageSrc: "/timeline/img_16.png" },
+    { title: "Month 6 — Sharing the chile", description: "Sharing the aroma with friends and family.", imageSrc: "/timeline/img_17.png" },
+    { title: "Month 6 — Final reflections", description: "Grateful for the incredible journey and memories made.", imageSrc: "/timeline/img_18.png" },
+];
 
 type AlbumData = {
     id: string;
     title: string;
     createdAt: Date;
     coverImage?: string;
+    description?: string;
+    photoCount?: number;
 };
 
 export default function Scrapbook() {
     const [activeCard, setActiveCard] = useState<PhotoData | null>(null);
-    const [albums, setAlbums] = useState<Album[]>([]);
-    const [timelinePhotos, setTimelinePhotos] = useState<PhotoData[]>([]);
+    const [albums, setAlbums] = useState<AlbumData[]>([]);
     const [showCreateAlbumModal, setShowCreateAlbumModal] = useState(false);
 
     const [newAlbumTitle, setNewAlbumTitle] = useState("");
@@ -53,23 +69,28 @@ export default function Scrapbook() {
     };
 
     const handleCreateNewAlbum = () => {
+        if (!newAlbumTitle.trim()) return;  // basic validation
+
         const newAlbum: AlbumData = {
             id: crypto.randomUUID(),
-            title: `New Album ${albums.length + 1}`,
+            title: newAlbumTitle.trim(),
             createdAt: new Date(),
-            coverImage: "/placeholder.jpg"
+            coverImage: "/placeholder.jpg",
+            description: newAlbumDescription.trim(),
+            photoCount: 0
         };
 
         setAlbums([newAlbum, ...albums]);
+        setNewAlbumTitle("");
+        setNewAlbumDescription("");
     };
 
     const [showTimelineModal, setShowTimelineModal] = useState(false);
 
-
     return (
 
 
-        <div className="w-full min-h-screen bg-gray-100 pb-20">
+        <main className="w-full min-h-screen bg-gray-100 pb-20">
 
             {/* HERO SECTION */}
             <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-20 px-6">
@@ -86,6 +107,24 @@ export default function Scrapbook() {
 
                 {/* LEFT PHOTO FEED */}
                 <div className="lg:col-span-9 flex flex-col gap-8">
+
+                    { /*create new album location*/}
+                    <Card className="shadow-md hover:shadow-lg transition p-6">
+                        <h2 className="text-3xl font-extrabold mb-4">Create New Album</h2>
+                        {albums.length === 0 ? (
+                            <p className="text-gray-600">No albums yet. Start your first one!</p>
+                            ) : (
+                                <ul className="flex flex-col gap-3">
+                                    {albums.map(album => (
+                                        <li key={album.id} className="p-3 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer">
+                                            <p className="font-semibold">{album.title}</p>
+                                            <p className="text-xs text-gray-500">{album.photoCount ?? 0} photos</p>
+                                        </li>
+                                    ))}
+                                </ul>
+                        )}
+                    </Card>
+
                     {/* — Travel — */}
                     <Card className="shadow-md hover:shadow-lg transition p-6">
                         <div className="flex items-center gap-3 mb-6">
@@ -158,27 +197,24 @@ export default function Scrapbook() {
                                 ))}
                             </ul>
                         )}
-
+                        <input
+                            type="text"
+                            placeholder="Album Title"
+                            value={newAlbumTitle}
+                            onChange={e => setNewAlbumTitle(e.target.value)}
+                            className="mb-2 p-2 border rounded w-full"/>
+                        <textarea
+                            placeholder="Description"
+                            value={newAlbumDescription}
+                            onChange={e => setNewAlbumDescription(e.target.value)}
+                            className="mb-2 p-2 border rounded w-full"/>
                         <Button
                             className="mt-4 bg-indigo-600 w-full text-white"
                             onClick= {handleCreateNewAlbum}
-                        >
+                            disabled={!newAlbumTitle.trim()}>
                             Create New Album
                         </Button>
                     </Card>
-
-                    {/* -create new album location - */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        {albums.map(album => (
-                            <PhotoCard
-                                key={album.id}
-                                title={album.title}
-                                description={`Created: ${album.createdAt.toDateString()}`}
-                                imageSrc={album.coverImage}
-                                onClick={() => setActiveCard(album)}
-                            />
-                        ))}
-                    </div>
 
                     {/* TIMELINE */}
                     <Card className="p-6 shadow-md">
@@ -190,9 +226,9 @@ export default function Scrapbook() {
                         <div className="grid grid-cols-3 gap-2">
                             {timelinePhotos.slice(0, 9).map((photo) => (
                                 <img
-                                    key={photo.id}
-                                    src={photo.url}
-                                    alt="timeline"
+                                    key={photo.imageSrc}
+                                    src={photo.imageSrc}
+                                    alt={photo.title}
                                     className="w-full h-20 object-cover rounded-md cursor-pointer hover:opacity-80"
                                     onClick={() => onPhotoClick(photo)}
                                 />
@@ -210,14 +246,15 @@ export default function Scrapbook() {
 
             {showTimelineModal && (
                 <div
-                    className="fixed inset-0 backdrop-blur-sm bg-opacity-80 flex flex-col items-center justify-center z-50 p-6"
+                    className="fixed inset-0 backdrop-blur-sm flex flex-col items-center justify-start overflow-y z-[999] p-6"
                     role="dialog"
                     aria-modal="true">
                     <button
                         onClick={() => setShowTimelineModal(false)}
-                        className="self-end mb-4 text-white text-3xl font-bold"
-                        aria-label="Close Timeline Modal">
-                        &times;
+                        className="ml-auto mb-4 text-amber-400 text-6xl font-bold"
+                        aria-label="Close Timeline Modal"
+                    >
+                        <FaTimes className="text-amber-400" size={28} />
                     </button>
 
                     <div className="w-full max-w-5xl">
@@ -235,22 +272,20 @@ export default function Scrapbook() {
                         <button
                             onClick={() => setActiveCard(null)}
                             className="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl font-bold"
-                        >
-                            &times;
+                            aria-label="Close Photo Modal">
+                            <FaTimes />
                         </button>
 
                         <img
                             src={activeCard.imageSrc}
                             alt={activeCard.altText || activeCard.title}
-                            className="w-full h-auto rounded mb-4 max-h-[75vh] object-contain"
-                        />
+                            className="w-full h-auto rounded mb-4 max-h-[75vh] object-contain"/>
 
                         <input
                             type="text"
                             value={activeCard.title}
                             onChange={(e) => setActiveCard({ ...activeCard, title: e.target.value })}
-                            className="w-full mb-2 text-2xl font-bold border border-gray-300 rounded px-3 py-1"
-                        />
+                            className="w-full mb-2 text-2xl font-bold border border-gray-300 rounded px-3 py-1"/>
 
                         <textarea
                             value={activeCard.description}
@@ -258,8 +293,7 @@ export default function Scrapbook() {
                                 setActiveCard({ ...activeCard, description: e.target.value })
                             }
                             rows={3}
-                            className="w-full mb-6 border border-gray-300 rounded px-3 py-2"
-                        />
+                            className="w-full mb-6 border border-gray-300 rounded px-3 py-2"/>
 
                         <div className="flex gap-4">
                             <Button className="bg-green-600 hover:bg-green-700 text-white w-full">
@@ -267,7 +301,7 @@ export default function Scrapbook() {
                             </Button>
 
                             <Button
-                                className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                                className="bg-blue-600 hover:bg-blue-700 text-white w-full flex items-center justify-center gap-2"
                                 onClick={() =>
                                     navigator.share
                                         ? navigator.share({
@@ -275,24 +309,21 @@ export default function Scrapbook() {
                                             text: activeCard.description,
                                             url: window.location.href
                                         })
-                                        : alert("Sharing not supported")
-                                }
-                            >
-                                Share
+                                        : alert("Sharing not supported")}>
+                                <FaShareAlt/> Share
                             </Button>
 
                             <Button
-                                className="bg-red-600 hover:bg-red-700 text-white w-full"
+                                className="bg-red-600 hover:bg-red-700 text-white w-full flex items-center justify-center gap-2"
                                 onClick={() => {
                                     if (confirm("Delete this photo?")) setActiveCard(null);
-                                }}
-                            >
-                                Delete
+                                }}>
+                                <FaTrash /> Delete
                             </Button>
                         </div>
                     </Card>
                 </div>
             )}
-        </div>
+        </main>
     );
 }

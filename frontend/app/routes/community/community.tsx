@@ -1,5 +1,5 @@
-import { useEffect, useState} from "react";
-import { Button, Card, Avatar } from "flowbite-react";
+import { useEffect, useState } from "react";
+import { Button, Card, Avatar, TextInput, Textarea } from "flowbite-react";
 import {
     FaUsers,
     FaHeart,
@@ -9,8 +9,85 @@ import {
     FaStar,
     FaLightbulb,
     FaLayerGroup,
-    FaPhotoVideo
+    FaPhotoVideo,
 } from "react-icons/fa";
+import { useLoaderData, Form, redirect } from "react-router";
+
+const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
+//
+// export async function loader() {
+//     try {
+//         const response = await fetch("http://localhost:5500/apis/post/visible/posts", {
+//             credentials: "include",
+//         });
+//
+//         if (!response.ok) {
+//             throw new Response("Failed to load posts", { status: response.status });
+//         }
+//
+//         const data = await response.json();
+//
+//         const filtered = (data ?? []).filter(
+//             (p: any) => p.wanderlistId === SHARED_STORIES_WANDERLIST_ID
+//         );
+//
+//         return filtered.map((p: any) => ({
+//             id: p.id,
+//             title: p.title,
+//             content: p.content,
+//             userName: "User", // Replace if you have actual user info
+//             dateCreated: p.datetimeCreated,
+//         }));
+//     } catch (error) {
+//         // Optionally return an error object here or throw
+//         throw new Response("Failed to fetch shared stories", { status: 500 });
+//     }
+// }
+//
+// function validateFormData(title: any, content: any) {
+//     const errors: Record<string, string> = {};
+//     if (!title || typeof title !== "string" || title.trim() === "") {
+//         errors.title = "Title is required";
+//     }
+//     if (!content || typeof content !== "string" || content.trim() === "") {
+//         errors.content = "Content is required";
+//     }
+//     return errors;
+// }
+
+// export async function action({ request }: { request: Request }) {
+//     const formData = await request.formData();
+//     const title = formData.get("title");
+//     const content = formData.get("content");
+//
+//     const errors = validateFormData(title, content);
+//
+//     if (Object.keys(errors).length > 0) {
+//         // Return errors and form values so UI can display validation messages and keep inputs
+//         return { errors, defaultValues: { title, content } };
+//     }
+//
+//     const response = await fetch("http://localhost:5500/apis/post", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         credentials: "include",
+//         body: JSON.stringify({
+//             id: crypto.randomUUID(),
+//             wanderlistId: SHARED_STORIES_WANDERLIST_ID,
+//             title,
+//             content,
+//             visibility: "public",
+//         }),
+//     });
+//
+//     if (!response.ok) {
+//         throw new Response("Failed to post story", { status: 500 });
+//     }
+//
+//     // Redirect to reload the page and run the loader again to get fresh data
+//     return redirect("/community");
+// }
+
 
 interface Profile {
     id: number;
@@ -51,13 +128,26 @@ interface InspirationItem {
     description: string;
 }
 
+interface SharedStory {
+    id: string;
+    title: string;
+    content: string;
+    userName: string;
+    dateCreated: string;
+}
+
 export default function Community() {
+    // Static data states
     const [posts, setPosts] = useState<Post[]>([]);
     const [wanderlist, setWanderlist] = useState<Wanderlist[]>([]);
     const [suggestions, setSuggestions] = useState<FollowSuggestion[]>([]);
     const [inspiration, setInspiration] = useState<InspirationItem[]>([]);
 
-    // ===== STATIC DATA =====
+    // Shared stories from loader
+    const sharedStories = useLoaderData() as SharedStory[] | null | undefined;
+
+    const stories = Array.isArray(sharedStories) ? sharedStories : [];
+
     useEffect(() => {
         setPosts([
             {
@@ -67,7 +157,7 @@ export default function Community() {
                 createdAt: "2025-02-01",
                 media: [{ url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470" }],
                 commentsCount: 12,
-                likes: 87
+                likes: 87,
             },
             {
                 id: 2,
@@ -76,7 +166,7 @@ export default function Community() {
                 createdAt: "2025-02-02",
                 media: [{ url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836" }],
                 commentsCount: 5,
-                likes: 32
+                likes: 32,
             },
             {
                 id: 3,
@@ -85,7 +175,7 @@ export default function Community() {
                 createdAt: "2025-02-03",
                 media: [],
                 commentsCount: 8,
-                likes: 49
+                likes: 49,
             },
         ]);
 
@@ -101,42 +191,37 @@ export default function Community() {
             { id: 203, name: "Ella Johnson", avatarUrl: "https://i.pravatar.cc/150?img=65" },
         ]);
 
-        // NEW: Inspiration Cards
         setInspiration([
             {
                 id: 1,
                 title: "Friends & Family",
                 icon: <FaLayerGroup className="text-indigo-600 text-3xl" />,
                 description:
-                    "Your biggest supporters and cheerleaders. Share goals, celebrate wins, and stay accountable together."
+                    "Your biggest supporters and cheerleaders. Share goals, celebrate wins, and stay accountable together.",
             },
             {
                 id: 2,
                 title: "Share Your Wins",
                 icon: <FaStar className="text-yellow-500 text-3xl" />,
-                description:
-                    "Accomplishments motivate progress. Capture your moments and inspire others with your journey!"
+                description: "Accomplishments motivate progress. Capture your moments and inspire others with your journey!",
             },
             {
                 id: 3,
                 title: "Document Your Journey",
                 icon: <FaPhotoVideo className="text-pink-500 text-3xl" />,
-                description:
-                    "Photos and videos help track your memories. WanderList lets you save everything in one place."
+                description: "Photos and videos help track your memories. WanderList lets you save everything in one place.",
             },
             {
                 id: 4,
                 title: "Vision Boards",
                 icon: <FaLightbulb className="text-amber-400 text-3xl" />,
-                description:
-                    "Post-its, digital cards, goals by category—organize and visualize what you want to achieve."
+                description: "Post-its, digital cards, goals by category—organize and visualize what you want to achieve.",
             },
         ]);
     }, []);
 
     return (
         <div className="w-full min-h-screen bg-gray-100 pb-20">
-
             {/* HERO SECTION */}
             <section className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-20 px-6">
                 <div className="max-w-6xl mx-auto text-center">
@@ -147,13 +232,9 @@ export default function Community() {
                 </div>
             </section>
 
-            {/* ============================================
-         INSPIRATION SECTION (NEW)
-      ============================================ */}
+            {/* INSPIRATION SECTION */}
             <section className="max-w-7xl mx-auto px-6 py-16">
-                <h2 className="text-4xl font-extrabold text-center text-indigo-700 mb-10">
-                    Inspiration
-                </h2>
+                <h2 className="text-4xl font-extrabold text-center text-indigo-700 mb-10">Inspiration</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {inspiration.map((item) => (
@@ -168,11 +249,33 @@ export default function Community() {
                 </div>
             </section>
 
-            {/* ============================================
-         MAIN GRID LAYOUT (FEED + SIDEBAR)
-      ============================================ */}
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 px-4">
+            {/* SHARED STORIES SECTION */}
+            <section className="max-w-7xl mx-auto px-6 py-16">
+                <h2 className="text-4xl font-extrabold text-center text-indigo-700 mb-10">Shared Stories</h2>
 
+                <Form method="post" className="mb-10 max-w-xl mx-auto flex flex-col gap-4">
+                    <TextInput name="title" placeholder="Title" required />
+                    <Textarea name="content" placeholder="Write your story here..." required rows={4} />
+                    <Button type="submit">Post Story</Button>
+                </Form>
+
+                <div className="space-y-6 max-w-xl mx-auto">
+                    {stories.length === 0 &&
+                      <p>No shared stories yet. Be the first!</p>}
+                    {stories.map((story) => (
+                        <Card key={story.id} className="shadow-md">
+                            <h3 className="text-xl font-bold">{story.title}</h3>
+                            <p className="text-gray-700 whitespace-pre-wrap">{story.content}</p>
+                            <div className="text-sm text-gray-500 mt-2">
+                                By <strong>{story.userName}</strong> on {new Date(story.dateCreated).toLocaleDateString()}
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            </section>
+
+            {/* MAIN GRID LAYOUT (FEED + SIDEBAR) */}
+            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 px-4">
                 {/* FEED */}
                 <div className="lg:col-span-8 flex flex-col gap-6">
                     {posts.map((post) => (
@@ -181,9 +284,7 @@ export default function Community() {
                                 <Avatar img={post.user.avatarUrl} rounded />
                                 <div>
                                     <h3 className="font-bold">{post.user.name}</h3>
-                                    <p className="text-sm text-gray-500">
-                                        {new Date(post.createdAt).toLocaleDateString()}
-                                    </p>
+                                    <p className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</p>
                                 </div>
                             </div>
 
@@ -211,7 +312,6 @@ export default function Community() {
 
                 {/* SIDEBAR */}
                 <div className="lg:col-span-4 flex flex-col gap-6">
-
                     {/* Wander Goals */}
                     <Card>
                         <h2 className="text-xl font-bold mb-4">Featured Wanderlist</h2>
@@ -231,11 +331,11 @@ export default function Community() {
                         <div className="flex flex-col gap-4">
                             {suggestions.map((u) => (
                                 <div key={u.id} className="flex items-center justify-between gap-3">
-                                    <div className="flex items-center gap-3">
-                                        <Avatar img={u.avatarUrl} rounded />
-                                        <p className="font-semibold">{u.name}</p>
-                                    </div>
-                                    <Button size="xs" color="info">Follow</Button>
+                                    <Avatar img={u.avatarUrl} rounded />
+                                    <p className="font-semibold">{u.name}</p>
+                                    <Button size="xs" color="info">
+                                        Follow
+                                    </Button>
                                 </div>
                             ))}
                         </div>
@@ -256,7 +356,6 @@ export default function Community() {
                             </Button>
                         </div>
                     </Card>
-
                 </div>
             </div>
         </div>
