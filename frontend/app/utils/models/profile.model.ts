@@ -39,7 +39,7 @@ export type Profile = z.infer<typeof ProfileSchema>
 
 //2
 export const SignUpSchema = ProfileSchema
-    .omit({ id: true,bio:true, profilePicture: true})
+    .omit({ id: true,bio:true, profilePicture: true, visibility: true})
     .extend({
         passwordConfirm: z.string('password confirmation is required')
             .min(8, 'Password confirm cannot be less than 8 characters')
