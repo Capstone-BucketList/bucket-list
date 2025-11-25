@@ -39,14 +39,12 @@ export async function loader({request}: Route.LoaderArgs) {
     const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
     const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
 
-
-     return {profile, wanderList,followingProfiles,publicProfiles}
+    const progressBars = await getWanderListByProfileId(profile.id, authorization, cookie)
+     return {profile, wanderList,followingProfiles,publicProfiles,progressBars}
 
 }
 
 export async function action({ request }: Route.ActionArgs) {
-console.log("action called")
-
 
     const cookie = request.headers.get("Cookie");
     const session = await getSession(cookie);
@@ -102,7 +100,7 @@ const statusOptions = [
 const resolver =  zodResolver(WanderListSchema)
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
-    const { profile, wanderList,followingProfiles,publicProfiles } = loaderData ?? {};
+    const { profile, wanderList,followingProfiles,publicProfiles,progressBars } = loaderData ?? {};
 
     if (!profile) {
         redirect("/");
@@ -379,8 +377,14 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 </a>
                             </div>
 
-                            <div className="flex flex-wrap justify-start lg:grid lg:grid-cols-2 gap-4 p-2">
-                                {/* Example friend cards */}
+                            <div className="
+                                  h-[300px]
+                                  overflow-y-auto
+                                  scroll-smooth
+                                  flex flex-wrap justify-start
+                                  gap-4 p-2
+                                ">
+                            {/* Example friend cards */}
                                 {followingProfiles.map(profile => (
                                     <FriendCard name={profile.userName} img={profilePicture} />
                                 ))
@@ -401,10 +405,10 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 Progress on your wanderlists and milestones.
                             </p>
                             <div className="space-y-5">
-                                <ProgressBars />
-                                <ProgressBars />
-                                <ProgressBars />
+                                <ProgressBars items={progressBars} />
+
                             </div>
+
                         </section>
 
                         {/* Timeline */}
@@ -439,7 +443,7 @@ function FriendCard({
     img: string;
 }) {
     return (
-        <div className="flex items-center gap-4 overscroll-y-auto">
+        <div className="flex items-center gap-5">
             <img
                 className="w-12 h-12 rounded-full object-cover"
                 src={img}
@@ -447,7 +451,7 @@ function FriendCard({
             />
             <div>
                 <p className="font-semibold text-gray-900">{name}</p>
-                <button type="button" >Follow</button>
+                <button type="button" className="bg-blue-700 rounded p-1">Follow</button>
             </div>
         </div>
     );
