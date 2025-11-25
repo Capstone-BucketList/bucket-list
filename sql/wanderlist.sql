@@ -75,4 +75,11 @@ create table if not exists media(
 );
 create index on media(post_id);
 
+-- create table if not exists sharedstories (
+--     id UUID PRIMARY KEY,
+--     date_created timestamp not null,
+--     title VARCHAR(64) NOT NULL,
+--     content TEXT NOT NULL,
+--     user_name VARCHAR(32) NOT NULL
+-- );
 

@@ -268,7 +268,7 @@ export async function getPublicProfiles(request:Request, response: Response) : P
             response.json({status: 400, message: "profile does not exist", data: null})
             return
         }
-
+        console.log("data", data)
         response.json({status: 200, data: data, message: null})
 
     }catch(error:any){
