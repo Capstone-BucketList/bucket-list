@@ -256,7 +256,7 @@ export default function Community() {
                 <Form method="post" className="mb-10 max-w-xl mx-auto flex flex-col gap-4">
                     <TextInput name="title" placeholder="Title" required />
                     <Textarea name="content" placeholder="Write your story here..." required rows={4} />
-                    <Button type="submit">Post Story</Button>
+                    <Button type="submit">Story submission temporarily disabled — coming soon!</Button>
                 </Form>
 
                 <div className="space-y-6 max-w-xl mx-auto">
