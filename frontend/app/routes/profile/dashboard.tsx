@@ -20,6 +20,7 @@ import {FaPencil} from "react-icons/fa6";
 import {StatusMessage} from "~/components/StatusMessage";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 import {FaWindowClose} from "react-icons/fa";
+import {FriendCard} from "~/routes/profile/friendcard";
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
@@ -37,6 +38,8 @@ export async function loader({request}: Route.LoaderArgs) {
     const wanderList  =await getWanderListByProfileId(profile.id, authorization, cookie)
     // followers profiles
     const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
+
+    console.log("followingProfiles", followingProfiles)
     const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
 
     const progressBars = await getWanderListByProfileId(profile.id, authorization, cookie)
@@ -385,13 +388,12 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                   gap-4 p-2
                                 ">
                             {/* Example friend cards */}
-                                {followingProfiles.map(profile => (
-                                    <FriendCard name={profile.userName} img={profilePicture} />
+                                {followingProfiles?.map(profile => (
+                                    <FriendCard profile={profile} isFriend={true} />
                                 ))
-                                }
-                                {
-                                    publicProfiles.map(profile => (
-                                        <FriendCard name={profile.userName} img={profilePicture} />
+                                }{
+                                    publicProfiles?.map(profile => (
+                                        <FriendCard profile={profile} isFriend={false}  />
                                     ))
                                 }
 
@@ -434,25 +436,4 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
         </>
     );
 
-
-function FriendCard({
-                        name,
-                        img,
-                    }: {
-    name: string;
-    img: string;
-}) {
-    return (
-        <div className="flex items-center gap-5">
-            <img
-                className="w-12 h-12 rounded-full object-cover"
-                src={img}
-                alt={`${name} avatar`}
-            />
-            <div>
-                <p className="font-semibold text-gray-900">{name}</p>
-                <button type="button" className="bg-blue-700 rounded p-1">Follow</button>
-            </div>
-        </div>
-    );
-} }
+ }
