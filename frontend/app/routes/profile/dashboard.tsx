@@ -40,10 +40,10 @@ export async function loader({request}: Route.LoaderArgs) {
     const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
 
     console.log("followingProfiles", followingProfiles)
-    const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
+  //  const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
 
     const progressBars = await getWanderListByProfileId(profile.id, authorization, cookie)
-     return {profile, wanderList,followingProfiles,publicProfiles,progressBars}
+     return {profile, wanderList,followingProfiles,progressBars}
 
 }
 
@@ -103,7 +103,7 @@ const statusOptions = [
 const resolver =  zodResolver(WanderListSchema)
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
-    const { profile, wanderList,followingProfiles,publicProfiles,progressBars } = loaderData ?? {};
+    const { profile, wanderList,followingProfiles,progressBars } = loaderData ?? {};
 
     if (!profile) {
         redirect("/");
@@ -391,11 +391,8 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 {followingProfiles?.map(profile => (
                                     <FriendCard profile={profile} isFriend={true} />
                                 ))
-                                }{
-                                    publicProfiles?.map(profile => (
-                                        <FriendCard profile={profile} isFriend={false}  />
-                                    ))
                                 }
+
 
                             </div>
                         </section>
