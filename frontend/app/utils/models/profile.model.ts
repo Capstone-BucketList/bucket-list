@@ -39,7 +39,7 @@ export type Profile = z.infer<typeof ProfileSchema>
 
 //2
 export const SignUpSchema = ProfileSchema
-    .omit({ id: true,bio:true, profilePicture: true})
+    .omit({ id: true,bio:true, profilePicture: true, visibility: true})
     .extend({
         passwordConfirm: z.string('password confirmation is required')
             .min(8, 'Password confirm cannot be less than 8 characters')
@@ -94,9 +94,9 @@ export async function profileUpdate(data: Profile): Promise<Status> {
     return result
 }
 
-export async function getFollwersByProfileId(profileId: string, authorization: string, cookie: string): Promise<Profile[]> {
+export async function getFollwersByProfileId(profileId: string, authorization: string, cookie: string): Promise<Profile[] | null> {
 
-    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/following/${profileId}`, {
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/followers/${profileId}`, {
         method: 'GET',
         headers: addHeaders(authorization,cookie),
     })  .then(res => {
@@ -105,7 +105,9 @@ export async function getFollwersByProfileId(profileId: string, authorization: s
         }
         return res.json()
     })
-    const result = ProfileSchema.array().parse(response.data)
+    const result =
+    response.data ?
+         ProfileSchema.array().parse(response.data) : null
     return result
 }
 
@@ -120,7 +122,6 @@ export async function getPublicProfiles(authorization: string, cookie: string): 
         }
         return res.json()
     })
-    console.log("response signup",response)
     const result = ProfileSchema.array().parse(response.data)
     return result
 }

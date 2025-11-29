@@ -13,7 +13,7 @@ import {data} from "react-router";
 
 export const FollowSchema = z.object ({
     followedProfileId: z.uuidv7('please provide a valid uuid'),
-    followerProfileId: z.uuidv7('please provide a valid uuid')
+  //  followerProfileId: z.uuidv7('please provide a valid uuid')
 })
 
 /**

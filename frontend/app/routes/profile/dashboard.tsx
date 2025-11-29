@@ -20,6 +20,7 @@ import {FaPencil} from "react-icons/fa6";
 import {StatusMessage} from "~/components/StatusMessage";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 import {FaWindowClose} from "react-icons/fa";
+import {FriendCard} from "~/routes/profile/friendcard";
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
@@ -31,22 +32,22 @@ export async function loader({request}: Route.LoaderArgs) {
 
 
     if (!profile || !authorization || !cookie) {
-        return redirect("/sign-in");
+        return redirect("/login");
     }
     //  get wonderlist items by profileId
     const wanderList  =await getWanderListByProfileId(profile.id, authorization, cookie)
     // followers profiles
     const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
-    const pulicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
 
+    console.log("followingProfiles", followingProfiles)
+  //  const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
 
-     return {profile, wanderList,followingProfiles,pulicProfiles}
+    const progressBars = await getWanderListByProfileId(profile.id, authorization, cookie)
+     return {profile, wanderList,followingProfiles,progressBars}
 
 }
 
 export async function action({ request }: Route.ActionArgs) {
-console.log("action called")
-
 
     const cookie = request.headers.get("Cookie");
     const session = await getSession(cookie);
@@ -102,7 +103,7 @@ const statusOptions = [
 const resolver =  zodResolver(WanderListSchema)
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
-    const { profile, wanderList,followingProfiles } = loaderData ?? {};
+    const { profile, wanderList,followingProfiles,progressBars } = loaderData ?? {};
 
     if (!profile) {
         redirect("/");
@@ -379,12 +380,19 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 </a>
                             </div>
 
-                            <div className="flex flex-wrap justify-start lg:grid lg:grid-cols-2 gap-4 p-2">
-                                {/* Example friend cards */}
-                                {followingProfiles.map(profile => (
-                                    <FriendCard name={profile.userName} img={profilePicture} />
+                            <div className="
+                                  h-[300px]
+                                  overflow-y-auto
+                                  scroll-smooth
+                                  flex flex-wrap justify-start
+                                  gap-4 p-2
+                                ">
+                            {/* Example friend cards */}
+                                {followingProfiles?.map(profile => (
+                                    <FriendCard profile={profile} isFriend={true} />
                                 ))
                                 }
+
 
                             </div>
                         </section>
@@ -396,10 +404,10 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 Progress on your wanderlists and milestones.
                             </p>
                             <div className="space-y-5">
-                                <ProgressBars />
-                                <ProgressBars />
-                                <ProgressBars />
+                                <ProgressBars items={progressBars} />
+
                             </div>
+
                         </section>
 
                         {/* Timeline */}
@@ -425,25 +433,4 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
         </>
     );
 
-
-function FriendCard({
-                        name,
-                        img,
-                    }: {
-    name: string;
-    img: string;
-}) {
-    return (
-        <div className="flex items-center gap-4">
-            <img
-                className="w-12 h-12 rounded-full object-cover"
-                src={img}
-                alt={`${name} avatar`}
-            />
-            <div>
-                <p className="font-semibold text-gray-900">{name}</p>
-
-            </div>
-        </div>
-    );
-} }
+ }

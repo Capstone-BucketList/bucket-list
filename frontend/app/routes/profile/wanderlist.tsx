@@ -20,13 +20,13 @@ export default function WanderList({ wanderList, openEditModal }: Props) {
             <p className="text-gray-600 mb-6">
                 Add places, experiences, and ideas to start building your bucketlist.
             </p>
-            <button
-                onClick={openAddModal}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-amber-500 text-white text-lg font-semibold hover:bg-amber-600 transition"
-            >
-                <FaPlus/>
-                Add first item
-            </button>
+            {/*/!*<button*!/*/}
+            {/*/!*    onClick={openAddModal}*!/*/}
+            {/*/!*    className="inline-flex items-center gap-2 px-5 py-3 rounded-md bg-amber-500 text-white text-lg font-semibold hover:bg-amber-600 transition"*!/*/}
+            {/*/!*>*!/*/}
+            {/*    <FaPlus/>*/}
+            {/*    Add first item*/}
+            {/*</button>*/}
         </div>)
     }
     const containerRef = useRef<HTMLDivElement | null>(null);
