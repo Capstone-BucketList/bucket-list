@@ -118,7 +118,7 @@ export default function Scrapbook() {
         setError(null);
 
         try {
-            const response = await fetch(`http://eric.ddfullstack.cloud:8080/apis/post/`, {
+            const response = await fetch(`http://localhost:8080/apis/post/`, {
                 method: "PUT",
                 headers: addHeaders(authorization, cookie),
                 body: JSON.stringify({
@@ -165,7 +165,7 @@ export default function Scrapbook() {
 
         try {
             const response = await fetch(
-                `http://eric.ddfullstack.cloud:8080/apis/post/${activeCard.id}`,
+                `http://localhost:8080/apis/post/${activeCard.id}`,
                 {
                     method: "DELETE",
                     headers: addHeaders(authorization, cookie),

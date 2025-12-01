@@ -11,10 +11,12 @@ import {
     FaLayerGroup,
     FaPhotoVideo,
 } from "react-icons/fa";
-import { useLoaderData, Form, redirect } from "react-router";
+import { useLoaderData, Form, redirect, Link } from "react-router";
 import type { Route } from "../../.react-router/types/app/routes/+types/community";
 import { getSession } from "~/utils/session.server";
 import { PostCreationForm } from "~/components/post-creation-form";
+import { CommentSection } from "~/components/comment-section";
+import { FollowButton } from "~/components/follow-button";
 
 const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
 
@@ -31,7 +33,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     // Fetch all visible posts with media
     let posts = [];
     try {
-        const postsResponse = await fetch('http://eric.ddfullstack.cloud:8080/apis/post/visible/posts', {
+        const postsResponse = await fetch('http://localhost:8080/apis/post/visible/posts', {
             headers: {
                 'Authorization': `Bearer ${authorization}`,
                 'Cookie': cookie,
@@ -46,7 +48,7 @@ export async function loader({ request }: Route.LoaderArgs) {
             // Fetch media for each post
             for (const post of postsArray) {
                 try {
-                    const mediaResponse = await fetch(`http://eric.ddfullstack.cloud:8080/apis/media/post/${post.id}`, {
+                    const mediaResponse = await fetch(`http://localhost:8080/apis/media/post/${post.id}`, {
                         headers: {
                             'Authorization': `Bearer ${authorization}`,
                             'Cookie': cookie,
@@ -72,7 +74,27 @@ export async function loader({ request }: Route.LoaderArgs) {
         console.error('Failed to load posts:', error);
     }
 
-    return { profile, authorization, cookie, posts, profileId: profile?.id };
+    // Fetch user's wanderlists for Featured Wanderlist section
+    let featuredWanderlists = [];
+    try {
+        const wanderlistsResponse = await fetch(`http://localhost:8080/apis/wanderlist/profile/${profile.id}`, {
+            headers: {
+                'Authorization': `Bearer ${authorization}`,
+                'Cookie': cookie,
+            },
+            credentials: 'include',
+        });
+
+        if (wanderlistsResponse.ok) {
+            const wanderlistsData = await wanderlistsResponse.json();
+            // Get up to 3 wanderlists for featured section
+            featuredWanderlists = (wanderlistsData.data || []).slice(0, 3);
+        }
+    } catch (error) {
+        console.error('Failed to load wanderlists:', error);
+    }
+
+    return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists };
 }
 
 //
@@ -178,7 +200,7 @@ interface Post {
 }
 
 interface Wanderlist {
-    id: number;
+    id: string | number;
     title: string;
     image: string;
 }
@@ -212,7 +234,7 @@ export default function Community() {
     const [inspiration, setInspiration] = useState<InspirationItem[]>([]);
 
     // Load auth data and posts from loader
-    const { authorization, cookie, posts: loaderPosts, profileId } = useLoaderData<typeof loader>();
+    const { authorization, cookie, posts: loaderPosts, profileId, featuredWanderlists } = useLoaderData<typeof loader>();
 
     const stories: SharedStory[] = [];
 
@@ -257,11 +279,21 @@ export default function Community() {
             ]);
         }
 
-        setWanderlist([
-            { id: 1, title: "Visit Iceland", image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" },
-            { id: 2, title: "Build Fitness Routine", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b" },
-            { id: 3, title: "Learn Guitar", image: "https://images.unsplash.com/photo-1511376777868-611b54f68947" },
-        ]);
+        // Use real wanderlists from loader if available
+        if (featuredWanderlists && featuredWanderlists.length > 0) {
+            setWanderlist(featuredWanderlists.map((wl: any) => ({
+                id: wl.id,
+                title: wl.title,
+                image: wl.coverImage || "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
+            })));
+        } else {
+            // Fallback to static data
+            setWanderlist([
+                { id: 1, title: "Visit Iceland", image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" },
+                { id: 2, title: "Build Fitness Routine", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b" },
+                { id: 3, title: "Learn Guitar", image: "https://images.unsplash.com/photo-1511376777868-611b54f68947" },
+            ]);
+        }
 
         setSuggestions([
             { id: 201, name: "Mia Thompson", avatarUrl: "https://i.pravatar.cc/150?img=21" },
@@ -327,6 +359,74 @@ export default function Community() {
                 </div>
             </section>
 
+            {/* SHARED STORIES SECTION */}
+            <section className="max-w-7xl mx-auto px-6 py-16 bg-white">
+                <h2 className="text-4xl font-extrabold text-center text-purple-700 mb-10">Shared Stories</h2>
+
+                {/* Share Your Story Form */}
+                <div className="max-w-3xl mx-auto mb-8">
+                    <Card className="p-6 bg-purple-50 border-2 border-purple-200">
+                        <h3 className="text-xl font-bold text-purple-800 mb-4">Share Your Story</h3>
+                        <PostCreationForm
+                            authorization={authorization}
+                            cookie={cookie}
+                            profileId={profileId}
+                            defaultWanderlistId={SHARED_STORIES_WANDERLIST_ID}
+                            hideWanderlistSelector={true}
+                            onSuccess={() => {
+                                console.log('Shared story posted successfully');
+                                // Reload the page to show new story
+                                window.location.reload();
+                            }}
+                        />
+                    </Card>
+                </div>
+
+                {/* Display Shared Stories */}
+                <div className="max-w-3xl mx-auto space-y-6">
+                    {posts.filter(post => post.wanderlistId === SHARED_STORIES_WANDERLIST_ID).length === 0 ? (
+                        <Card className="p-6 text-center">
+                            <p className="text-gray-600">No shared stories yet. Be the first to share your journey above!</p>
+                        </Card>
+                    ) : (
+                        posts
+                            .filter(post => post.wanderlistId === SHARED_STORIES_WANDERLIST_ID)
+                            .map((story) => (
+                                <Card key={story.id} className="shadow-md hover:shadow-lg transition p-6">
+                                    <h3 className="text-2xl font-bold text-gray-800 mb-2">{story.title}</h3>
+                                    <p className="text-sm text-gray-500 mb-4">
+                                        {story.datetimeCreated
+                                            ? new Date(story.datetimeCreated).toLocaleDateString()
+                                            : 'Recently'}
+                                    </p>
+                                    <p className="text-gray-700 whitespace-pre-line">{story.content}</p>
+
+                                    {story.media && story.media.length > 0 && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                            {story.media.map((media, index) => (
+                                                <img
+                                                    key={index}
+                                                    src={media.url}
+                                                    alt={`story-media-${index}`}
+                                                    className="rounded-lg max-h-80 w-full object-cover"
+                                                />
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Comment Section for Shared Stories */}
+                                    <CommentSection
+                                        postId={story.id}
+                                        authorization={authorization}
+                                        cookie={cookie}
+                                        currentProfileId={profileId}
+                                    />
+                                </Card>
+                            ))
+                    )}
+                </div>
+            </section>
+
             {/* POST CREATION SECTION */}
             <section className="max-w-3xl mx-auto px-6 py-16">
                 <PostCreationForm
@@ -380,9 +480,17 @@ export default function Community() {
                                         <FaHeart className="text-red-500" /> {post.likes || 0}
                                     </span>
                                     <span className="flex items-center gap-2">
-                                        <FaComment /> {post.commentsCount || 0} comments
+                                        <FaComment /> Comments
                                     </span>
                                 </div>
+
+                                {/* Comment Section */}
+                                <CommentSection
+                                    postId={post.id}
+                                    authorization={authorization}
+                                    cookie={cookie}
+                                    currentProfileId={profileId}
+                                />
                             </Card>
                         ))
                     )}
@@ -410,10 +518,13 @@ export default function Community() {
                             {suggestions.map((u) => (
                                 <div key={u.id} className="flex items-center justify-between gap-3">
                                     <Avatar img={u.avatarUrl} rounded />
-                                    <p className="font-semibold">{u.name}</p>
-                                    <Button size="xs" color="info">
-                                        Follow
-                                    </Button>
+                                    <p className="font-semibold flex-1">{u.name}</p>
+                                    <FollowButton
+                                        profileId={u.id.toString()}
+                                        authorization={authorization}
+                                        cookie={cookie}
+                                        initialFollowing={false}
+                                    />
                                 </div>
                             ))}
                         </div>
@@ -423,12 +534,16 @@ export default function Community() {
                     <Card>
                         <h2 className="text-xl font-bold mb-4">Explore</h2>
                         <div className="flex flex-col gap-4">
-                            <Button className="bg-indigo-600 flex items-center gap-2">
-                                <FaCompass /> Discover Groups
-                            </Button>
-                            <Button className="bg-blue-600 flex items-center gap-2">
-                                <FaUsers /> Your Network
-                            </Button>
+                            <Link to="/groups">
+                                <Button className="w-full bg-indigo-600 flex items-center gap-2 justify-center">
+                                    <FaCompass /> Discover Groups
+                                </Button>
+                            </Link>
+                            <Link to="/groups">
+                                <Button className="w-full bg-blue-600 flex items-center gap-2 justify-center">
+                                    <FaUsers /> Your Network
+                                </Button>
+                            </Link>
                         </div>
                     </Card>
                 </div>

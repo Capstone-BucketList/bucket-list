@@ -13,13 +13,22 @@ interface PostCreationFormProps {
     cookie: string;
     profileId?: string;
     onSuccess?: () => void;
+    defaultWanderlistId?: string;
+    hideWanderlistSelector?: boolean;
 }
 
-export function PostCreationForm({ authorization, cookie, profileId, onSuccess }: PostCreationFormProps) {
+export function PostCreationForm({
+    authorization,
+    cookie,
+    profileId,
+    onSuccess,
+    defaultWanderlistId,
+    hideWanderlistSelector = false
+}: PostCreationFormProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [visibility, setVisibility] = useState('public');
-    const [selectedWanderlist, setSelectedWanderlist] = useState('');
+    const [selectedWanderlist, setSelectedWanderlist] = useState(defaultWanderlistId || '');
     const [wanderlists, setWanderlists] = useState<Wanderlist[]>([]);
     const [uploadedPhotoUrls, setUploadedPhotoUrls] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,7 +49,7 @@ export function PostCreationForm({ authorization, cookie, profileId, onSuccess }
                     return;
                 }
 
-                const response = await fetch(`http://eric.ddfullstack.cloud:8080/apis/wanderlist/profile/${profileId}`, {
+                const response = await fetch(`http://localhost:8080/apis/wanderlist/profile/${profileId}`, {
                     method: 'GET',
                     headers: addHeaders(authorization, cookie),
                     credentials: 'include',
@@ -169,7 +178,7 @@ export function PostCreationForm({ authorization, cookie, profileId, onSuccess }
         setErrorMessage('');
 
         try {
-            const response = await fetch('http://eric.ddfullstack.cloud:8080/apis/post', {
+            const response = await fetch('http://localhost:8080/apis/post', {
                 method: 'POST',
                 headers: addHeaders(authorization, cookie),
                 credentials: 'include',
@@ -236,24 +245,26 @@ export function PostCreationForm({ authorization, cookie, profileId, onSuccess }
                     </div>
                 )}
 
-                {/* Wanderlist Selection */}
-                <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                        Wanderlist <span className="text-red-500">*</span>
-                    </label>
-                    <Select
-                        value={selectedWanderlist}
-                        onChange={(e) => setSelectedWanderlist(e.target.value)}
-                        required
-                    >
-                        <option value="">-- Select a wanderlist --</option>
-                        {wanderlists.map((wl) => (
-                            <option key={wl.id} value={wl.id}>
-                                {wl.title}
-                            </option>
-                        ))}
-                    </Select>
-                </div>
+                {/* Wanderlist Selection - Hidden for Shared Stories */}
+                {!hideWanderlistSelector && (
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Wanderlist <span className="text-red-500">*</span>
+                        </label>
+                        <Select
+                            value={selectedWanderlist}
+                            onChange={(e) => setSelectedWanderlist(e.target.value)}
+                            required
+                        >
+                            <option value="">-- Select a wanderlist --</option>
+                            {wanderlists.map((wl) => (
+                                <option key={wl.id} value={wl.id}>
+                                    {wl.title}
+                                </option>
+                            ))}
+                        </Select>
+                    </div>
+                )}
 
                 {/* Title */}
                 <div>
