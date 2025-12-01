@@ -21,7 +21,8 @@ export const PrivateProfileSchema = z.object({
     bio: z.string('please provide a valid profile about')
         .max(160, 'please provide a valid about (max 160 characters)' )
         .trim()
-        .nullable(),
+        .nullable()
+        .default(null),
 
     dateCreated: z.date('please provide a valid date')
         .nullable(),
@@ -34,7 +35,8 @@ export const PrivateProfileSchema = z.object({
 
     profilePicture: z.string('Please provide a valid image source')
         .max(255, 'Please Provide a valid profile picture (max 255 characters)')
-        .nullable(),
+        .nullable()
+        .default(null),
 
     userName: z.string('please provide a valid user name')
         .min(1, 'please provide a valid user name')
@@ -183,7 +185,8 @@ export async function deleteProfileById(id: string): Promise<string>
  */
  export async function selectPublicFollowersByProfileId(id: string): Promise<PublicProfile[] |null > {
 
-      const rowList = await sql `SELECT ID, BIO, user_name,profile_picture,visibility FROM profile p
+
+      const rowList = await sql `SELECT p.id, p.bio, p.email, p.user_name, p.profile_picture, p.visibility FROM profile p
           inner join follow f on p.id = f.followed_profile_id where f.follower_profile_id = ${id} `
 
       const result = PublicProfileSchema.array().parse(rowList)
@@ -214,17 +217,20 @@ export async function selectPublicFollowingByProfileId(id: string): Promise<Publ
  * @param id logged in profileID
  * @returns follower profiles
  */
-export async function selectPublicProfile(): Promise<PublicProfile[] | [] > {
+export async function selectPublicProfile(id:string): Promise<PublicProfile[] | [] > {
 try {
 
 
-    const rowList = await sql `SELECT id, bio, email, user_name,profile_picture,visibility FROM profile WHERE visibility = 'public'`
-    console.log('rowlist', rowList)
+    const rowList = await sql `SELECT p.id, p.bio, p.email, p.user_name,p.profile_picture,p.visibility FROM profile p
+                               WHERE p.id NOT IN (
+                                                  SELECT f.followed_profile_id FROM follow f WHERE f.follower_profile_id = ${id}
+                                             ) AND p.id != ${id} `
+console.log(rowList)
     const result = PublicProfileSchema.array().parse(rowList)
-    console.log('result', result)
+
     return result ?? []
 } catch (error) {
-    console.error('Error fetching public profiles:', error)
+
     return []
 }
 }
