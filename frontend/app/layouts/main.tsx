@@ -21,10 +21,14 @@ export default function MainLayout({loaderData}:Route.ComponentProps) {
     const profile = loaderData?.profile
    // console.log('main layout profile', profile)
 
-    return (<>
-        <LoadingIndicator />
-        <Navigation profile={profile} />
-        <Outlet/>
-        <WanderListFooter/>
-    </>)
+    return (
+        <div className="flex flex-col min-h-screen">
+            <LoadingIndicator />
+            <Navigation profile={profile} />
+            <main className="flex-1">
+                <Outlet/>
+            </main>
+            <WanderListFooter/>
+        </div>
+    )
 }

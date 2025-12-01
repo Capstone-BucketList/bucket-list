@@ -100,10 +100,12 @@ export function DivSlider(props: DivSliderProps) {
                                         )}
                                     </div>
                                 ) : (
-                                    <div className="p-6 text-center">
-                                        {item.icon}
-                                        <h3 className="text-lg font-semibold mt-2">{item.title}</h3>
-                                        <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+                                    <div className={`p-6 text-center flex flex-col items-center justify-center ${finalImageHeightClass} w-full`}>
+                                        <div className="flex-shrink-0">
+                                            {item.icon}
+                                        </div>
+                                        <h3 className="text-lg font-semibold mt-2 line-clamp-2">{item.title}</h3>
+                                        <p className="text-sm text-gray-600 mt-1 line-clamp-3">{item.description}</p>
                                     </div>
                                 )}
                             </Card>

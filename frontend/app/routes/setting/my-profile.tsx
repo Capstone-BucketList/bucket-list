@@ -75,7 +75,7 @@ console.log("editMode",editMode);
                                 Cancel
                             </button>
                         )}
-                        {/* Sign Out Button */}
+                        {/* Sign Out Button
                         {!editMode ? (
                             <Form method='POST' action="/logout">
                                 <button
@@ -85,7 +85,7 @@ console.log("editMode",editMode);
                                     Log Out
                                 </button>
                             </Form>
-                        ) : null}
+                        ) : null}*/}
                     </div>
                 </div>
                 {editMode ? (

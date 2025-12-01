@@ -399,7 +399,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                             <p className="text-gray-500 mb-6">
                                 Progress on your wanderlists and milestones.
                             </p>
-                            <div className="space-y-5">
+                            <div className="space-y-5 max-h-80 overflow-y-auto pr-2">
                                 <ProgressBars items={progressBars} />
 
                             </div>

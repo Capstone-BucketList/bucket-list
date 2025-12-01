@@ -305,7 +305,7 @@ export default function Home() {
                   </div>
 
               </section>
-                <section id="inspiration" className="py-16 bg-violet-400">
+              {/*  <section id="inspiration" className="py-16 bg-violet-400">
                     <h2 className="text-3xl font-bold text-center mb-10">Inspiration Gallery</h2>
                     <div id="carousel-container" className="max-w-5xl mx-auto px-6" style={{minHeight: '280px'}}>
                     <div id="carousel-images" className=" grid md:grid-cols-3 gap-6 transition-opacity duration-300" data-carousel="slide">
@@ -323,7 +323,24 @@ export default function Home() {
                         ))}
                     </div>
                     </div>
-                </section>
+                </section>*/}
+              <section id="inspiration" className="py-16 bg-indigo-50">
+                  <h2 className="text-3xl font-bold text-center mb-10">Inspiration Gallery</h2>
+                  <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto px-6">
+                      {["mountain","travel","adventure","beaches","hiking","skiing"].map((place, i) => (
+                          <div key={i} className="relative group">
+                              <img
+                                  src={`/inspirationGallery/${place}.jpg`}
+                                  alt={place}
+                                  className="rounded-2xl shadow-md group-hover:scale-105 transition w-90 h-60"
+                              />
+                              <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
+                                  <p className="text-white text-lg font-semibold capitalize">{place}</p>
+                              </div>
+                          </div>
+                      ))}
+                  </div>
+              </section>
 
                 <section id="community" className="py-16 bg-blue-600 text-center">
                     <h2 className="text-3xl font-bold mb-4">Join Our Global Dreamers</h2>
