@@ -108,12 +108,13 @@ export async function getFollwersByProfileId(profileId: string, authorization: s
     const result =
     response.data ?
          ProfileSchema.array().parse(response.data) : null
+    console.log(result)
     return result
 }
 
-export async function getPublicProfiles(authorization: string, cookie: string): Promise<Profile[]> {
+export async function getPublicProfiles(id:string,authorization: string, cookie: string): Promise<Profile[]> {
 
-    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/`, {
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/publicProfile/${id}`, {
         method: 'GET',
         headers: addHeaders(authorization,cookie),
     })  .then(res => {
@@ -123,5 +124,23 @@ export async function getPublicProfiles(authorization: string, cookie: string): 
         return res.json()
     })
     const result = ProfileSchema.array().parse(response.data)
+    return result
+}
+
+
+export async function getFollwingsByProfileId(profileId: string, authorization: string, cookie: string): Promise<Profile[] | null> {
+
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/following/${profileId}`, {
+        method: 'GET',
+        headers: addHeaders(authorization,cookie),
+    })  .then(res => {
+        if(!res.ok) {
+            throw new Error('failed to fetch followers by profile id')
+        }
+        return res.json()
+    })
+    const result =
+        response.data ?
+            ProfileSchema.array().parse(response.data) : null
     return result
 }

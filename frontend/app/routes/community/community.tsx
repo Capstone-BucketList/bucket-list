@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Card, Avatar, TextInput, Textarea } from "flowbite-react";
 import {
     FaUsers,
@@ -11,9 +11,57 @@ import {
     FaLayerGroup,
     FaPhotoVideo,
 } from "react-icons/fa";
-import { useLoaderData, Form, redirect } from "react-router";
+import {useLoaderData, Form, redirect, useActionData} from "react-router";
+import type {Route} from "../../../.react-router/types/app/routes/profile/+types/dashboard";
+import {getSession} from "~/utils/session.server";
+import {getPublicProfiles} from "~/utils/models/profile.model";
+import {type Follow, FollowSchema, postFollow} from "~/utils/models/follow.model";
+import {getValidatedFormData, useRemixForm} from "remix-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {FriendCard} from "~/routes/profile/friendcard";
 
 const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
+
+export async function loader({request}: Route.LoaderArgs) {
+    //Get existing session from cookie
+    const cookie = request.headers.get('Cookie')
+    const session = await getSession(cookie)
+
+    const profile = session.get("profile");
+    const authorization = session.get("authorization");
+
+
+    if (!profile || !authorization || !cookie) {
+        return redirect("/login");
+    }
+    const publicProfiles = await getPublicProfiles(profile.id,authorization, cookie)
+
+    return {publicProfiles}
+}
+
+
+export async function action({ request }: Route.ActionArgs) {
+
+    const formData = await request.formData();
+    const followedProfileId = formData.get("followedProfileId");
+console.log(followedProfileId);
+    if(!followedProfileId){
+        return "select profile"
+    }
+    const cookie = request.headers.get("Cookie");
+    const session = await getSession(cookie);
+    const profile = session.get("profile");
+    const authorization = session.get("authorization");
+
+    if (!profile || !authorization) return redirect("/login");
+
+    const response = await postFollow(followedProfileId,authorization,cookie)
+
+    console.log(response)
+    return {status:200, data:response}
+
+}
+
 //
 // export async function loader() {
 //     try {
@@ -136,7 +184,14 @@ interface SharedStory {
     dateCreated: string;
 }
 
-export default function Community() {
+
+const resolver =  zodResolver(FollowSchema)
+
+export default function Community({ loaderData }: Route.ComponentProps) {
+    const { publicProfiles } = loaderData ?? {};
+    const {handleSubmit, formState: {errors}, register} = useRemixForm<Follow>({mode: 'onSubmit', resolver})
+    const actionData = useActionData<typeof action>();
+
     // Static data states
     const [posts, setPosts] = useState<Post[]>([]);
     const [wanderlist, setWanderlist] = useState<Wanderlist[]>([]);
@@ -328,15 +383,27 @@ export default function Community() {
                     {/* Follow Suggestions */}
                     <Card>
                         <h2 className="text-xl font-bold mb-4">Suggested for You</h2>
-                        <div className="flex flex-col gap-4">
-                            {suggestions.map((u) => (
-                                <div key={u.id} className="flex items-center justify-between gap-3">
-                                    <Avatar img={u.avatarUrl} rounded />
-                                    <p className="font-semibold">{u.name}</p>
-                                    <Button size="xs" color="info">
+                        <div className="flex flex-col gap-4 max-h-96 overflow-y-auto pr-2">
+                            {publicProfiles?.map((profile) => (
+                               /* <Form  action="follow"
+                                       noValidate={true}
+                                       method={'POST'}
+                                       className="space-y-4 md:space-y-6" >
+                                    <input type="hidden" name="followedProfileId" value={profile.id} />
+                                <div
+                                     id={profile.id}
+                                     className="flex items-center justify-between gap-3">
+                                    <Avatar img={profile.profilePicture} rounded />
+                                    <p className="font-semibold">{profile.userName}</p>
+                                   {/!* <Button size="xs" color="info">
                                         Follow
-                                    </Button>
+                                    </Button>*!/}
+                                    <button type="submit" color="info">Follow</button>
                                 </div>
+                                </Form>*/
+
+                                    <FriendCard profile={profile} isFriend={false} />
+
                             ))}
                         </div>
                     </Card>

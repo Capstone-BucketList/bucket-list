@@ -6,13 +6,13 @@ import {FaTrash} from "react-icons/fa";
 import {Form} from "react-router";
 
 type Props = {
-    wanderList: WanderList[];
+    wonderlistItems: WanderList[];
     openEditModal: (item: WanderList) => void;
 };
 
-export default function WanderList({ wanderList, openEditModal }: Props) {
-    console.log(wanderList, openEditModal);
-    if (!wanderList || wanderList.length === 0) {
+export default function WanderListItems({ wonderlistItems, openEditModal }: Props) {
+    console.log(wonderlistItems, openEditModal);
+    if (!wonderlistItems || wonderlistItems.length === 0) {
         return (<div className="rounded-md py-10 px-8 text-center bg-amber-50 border border-amber-200">
             <p className="text-xl font-semibold text-amber-700 mb-2">
                 Your wanderlist is empty
@@ -55,7 +55,7 @@ export default function WanderList({ wanderList, openEditModal }: Props) {
         }
     };
 
-    if (wanderList?.length > 0) {
+    if (wonderlistItems?.length > 0) {
         return (
             <div className="relative">
                 <div
@@ -63,7 +63,7 @@ export default function WanderList({ wanderList, openEditModal }: Props) {
                     className="flex overflow-x-hidden scrollbar-hide px-4"
                     style={{scrollSnapType: 'x mandatory'}}
                 >
-                    {wanderList.map((item, i) => (
+                    {wonderlistItems.map((item, i) => (
                         <div
                             key={i}
                             ref={(el) => {

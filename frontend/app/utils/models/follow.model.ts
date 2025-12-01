@@ -25,7 +25,7 @@ export type Follow = z.infer<typeof FollowSchema>
 
 /**
  * insert the Follow
- * @param comment
+ *
  */
 export async function postFollow(followedProfileId:string,authorization:string, cookie:string): Promise<Status> {
 
@@ -43,7 +43,7 @@ export async function postFollow(followedProfileId:string,authorization:string, 
 
 /**
  * delete the comment
- * @param commentId
+ * @param profileId
  * @param authorization
  * @param cookie
  */

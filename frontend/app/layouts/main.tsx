@@ -1,6 +1,7 @@
 import {Navigation} from "~/components/navigation";
 import {Outlet} from "react-router";
 import {WanderListFooter} from "~/components/wander-list-footer";
+import {LoadingIndicator} from "~/components/LoadingIndicator";
 import {getSession} from "../utils/session.server";
 import type {Profile} from "~/utils/models/profile.model";
 
@@ -21,6 +22,7 @@ export default function MainLayout({loaderData}:Route.ComponentProps) {
    // console.log('main layout profile', profile)
 
     return (<>
+        <LoadingIndicator />
         <Navigation profile={profile} />
         <Outlet/>
         <WanderListFooter/>

@@ -1,6 +1,6 @@
 import {getSession} from "~/utils/session.server";
 import {redirect} from "react-router";
-import {postFollow} from "~/utils/models/follow.model";
+import {deleteFollowedProfileId, postFollow} from "~/utils/models/follow.model";
 
 
 export async function action({ request }: Route.ActionArgs) {
@@ -19,7 +19,7 @@ export async function action({ request }: Route.ActionArgs) {
 
     if (!profile || !authorization) return redirect("/login");
 
-    const response = await postFollow(followedProfileId,authorization,cookie)
+    const response = await deleteFollowedProfileId(followedProfileId,authorization,cookie)
     return redirect("/dashboard");
 
 }

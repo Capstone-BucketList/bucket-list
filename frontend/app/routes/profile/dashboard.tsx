@@ -3,24 +3,30 @@ import {ProgressBars} from "~/routes/profile/progress-bars";
 import {Timeline} from "~/routes/profile/timeline";
 import {
     deleteWanderList,
-    getWanderListByProfileId, postWanderList, updateWanderList, type WanderListForm, WanderListSchema,
+    getWanderListByProfileId, postWanderList, updateWanderList, WanderListSchema,
+    type WanderList
 } from "~/utils/models/wanderlist.model";
 
-import WanderList from "~/routes/profile/wanderlist";
 import {zodResolver} from "@hookform/resolvers/zod";
 
-import type {FormActionResponse} from "~/utils/interfaces/FormActionResponse";
 import {getValidatedFormData, useRemixForm,validateFormData} from "remix-hook-form";
 import {Form, redirect, useActionData, useRevalidator} from "react-router";
 import React, {useState,useEffect} from "react";
 import {getSession} from "~/utils/session.server";
 import type {Route} from "../../../.react-router/types/app/routes/profile/+types/dashboard";
-import {getFollwersByProfileId, getPublicProfiles, type SignUp} from "~/utils/models/profile.model";
+import {
+    getFollwersByProfileId,
+    getFollwingsByProfileId,
+    getPublicProfiles,
+    type SignUp
+} from "~/utils/models/profile.model";
 import {FaPencil} from "react-icons/fa6";
 import {StatusMessage} from "~/components/StatusMessage";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 import {FaWindowClose} from "react-icons/fa";
 import {FriendCard} from "~/routes/profile/friendcard";
+import WanderListItems from "~/routes/profile/wanderlist";
+import {Card} from "flowbite-react";
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
@@ -206,7 +212,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
 
 
                         {/* WanderList Section */}
-                        <WanderList wanderList={wanderList} openEditModal={openEditModal} />
+                        <WanderListItems wonderlistItems={wanderList} openEditModal={openEditModal} />
 
 
                         {/* MODAL */}
@@ -372,30 +378,20 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                     {/* RIGHT Sidebar - Friends + Progress + Timeline */}
                     <aside className="space-y-10">
                         {/* Friends */}
-                        <section className="bg-white border border-gray-200 rounded-3xl p-6 shadow-lg">
-                            <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-xl font-semibold text-gray-900">Friends</h3>
-                                <a href="#" className="text-gray-500 hover:underline">
-                                    See all
-                                </a>
-                            </div>
 
-                            <div className="
-                                  h-[300px]
-                                  overflow-y-auto
-                                  scroll-smooth
-                                  flex flex-wrap justify-start
-                                  gap-4 p-2
-                                ">
-                            {/* Example friend cards */}
-                                {followingProfiles?.map(profile => (
-                                    <FriendCard profile={profile} isFriend={true} />
-                                ))
-                                }
+                            {/* Friends */}
+                            <Card >
+                                <h2 className="text-xl font-bold mb-4">Friends</h2>
+                                <div className="flex flex-col gap-4 max-h-80 overflow-y-auto pr-2">
+                                    {/* Example friend cards */}
+                                    {followingProfiles?.map(profile => (
+                                        <FriendCard profile={profile} isFriend={true} />
+                                    ))
+                                    }
+                                </div>
 
+                            </Card>
 
-                            </div>
-                        </section>
 
                         {/* Progress Bars */}
                         <section className="bg-white border border-gray-200 rounded-3xl p-6 shadow-lg">

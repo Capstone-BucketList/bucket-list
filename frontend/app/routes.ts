@@ -13,7 +13,8 @@ export default [
         route('/logout','routes/logout/logout.tsx'),
             //route('/settings','routes/setting/setting.tsx')
         route("/settings", "routes/setting/my-profile.tsx"),
-        route('/dashboard/follow', 'routes/profile/followprofile.tsx'),
+        route('/community/follow', 'routes/community/followprofile.tsx'),
+        route('/dashboard/unfollow', 'routes/profile/unfollowprofile.tsx'),
     ]),
 ] satisfies RouteConfig;
 
