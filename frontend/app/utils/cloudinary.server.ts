@@ -22,12 +22,12 @@ function webStreamToNodeReadable(webStream: ReadableStream<Uint8Array>): Readabl
     })
 }
 
-export async function uploadToCloudinary(webStream: ReadableStream<Uint8Array>): Promise<string> {
+export async function uploadToCloudinary(webStream: ReadableStream<Uint8Array>, folder: string = 'wanderlist-avatars'): Promise<string> {
     //console.log('uploadToCloudinary')
    // console.log("cloudinaryUtils",cloudinaryUtils)
     return new Promise((resolve, reject) => {
         const uploadStream: UploadStream = cloudinaryUtils.uploader.upload_stream(
-            { folder: 'wanderlist-avatars' },
+            { folder },
             (error, result: UploadApiResponse | undefined) => {
                 if (error || !result) {
                     console.error("Cloudinary upload failed", error)

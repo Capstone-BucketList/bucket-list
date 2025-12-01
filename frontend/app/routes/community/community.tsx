@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import { Button, Card, Avatar, TextInput, Textarea } from "flowbite-react";
 import {
     FaUsers,
@@ -12,8 +12,69 @@ import {
     FaPhotoVideo,
 } from "react-icons/fa";
 import { useLoaderData, Form, redirect } from "react-router";
+import type { Route } from "../../.react-router/types/app/routes/+types/community";
+import { getSession } from "~/utils/session.server";
+import { PostCreationForm } from "~/components/post-creation-form";
 
 const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
+
+export async function loader({ request }: Route.LoaderArgs) {
+    const cookie = request.headers.get('Cookie');
+    const session = await getSession(cookie);
+    const authorization = session.get('authorization');
+    const profile = session.get('profile');
+
+    if (!profile || !authorization || !cookie) {
+        return redirect('/login');
+    }
+
+    // Fetch all visible posts with media
+    let posts = [];
+    try {
+        const postsResponse = await fetch('http://eric.ddfullstack.cloud:8080/apis/post/visible/posts', {
+            headers: {
+                'Authorization': `Bearer ${authorization}`,
+                'Cookie': cookie,
+            },
+            credentials: 'include',
+        });
+
+        if (postsResponse.ok) {
+            const postsData = await postsResponse.json();
+            const postsArray = postsData.data || [];
+
+            // Fetch media for each post
+            for (const post of postsArray) {
+                try {
+                    const mediaResponse = await fetch(`http://eric.ddfullstack.cloud:8080/apis/media/post/${post.id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${authorization}`,
+                            'Cookie': cookie,
+                        },
+                        credentials: 'include',
+                    });
+
+                    if (mediaResponse.ok) {
+                        const mediaData = await mediaResponse.json();
+                        post.media = mediaData.data || [];
+                    } else {
+                        post.media = [];
+                    }
+                } catch (error) {
+                    console.error('Failed to fetch media for post:', error);
+                    post.media = [];
+                }
+            }
+
+            posts = postsArray;
+        }
+    } catch (error) {
+        console.error('Failed to load posts:', error);
+    }
+
+    return { profile, authorization, cookie, posts, profileId: profile?.id };
+}
+
 //
 // export async function loader() {
 //     try {
@@ -97,16 +158,23 @@ interface Profile {
 
 interface Media {
     url: string;
+    id?: string;
+    postId?: string;
 }
 
 interface Post {
-    id: number;
-    user: Profile;
+    id: string;
+    wanderlistId?: string;
+    title: string;
     content: string;
-    createdAt: string;
-    media: Media[];
-    commentsCount: number;
-    likes: number;
+    visibility: string;
+    datetimeCreated?: string;
+    datetimeModified?: string;
+    media?: Media[];
+    user?: Profile;
+    createdAt?: string;
+    commentsCount?: number;
+    likes?: number;
 }
 
 interface Wanderlist {
@@ -143,41 +211,51 @@ export default function Community() {
     const [suggestions, setSuggestions] = useState<FollowSuggestion[]>([]);
     const [inspiration, setInspiration] = useState<InspirationItem[]>([]);
 
-    // Shared stories from loader
-    const sharedStories = useLoaderData() as SharedStory[] | null | undefined;
+    // Load auth data and posts from loader
+    const { authorization, cookie, posts: loaderPosts, profileId } = useLoaderData<typeof loader>();
 
-    const stories = Array.isArray(sharedStories) ? sharedStories : [];
+    const stories: SharedStory[] = [];
 
     useEffect(() => {
-        setPosts([
-            {
-                id: 1,
-                user: { id: 101, name: "Ava Carter", avatarUrl: "https://i.pravatar.cc/150?img=32" },
-                content: "Exploring the mountains this weekend! 🏔️✨",
-                createdAt: "2025-02-01",
-                media: [{ url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470" }],
-                commentsCount: 12,
-                likes: 87,
-            },
-            {
-                id: 2,
-                user: { id: 102, name: "Daniel Kim", avatarUrl: "https://i.pravatar.cc/150?img=58" },
-                content: "Learning to cook new recipes! 🍜🔥",
-                createdAt: "2025-02-02",
-                media: [{ url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836" }],
-                commentsCount: 5,
-                likes: 32,
-            },
-            {
-                id: 3,
-                user: { id: 103, name: "Sophia Martinez", avatarUrl: "https://i.pravatar.cc/150?img=47" },
-                content: "Just joined a writing challenge ✍🏼📚",
-                createdAt: "2025-02-03",
-                media: [],
-                commentsCount: 8,
-                likes: 49,
-            },
-        ]);
+        // Use real posts from loader if available, otherwise use static data
+        if (loaderPosts && loaderPosts.length > 0) {
+            // Map backend posts to frontend format
+            setPosts(loaderPosts.map((post: any) => ({
+                id: post.id,
+                wanderlistId: post.wanderlist_id,
+                title: post.title || 'Untitled',
+                content: post.content || '',
+                visibility: post.visibility,
+                datetimeCreated: post.datetime_created,
+                media: post.media || [],
+            })));
+        } else {
+            // Fallback to static demo data
+            setPosts([
+                {
+                    id: "1",
+                    title: "Exploring the mountains",
+                    content: "Exploring the mountains this weekend! 🏔️✨",
+                    visibility: "public",
+                    datetimeCreated: "2025-02-01",
+                    media: [{ url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470" }],
+                    user: { id: 101, name: "Ava Carter", avatarUrl: "https://i.pravatar.cc/150?img=32" },
+                    commentsCount: 12,
+                    likes: 87,
+                },
+                {
+                    id: "2",
+                    title: "Learning to cook",
+                    content: "Learning to cook new recipes! 🍜🔥",
+                    visibility: "public",
+                    datetimeCreated: "2025-02-02",
+                    media: [{ url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836" }],
+                    user: { id: 102, name: "Daniel Kim", avatarUrl: "https://i.pravatar.cc/150?img=58" },
+                    commentsCount: 5,
+                    likes: 32,
+                },
+            ]);
+        }
 
         setWanderlist([
             { id: 1, title: "Visit Iceland", image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" },
@@ -249,65 +327,65 @@ export default function Community() {
                 </div>
             </section>
 
-            {/* SHARED STORIES SECTION */}
-            <section className="max-w-7xl mx-auto px-6 py-16">
-                <h2 className="text-4xl font-extrabold text-center text-indigo-700 mb-10">Shared Stories</h2>
-
-                <Form method="post" className="mb-10 max-w-xl mx-auto flex flex-col gap-4">
-                    <TextInput name="title" placeholder="Title" required />
-                    <Textarea name="content" placeholder="Write your story here..." required rows={4} />
-                    <Button type="submit">Post Story</Button>
-                </Form>
-
-                <div className="space-y-6 max-w-xl mx-auto">
-                    {stories.length === 0 &&
-                      <p>No shared stories yet. Be the first!</p>}
-                    {stories.map((story) => (
-                        <Card key={story.id} className="shadow-md">
-                            <h3 className="text-xl font-bold">{story.title}</h3>
-                            <p className="text-gray-700 whitespace-pre-wrap">{story.content}</p>
-                            <div className="text-sm text-gray-500 mt-2">
-                                By <strong>{story.userName}</strong> on {new Date(story.dateCreated).toLocaleDateString()}
-                            </div>
-                        </Card>
-                    ))}
-                </div>
+            {/* POST CREATION SECTION */}
+            <section className="max-w-3xl mx-auto px-6 py-16">
+                <PostCreationForm
+                    authorization={authorization}
+                    cookie={cookie}
+                    profileId={profileId}
+                    onSuccess={() => {
+                        // Optional: Refresh posts or show success message
+                        console.log('Post created successfully');
+                    }}
+                />
             </section>
 
             {/* MAIN GRID LAYOUT (FEED + SIDEBAR) */}
             <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 px-4">
                 {/* FEED */}
                 <div className="lg:col-span-8 flex flex-col gap-6">
-                    {posts.map((post) => (
-                        <Card key={post.id} className="shadow-md hover:shadow-lg transition p-4">
-                            <div className="flex items-center gap-3 mb-3">
-                                <Avatar img={post.user.avatarUrl} rounded />
-                                <div>
-                                    <h3 className="font-bold">{post.user.name}</h3>
-                                    <p className="text-sm text-gray-500">{new Date(post.createdAt).toLocaleDateString()}</p>
-                                </div>
-                            </div>
-
-                            <p className="mb-4">{post.content}</p>
-
-                            {post.media.length > 0 && (
-                                <img
-                                    src={post.media[0].url}
-                                    alt="post-media"
-                                    className="rounded-lg max-h-80 w-full object-cover"
-                                />
-                            )}
-
-                            <div className="flex justify-between mt-4 text-gray-600">
-                <span className="flex items-center gap-2">
-                  <FaHeart className="text-red-500" /> {post.likes}
-                </span>
-                                <span className="flex items-center gap-2">
-                  <FaComment /> {post.commentsCount} comments
-                </span>
-                            </div>
+                    {posts.length === 0 ? (
+                        <Card className="shadow-md p-6 text-center">
+                            <p className="text-gray-600">No posts yet. Be the first to share your journey!</p>
                         </Card>
-                    ))}
+                    ) : (
+                        posts.map((post) => (
+                            <Card key={post.id} className="shadow-md hover:shadow-lg transition p-4">
+                                <div className="mb-3">
+                                    <h3 className="text-lg font-bold text-gray-800">{post.title}</h3>
+                                    <p className="text-sm text-gray-500">
+                                        {post.datetimeCreated
+                                            ? new Date(post.datetimeCreated).toLocaleDateString()
+                                            : 'Recently'}
+                                    </p>
+                                </div>
+
+                                <p className="mb-4 text-gray-700">{post.content}</p>
+
+                                {post.media && post.media.length > 0 && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        {post.media.map((media, index) => (
+                                            <img
+                                                key={index}
+                                                src={media.url}
+                                                alt={`post-media-${index}`}
+                                                className="rounded-lg max-h-80 w-full object-cover"
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+
+                                <div className="flex justify-between mt-4 text-gray-600 text-sm">
+                                    <span className="flex items-center gap-2">
+                                        <FaHeart className="text-red-500" /> {post.likes || 0}
+                                    </span>
+                                    <span className="flex items-center gap-2">
+                                        <FaComment /> {post.commentsCount || 0} comments
+                                    </span>
+                                </div>
+                            </Card>
+                        ))
+                    )}
                 </div>
 
                 {/* SIDEBAR */}
@@ -347,9 +425,6 @@ export default function Community() {
                         <div className="flex flex-col gap-4">
                             <Button className="bg-indigo-600 flex items-center gap-2">
                                 <FaCompass /> Discover Groups
-                            </Button>
-                            <Button className="bg-purple-600 flex items-center gap-2">
-                                <FaPlusCircle /> Create New Goal
                             </Button>
                             <Button className="bg-blue-600 flex items-center gap-2">
                                 <FaUsers /> Your Network

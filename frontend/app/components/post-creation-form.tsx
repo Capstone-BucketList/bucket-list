@@ -1,0 +1,399 @@
+import { useState, useEffect } from 'react';
+import { Button, TextInput, Textarea, Select, Spinner } from 'flowbite-react';
+import { FaCloudUploadAlt, FaImage } from 'react-icons/fa';
+import { addHeaders } from '~/utils/utility';
+
+interface Wanderlist {
+    id: string;
+    title: string;
+}
+
+interface PostCreationFormProps {
+    authorization: string;
+    cookie: string;
+    profileId?: string;
+    onSuccess?: () => void;
+}
+
+export function PostCreationForm({ authorization, cookie, profileId, onSuccess }: PostCreationFormProps) {
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [visibility, setVisibility] = useState('public');
+    const [selectedWanderlist, setSelectedWanderlist] = useState('');
+    const [wanderlists, setWanderlists] = useState<Wanderlist[]>([]);
+    const [uploadedPhotoUrls, setUploadedPhotoUrls] = useState<string[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
+
+    // Cloudinary configuration
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dgkckqptm';
+    const uploadPreset = 'wanderlist_scrapbook';
+
+    // Load user's wanderlists on mount
+    useEffect(() => {
+        const loadWanderlists = async () => {
+            try {
+                if (!profileId) {
+                    setErrorMessage('Profile ID not found');
+                    return;
+                }
+
+                const response = await fetch(`http://eric.ddfullstack.cloud:8080/apis/wanderlist/profile/${profileId}`, {
+                    method: 'GET',
+                    headers: addHeaders(authorization, cookie),
+                    credentials: 'include',
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to load wanderlists:', response.status, response.statusText);
+                    setErrorMessage('Failed to load wanderlists');
+                    return;
+                }
+
+                const result = await response.json();
+                console.log('Wanderlists response:', result);
+                console.log('Response type:', typeof result);
+                console.log('Is array:', Array.isArray(result));
+
+                // Handle both array and {data: array} response formats
+                let wanderlistArray = [];
+                if (Array.isArray(result)) {
+                    wanderlistArray = result;
+                } else if (result && result.data && Array.isArray(result.data)) {
+                    wanderlistArray = result.data;
+                } else {
+                    console.warn('Unexpected response format:', result);
+                }
+
+                console.log('Wanderlist array:', wanderlistArray);
+
+                if (wanderlistArray.length > 0) {
+                    console.log('Setting wanderlists:', wanderlistArray);
+                    setWanderlists(wanderlistArray);
+                    // Auto-select first wanderlist if available
+                    setSelectedWanderlist(wanderlistArray[0].id);
+                    // Clear error if wanderlists loaded successfully
+                    setErrorMessage('');
+                } else {
+                    console.warn('No wanderlists in array');
+                    setErrorMessage('No wanderlists found. Create one in your profile first.');
+                }
+            } catch (error) {
+                console.error('Error loading wanderlists:', error);
+                setErrorMessage('Failed to load wanderlists');
+            }
+        };
+
+        if (authorization && cookie && profileId) {
+            loadWanderlists();
+        }
+    }, [authorization, cookie, profileId]);
+
+    const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (!files) return;
+
+        for (const file of Array.from(files)) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                setErrorMessage('Only image files are allowed');
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                setErrorMessage('File must be smaller than 5MB');
+                return;
+            }
+
+            setIsUploading(true);
+            setErrorMessage('');
+
+            try {
+                // Upload directly to Cloudinary
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', uploadPreset);
+                formData.append('folder', 'wanderlist-scrapbook-v1');
+
+                const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+                const response = await fetch(cloudinaryUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload photo to Cloudinary');
+                }
+
+                const data = await response.json();
+                setUploadedPhotoUrls([...uploadedPhotoUrls, data.secure_url]);
+                setSuccessMessage('Photo uploaded successfully');
+
+                // Clear success message after 3 seconds
+                setTimeout(() => setSuccessMessage(''), 3000);
+            } catch (error) {
+                console.error('Upload error:', error);
+                setErrorMessage('Failed to upload photo. Please try again.');
+            } finally {
+                setIsUploading(false);
+            }
+        }
+    };
+
+    const handleRemovePhoto = (index: number) => {
+        setUploadedPhotoUrls(uploadedPhotoUrls.filter((_, i) => i !== index));
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!title.trim()) {
+            setErrorMessage('Title is required');
+            return;
+        }
+
+        if (!content.trim()) {
+            setErrorMessage('Content is required');
+            return;
+        }
+
+        if (!selectedWanderlist) {
+            setErrorMessage('Please select a wanderlist');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setErrorMessage('');
+
+        try {
+            const response = await fetch('http://eric.ddfullstack.cloud:8080/apis/post', {
+                method: 'POST',
+                headers: addHeaders(authorization, cookie),
+                credentials: 'include',
+                body: JSON.stringify({
+                    id: crypto.randomUUID(),
+                    wanderlistId: selectedWanderlist,
+                    title,
+                    content,
+                    visibility,
+                    mediaUrls: uploadedPhotoUrls,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || 'Failed to create post');
+            }
+
+            setSuccessMessage('Post created successfully!');
+
+            // Clear form
+            setTitle('');
+            setContent('');
+            setVisibility('public');
+            setUploadedPhotoUrls([]);
+
+            // Reset file input
+            const fileInput = document.getElementById('photoInput') as HTMLInputElement;
+            if (fileInput) {
+                fileInput.value = '';
+            }
+
+            // Clear success message after 3 seconds
+            setTimeout(() => setSuccessMessage(''), 3000);
+
+            // Call onSuccess callback if provided
+            if (onSuccess) {
+                setTimeout(onSuccess, 500);
+            }
+        } catch (error) {
+            console.error('Post creation error:', error);
+            setErrorMessage(error instanceof Error ? error.message : 'Failed to create post');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="w-full bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Create a New Post</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Error Message */}
+                {errorMessage && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <p className="text-red-700">{errorMessage}</p>
+                    </div>
+                )}
+
+                {/* Success Message */}
+                {successMessage && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <p className="text-green-700">{successMessage}</p>
+                    </div>
+                )}
+
+                {/* Wanderlist Selection */}
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                        Wanderlist <span className="text-red-500">*</span>
+                    </label>
+                    <Select
+                        value={selectedWanderlist}
+                        onChange={(e) => setSelectedWanderlist(e.target.value)}
+                        required
+                    >
+                        <option value="">-- Select a wanderlist --</option>
+                        {wanderlists.map((wl) => (
+                            <option key={wl.id} value={wl.id}>
+                                {wl.title}
+                            </option>
+                        ))}
+                    </Select>
+                </div>
+
+                {/* Title */}
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                        Title <span className="text-red-500">*</span>
+                    </label>
+                    <TextInput
+                        type="text"
+                        placeholder="Enter post title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                    />
+                </div>
+
+                {/* Content */}
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                        Description <span className="text-red-500">*</span>
+                    </label>
+                    <Textarea
+                        placeholder="Share your story, thoughts, or experiences..."
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        rows={5}
+                        required
+                    />
+                </div>
+
+                {/* Photo Upload */}
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                        Add Photos
+                    </label>
+                    <div className="border-2 border-dashed border-indigo-300 rounded-lg p-6 text-center hover:border-indigo-500 transition">
+                        <input
+                            id="photoInput"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handlePhotoUpload}
+                            disabled={isUploading}
+                            className="hidden"
+                        />
+                        <label
+                            htmlFor="photoInput"
+                            className="cursor-pointer flex flex-col items-center gap-2"
+                        >
+                            {isUploading ? (
+                                <>
+                                    <Spinner size="md" />
+                                    <p className="text-gray-600">Uploading...</p>
+                                </>
+                            ) : (
+                                <>
+                                    <FaCloudUploadAlt className="text-3xl text-indigo-500" />
+                                    <p className="text-gray-700 font-semibold">
+                                        Click to upload photos
+                                    </p>
+                                    <p className="text-sm text-gray-500">
+                                        Max 5MB per file • PNG, JPG, GIF
+                                    </p>
+                                </>
+                            )}
+                        </label>
+                    </div>
+                </div>
+
+                {/* Uploaded Photos Preview */}
+                {uploadedPhotoUrls.length > 0 && (
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">
+                            Uploaded Photos ({uploadedPhotoUrls.length})
+                        </label>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {uploadedPhotoUrls.map((url, index) => (
+                                <div key={index} className="relative group">
+                                    <img
+                                        src={url}
+                                        alt={`Uploaded ${index + 1}`}
+                                        className="w-full h-32 object-cover rounded-lg"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemovePhoto(index)}
+                                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Visibility Control */}
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-2">
+                        Visibility
+                    </label>
+                    <Select
+                        value={visibility}
+                        onChange={(e) => setVisibility(e.target.value)}
+                    >
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                        <option value="friends">Friends Only</option>
+                    </Select>
+                </div>
+
+                {/* Submit Button */}
+                <div className="flex gap-4">
+                    <Button
+                        type="submit"
+                        disabled={isSubmitting || isUploading}
+                        className="flex-1"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <Spinner size="sm" className="mr-2" />
+                                Creating Post...
+                            </>
+                        ) : (
+                            'Create Post'
+                        )}
+                    </Button>
+                    <Button
+                        type="reset"
+                        color="light"
+                        onClick={() => {
+                            setTitle('');
+                            setContent('');
+                            setVisibility('public');
+                            setUploadedPhotoUrls([]);
+                        }}
+                    >
+                        Clear
+                    </Button>
+                </div>
+            </form>
+        </div>
+    );
+}
