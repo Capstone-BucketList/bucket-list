@@ -31,7 +31,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     if (!profile || !authorization || !cookie) {
         return redirect('/login');
     }
-
+    const publicProfiles = await getPublicProfiles(profile.id,authorization, cookie)
     // Fetch all visible posts with media
     let posts = [];
     try {
@@ -95,7 +95,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     } catch (error) {
         console.error('Failed to load wanderlists:', error);
     }
-    const publicProfiles = await getPublicProfiles(profile.id,authorization, cookie)
+
 
     return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists,publicProfiles };
 }
