@@ -206,25 +206,3 @@ export async function selectPublicFollowingByProfileId(id: string): Promise<Publ
 
     return result ?? null
 }
-
-
-
-/**
- * select following records associated with logged-in user
- * @param id logged in profileID
- * @returns follower profiles
- */
-export async function selectPublicProfile(): Promise<PublicProfile[] | [] > {
-try {
-
-
-    const rowList = await sql `SELECT id, bio, email, user_name,profile_picture,visibility FROM profile WHERE visibility = 'public'`
-    console.log('rowlist', rowList)
-    const result = PublicProfileSchema.array().parse(rowList)
-    console.log('result', result)
-    return result ?? []
-} catch (error) {
-    console.error('Error fetching public profiles:', error)
-    return []
-}
-}

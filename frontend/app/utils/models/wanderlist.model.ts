@@ -48,16 +48,22 @@ export const WanderListSchema =  z.object({
  */
 export  type WanderList = z.infer<typeof WanderListSchema>
 
-/*export const WanderListFormSchema = WanderListSchema
+export const WanderListFormSchema = WanderListSchema
 
-export type WanderListForm = z.infer<typeof WanderListFormSchema>*/
+export type WanderListForm = z.infer<typeof WanderListFormSchema>
 
 export  async function getWanderListByProfileId(profileId: string, authorization: string, cookie: string | null): Promise<WanderList[]> {
+
+    const requestHeaders = new Headers()
+    requestHeaders.append('Content-Type', 'application/json')
+    requestHeaders.append('Authorization', authorization)
+
+    requestHeaders.append('Cookie', cookie)
 
 
     const response = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/${profileId}`,{
         method: 'GET',
-        headers:   addHeaders(authorization,cookie),
+        headers: requestHeaders,
     }) .then(res => {
         if (!res.ok) {
             throw new Error('failed to fetch unread messages')
@@ -111,28 +117,6 @@ export async function updateWanderList(data: WanderList,authorization: string, c
     console.log(response)
     if( !response.ok) {
         throw new Error('Failed to update wanderlist')
-    }
-
-    const result = await response.json()
-    console.log("result",result)
-    return result
-}
-/**
- * insert wanderlist
- * @param data
- * @param authorization
- * @param cookie
- */
-export async function deleteWanderList(id: string,authorization: string, cookie: string): Promise<Status> {
-
-    const response = await fetch(`${process.env.REST_API_URL}${wanderlistBasepath}/${id}`, {
-        method: 'DELETE',
-        headers:  addHeaders(authorization,cookie),
-
-    })
-    console.log(response)
-    if( !response.ok) {
-        throw new Error('Failed to delete wanderlist')
     }
 
     const result = await response.json()
