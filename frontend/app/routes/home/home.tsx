@@ -19,6 +19,17 @@ import {DivSlider} from "~/components/div_slider";
 import type { ReactNode } from "react";
 import {HeroSection, SidebarChat} from "~/components/additional-features";
 import {BucketListExamplesSection} from "~/components/Example-trips";
+import {
+    StatisticsSection,
+    GoalCategoryShowcase,
+    TrendingBucketLists,
+    UserSuccessStories,
+    FeaturedCollections,
+    HowItWorks,
+    GoalStatsInfographic,
+    CTACards,
+    EnhancedHeroSection,
+} from "~/components/home-features";
 
 
 export function meta({}: Route.MetaArgs) {
@@ -346,7 +357,7 @@ export default function Home() {
                     <h2 className="text-3xl font-bold mb-4">Join Our Global Dreamers</h2>
                     <p className="text-white max-w-xl mx-auto mb-8">
                         Thousands of people worldwide are ticking off their dreams one goal at a time.
-                        Be part of a community that celebrates life’s adventures.
+                        Be part of a community that celebrates life's adventures.
                     </p>
 
                     <div className="flex justify-center gap-4 mb-8">
@@ -364,6 +375,35 @@ export default function Home() {
 
 
             </div>
+
+            {/* ============================================================================ */}
+            {/* NEW FEATURES SECTION */}
+            {/* ============================================================================ */}
+
+            {/* Statistics Section */}
+            <StatisticsSection />
+
+            {/* Goal Category Showcase */}
+            <GoalCategoryShowcase />
+
+            {/* Trending Bucket Lists */}
+            <TrendingBucketLists />
+
+            {/* How It Works Section */}
+            <HowItWorks />
+
+            {/* User Success Stories */}
+            <UserSuccessStories />
+
+            {/* Featured Collections */}
+            <FeaturedCollections />
+
+            {/* Goal Stats Infographic */}
+            <GoalStatsInfographic />
+
+            {/* CTA Cards */}
+            <CTACards />
+
         </>
     )
 
