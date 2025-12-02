@@ -98,7 +98,8 @@ export async function deleteWanderList(id:string):Promise<string> {
  */
 export async  function  selectWanderlistByProfileId(profileId:string):Promise<WanderList[] | null > {
 
-    const rowList = await sql `SELECT id, profile_id,date_created,description,pinned,wanderlist_status,target_date,title, visibility FROM wanderlist WHERE profile_id =${profileId}`
+    const rowList = await sql `SELECT id, profile_id,date_created,description,pinned,wanderlist_status,target_date,title, visibility FROM wanderlist WHERE profile_id =${profileId}
+                               order by date_created`
 
 
     const result = WanderListSchema.array().parse(rowList)

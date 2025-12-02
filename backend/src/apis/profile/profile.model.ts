@@ -225,7 +225,7 @@ try {
                                WHERE p.id NOT IN (
                                                   SELECT f.followed_profile_id FROM follow f WHERE f.follower_profile_id = ${id}
                                              ) AND p.id != ${id} AND p.visibility='public'`
-console.log("rowlist",rowList)
+    console.log(rowList)
     const result = PublicProfileSchema.array().parse(rowList)
 
     return result ?? []

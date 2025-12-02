@@ -45,7 +45,6 @@ export async function loader({request}: Route.LoaderArgs) {
     // followers profiles
     const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
 
-    console.log("followingProfiles", followingProfiles)
     //  const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
 
     const progressBars = await getWanderListByProfileId(profile.id, authorization, cookie)
@@ -80,9 +79,11 @@ export async function action({ request }: Route.ActionArgs) {
         }
         console.log("action update: ", data)
         if (data?.id) {
+            console.log("modify action")
             /** EDIT MODE */
             response = await updateWanderList(data, authorization, cookie, profile.id);
         } else {
+            console.log("add action")
             /** ADD MODE */
             response = await postWanderList(data, authorization, cookie, profile.id);
         }
@@ -117,7 +118,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
 
     const { userName, email, bio, profilePicture } = profile ?? {};
 
-    const {handleSubmit, formState: {errors}, register} = useRemixForm<WanderList>({mode: 'onSubmit', resolver})
+    const {handleSubmit, formState: {errors}, register, reset} = useRemixForm<WanderList>({mode: 'onSubmit', resolver})
     const actionData = useActionData<typeof action>();
 
     const revalidator = useRevalidator();
@@ -128,17 +129,81 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
     const openAddModal = () => {
         setEditingItem(null);
         setIsModalOpen(true);
+        // Reset form to empty values for Add mode
+        reset({
+            id: undefined,
+            title: '',
+            description: '',
+            targetDate: null,
+            pinned: false,
+            wanderlistStatus: 'Not Started',
+            visibility: 'Public',
+        });
     };
 
     const openEditModal = (item: WanderList) => {
         setEditingItem(item);
         setIsModalOpen(true);
+        // Reset form with the selected item's data
+        // Convert ISO date string to YYYY-MM-DD format for date input
+        let formattedDate = null;
+        if (item.targetDate) {
+          /*  if (typeof item.targetDate === 'string') {
+                formattedDate = item.targetDate.split('T')[0];
+            } else {*/
+                formattedDate = new Date(item.targetDate).toISOString().split('T')[0];
+            //}
+        }
+        console.log("date:", item.targetDate, "formatted:", formattedDate)
+        reset({
+            id: item.id,
+            title: item.title,
+            description: item.description ?? '',
+            targetDate: formattedDate,
+            pinned: item.pinned,
+            wanderlistStatus: item.wanderlistStatus,
+            visibility: item.visibility,
+        });
     };
 
     const closeModal = () => {
         setIsModalOpen(false);
         setEditingItem(null);
+        // Reset form to clean state
+        reset({
+            id: undefined,
+            title: '',
+            description: '',
+            targetDate: null,
+            pinned: false,
+            wanderlistStatus: 'Not Started',
+            visibility: 'Public',
+        });
     };
+
+    // Reset form when editingItem changes (for switching between different edit items)
+    useEffect(() => {
+        if (editingItem) {
+            // Convert ISO date string to YYYY-MM-DD format for date input
+            let formattedDate = null;
+            if (editingItem.targetDate) {
+                if (typeof editingItem.targetDate === 'string') {
+                    formattedDate = editingItem.targetDate.split('T')[0];
+                } else {
+                    formattedDate = new Date(editingItem.targetDate).toISOString().split('T')[0];
+                }
+            }
+            reset({
+                id: editingItem.id,
+                title: editingItem.title,
+                description: editingItem.description ?? '',
+                targetDate: formattedDate,
+                pinned: editingItem.pinned,
+                wanderlistStatus: editingItem.wanderlistStatus,
+                visibility: editingItem.visibility,
+            });
+        }
+    }, [editingItem, reset]);
 
     // Close modal & refresh loader on successful submit
     React.useEffect(() => {
@@ -231,10 +296,8 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                               noValidate={true}
                                               method={'POST'}
                                               className="space-y-4 md:space-y-6" >
-                                            {/* if editing */}
-                                            {editingItem && (
-                                                <input {...register('id')} type="hidden" id="id" value={editingItem?.id} />
-                                            )}
+                                            {/* if editing - ID will be populated by form reset */}
+                                            <input {...register('id')} type="hidden" id="id" />
                                             {/* Title */}
                                             <label className="block mb-4">
                                                 <span className="text-gray-700 font-semibold block mb-2">🎯 Title</span>
@@ -269,10 +332,9 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                             {/* Target Date */}
                                             <label className="block mb-4">
                                                 <span className="text-gray-700 font-medium">Target Completion Date</span>
-                                                <input {...register('targetDate')} defaultValue={editingItem?.targetDate?.toISOString()?.slice(0, 10)}
+                                                <input {...register('targetDate')}
                                                        type="date"
                                                        className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
-
                                                 />
                                                 {errors.targetDate && (
                                                     <p className="mt-1 text-sm text-red-500">{errors.targetDate.message}</p>
@@ -324,7 +386,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                                         <input {...register('visibility')}
                                                                type="radio"
                                                                name="visibility"
-                                                               value={option.id}
+                                                             //  value={option.id}
                                                                defaultChecked={editingItem?.visibility === option.id}
                                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                                                         />
