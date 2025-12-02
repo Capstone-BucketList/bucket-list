@@ -1,6 +1,6 @@
 
 import {ProgressBars} from "~/routes/profile/progress-bars";
-import {Timeline} from "~/routes/profile/timeline";
+import {TimelineComponent} from "~/routes/profile/timeline-component";
 import {
     deleteWanderList,
     getWanderListByProfileId, postWanderList, updateWanderList, WanderListSchema,
@@ -364,9 +364,14 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 </div>
                             )}
                         </section>
+                        {/* Timeline */}
+                        <section className="bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                            <h3 className="text-2xl font-extrabold mb-6">📅 <span className="bg-gradient-to-r from-violet-600 to-purple-600 text-transparent  bg-clip-text "> Journey Timeline </span></h3>
+                            <TimelineComponent items={progressBars || []} />
+                        </section>
                     </section>
                     {/* RIGHT Sidebar - Friends + Progress + Timeline */}
-                    <aside className="space-y-10">
+                    <aside className="space-y-5">
                         {/* Friends */}
                         <div className="bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                             <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent mb-4">👥 Friends</h2>
@@ -388,22 +393,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                             </div>
                         </section>
 
-                        {/* Timeline */}
-                        <section className="bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                            <h3 className="text-2xl font-extrabold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent mb-4">📅 Recent Activity</h3>
-                            <ol className="space-y-4">
-                                {[1, 2, 3].map((num) => (
-                                    <li key={num} className="flex items-start gap-4">
-                    <span className="mt-1 inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 text-amber-700 font-semibold">
-                      {num}
-                    </span>
-                                        <div className="text-gray-700">
-                                            <Timeline />
-                                        </div>
-                                    </li>
-                                ))}
-                            </ol>
-                        </section>
+
                     </aside>
                 </section>
 
