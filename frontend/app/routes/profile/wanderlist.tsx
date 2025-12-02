@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function WanderListItems({ wonderlistItems, openEditModal }: Props) {
-    console.log(wonderlistItems, openEditModal);
+
     if (!wonderlistItems || wonderlistItems.length === 0) {
         return (<div className="rounded-md py-10 px-8 text-center bg-amber-50 border border-amber-200">
             <p className="text-xl font-semibold text-amber-700 mb-2">
@@ -78,7 +78,7 @@ export default function WanderListItems({ wonderlistItems, openEditModal }: Prop
                                 <p className="text-gray-600 text-sm"> {item.description} </p>
                                 <div className="flex gap-5 justify-end items-center">
                                     <Form method="POST">
-                                        <input type="hidden" name="id" value={item?.id} />
+                                        <input type="hidden" name="id" value={item.id} />
                                         <input type="hidden" name="mode" value="delete" />
                                         <button
                                             id="deleteButton"
