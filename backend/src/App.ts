@@ -1,5 +1,6 @@
 import express, {type Application } from 'express'
 import morgan from 'morgan'
+import cors from 'cors'
 // Routes
 import session from 'express-session'
 import type {  RedisClientType } from 'redis'
@@ -13,6 +14,7 @@ import {wanderlistRoute} from "./apis/wanderlist/wanderlist.route.ts";
 import {mediaRoute} from "./apis/media/media.route.ts";
 import {postRoute} from "./apis/post/post.route.ts";
 import {commentRoute} from "./apis/comment/comment.route.ts";
+import {uploadRoute} from "./apis/upload/upload.route.ts";
 //import helmet from "helmet";
 
 
@@ -38,6 +40,18 @@ export class App {
 	private middlewares (): void {
 
 		this.app.use(morgan('dev'))
+
+		// CORS configuration - allow requests for development
+		const isProduction = process.env.NODE_ENV === 'production';
+		this.app.use(cors({
+			origin: isProduction
+				? process.env.FRONTEND_URL || 'https://eric.ddfullstack.cloud'
+				: true, // Allow all origins in development
+			credentials: true,
+			methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+			allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+		}))
+
 		this.app.use(express.json())
 		this.app.use(session( {
 			store: this.redisStore,
@@ -54,6 +68,7 @@ export class App {
         this.app.use(profileRoute.basePath, profileRoute.router)
         this.app.use(followRoute.basePath, followRoute.router)
         this.app.use(wanderlistRoute.basePath, wanderlistRoute.router)
+        this.app.use(uploadRoute.basePath, uploadRoute.router)
         this.app.use(mediaRoute.basePath, mediaRoute.router)
         this.app.use(postRoute.basePath, postRoute.router)
         this.app.use(commentRoute.basePath, commentRoute.router)

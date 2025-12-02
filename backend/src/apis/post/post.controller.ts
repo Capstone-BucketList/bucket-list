@@ -10,6 +10,8 @@ import {
     selectPostbyWanderlistIdAndVisibility, selectPostsByProfileId,
     selectPostsByWanderList, selectVisiblePostsByLoggedInProfileFollow, updatePost
 } from "./post.model.ts";
+import { insertMedia, type Media, selectMediaByPostId, deleteMedia } from "../media/media.model.ts";
+import { v7 as uuidv7 } from 'uuid';
 
 
 /**
@@ -34,7 +36,10 @@ export async function postPostController(request:Request, response:Response) : P
 
         const {id, wanderlistId, content, title, visibility} = validationResult.data
 
-        //constructing delete object to pass to delete method
+        // Extract mediaUrls from request body (optional)
+        const mediaUrls: string[] = request.body.mediaUrls || []
+
+        //constructing post object to pass to insert method
         const post: Post = {
             id,
             wanderlistId,
@@ -44,6 +49,23 @@ export async function postPostController(request:Request, response:Response) : P
         }
 
         const message = await insertPost(post)
+
+        // Insert media records if mediaUrls were provided
+        if (mediaUrls && mediaUrls.length > 0) {
+            for (const url of mediaUrls) {
+                try {
+                    const media: Media = {
+                        id: uuidv7(),
+                        postId: id,
+                        url: url
+                    }
+                    await insertMedia(media)
+                } catch (mediaError: any) {
+                    console.error(`Failed to insert media URL ${url}:`, mediaError.message)
+                    // Continue with other media even if one fails
+                }
+            }
+        }
 
         const status: Status = {
             status: 200,
@@ -73,6 +95,22 @@ export async function deletePostController(request: Request, response: Response)
 
         const {id} = validationResult.data
 
+        // Get all media associated with this post
+        const mediaRecords = await selectMediaByPostId(id)
+
+        // Delete all media records first
+        if (mediaRecords && mediaRecords.length > 0) {
+            for (const media of mediaRecords) {
+                try {
+                    await deleteMedia(media.id)
+                } catch (mediaError: any) {
+                    console.error(`Failed to delete media ${media.id}:`, mediaError.message)
+                    // Continue deleting other media even if one fails
+                }
+            }
+        }
+
+        // Then delete the post
         const message = await deletePost(id)
 
         const status: Status = {
