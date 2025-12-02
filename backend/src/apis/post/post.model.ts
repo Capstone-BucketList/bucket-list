@@ -25,18 +25,21 @@ export const PostSchema = z.object ({
         .trim()
         .nullable(),
 
-    datetimeCreated:z.coerce.date('please provide a valid datetime created')
+    datetimeCreated: z.coerce.date('please provide a valid datetime created')
         .nullable(),
 
-    datetimeModified:z.coerce.date('please provide a valid date time modified')
+    datetimeModified: z.coerce.date('please provide a valid date time modified')
         .nullable(),
 
     title: z.string('please provide a valid title')
         .max(64, 'please provide a valid title (max 64 characters)'),
 
     visibility: z.string('please provide a valid visibility')
-        .max(32, 'please provide a valid visibility (max 32 characters)')
-}).omit({datetimeCreated:true, datetimeModified : true})
+        .max(32, 'please provide a valid visibility (max 32 characters)'),
+
+    milestone: z.boolean('please provide a valid milestone value')
+        .nullable()
+})
 
 export type Post = z.infer<typeof PostSchema>
 
@@ -48,9 +51,9 @@ export type Post = z.infer<typeof PostSchema>
 export async function insertPost(post:Post): Promise<string> {
     PostSchema.parse(post);
 
-    const{id, wanderlistId, content, title, visibility} = post;
+    const{id, wanderlistId, content, title, visibility, milestone} = post;
 
-    await sql `INSERT INTO post(id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility) VALUES(${id}, ${wanderlistId}, ${content}, now(),now(), ${title}, ${visibility})`
+    await sql `INSERT INTO post(id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility, milestone) VALUES(${id}, ${wanderlistId}, ${content}, now(), now(), ${title}, ${visibility}, ${milestone})`
 
     return "Successfully inserted post"
 }
@@ -75,7 +78,7 @@ export async function deletePost(id: string): Promise<string | null> {
 
 export async function selectPostbyWanderlistIdAndVisibility(visibility: string, wanderlistId: string): Promise<Post[]  | null>
 {
-    const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility FROM post WHERE visibility =${visibility} and wanderlist_id =${wanderlistId}`
+    const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility, milestone FROM post WHERE visibility =${visibility} and wanderlist_id =${wanderlistId}`
 
     const result = PostSchema.array().parse(rowList)
 
@@ -90,7 +93,7 @@ export async function selectPostbyWanderlistIdAndVisibility(visibility: string, 
 
 export async function selectPostbyPrimaryKey(id: string): Promise<Post  | null>
 {
-    const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility FROM post WHERE id =${id}`
+    const rowList = await sql `SELECT id, wanderlist_id, content, datetime_created, datetime_modified, title, visibility, milestone FROM post WHERE id =${id}`
 
     const result = PostSchema.array().max(1).parse(rowList)
 
@@ -148,7 +151,7 @@ export async function selectVisiblePostsByLoggedInProfileFollow(id: string): Pro
  */
 export async function selectAllVisiblePosts():Promise<Post[]> {
     const rowlist = await sql
-        `SELECT id,wanderlist_id,content, title,visibility FROM POST WHERE visibility='public' `
+        `SELECT id,wanderlist_id,content, title,visibility, datetime_created, datetime_modified, milestone FROM POST WHERE visibility='public' `
 
     return PostSchema.array().parse(rowlist)
 }
@@ -160,13 +163,19 @@ export async function selectAllVisiblePosts():Promise<Post[]> {
  */
 export async function selectPostsByProfileId(id:string):Promise<Post[]> {
     const rowlist = await sql
-        `SELECT pt.id,pt.wanderlist_id,pt.content, pt.title,pt.visibility 
-            FROM POST pt
-            INNER JOIN wanderlist w on pt.wanderlist_id = w.id
-            INNER JOIN profile p on w.profile_id = p.id
+        `SELECT pt.id,pt.wanderlist_id,pt.content, pt.title,pt.visibility, pt.datetime_created, pt.datetime_modified, pt.milestone
+         FROM POST pt
+                  INNER JOIN wanderlist w on pt.wanderlist_id = w.id
+                  INNER JOIN profile p on w.profile_id = p.id
          WHERE p.id= ${id}`
 
-    return PostSchema.array().parse(rowlist)
+    console.log('SQL rowlist:', rowlist)
+    console.log('SQL rowlist length:', rowlist.length)
+
+    const result = PostSchema.array().parse(rowlist)
+    console.log('Parsed result:', result)
+
+    return result
 
 }
 
@@ -177,7 +186,7 @@ export async function selectPostsByProfileId(id:string):Promise<Post[]> {
  */
 export async function selectPostsByWanderList(id:string):Promise<Post[]> {
     const rowlist = await sql
-        `SELECT id,wanderlist_id,content, title,visibility FROM POST WHERE wanderlist_id =${id} `
+        `SELECT id,wanderlist_id,content, title,visibility, datetime_created, datetime_modified, milestone FROM POST WHERE wanderlist_id =${id} `
 
     return PostSchema.array().parse(rowlist)
 }

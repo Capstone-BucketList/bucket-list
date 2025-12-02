@@ -16,17 +16,17 @@ import {addHeaders, postBasePath} from "~/utils/utility";
 export const PostSchema = z.object ({
     id: z.uuidv7('please provide a valid uuid').optional(),
 
-    wanderlist_id: z.uuidv7('please provide a valid uuid'),
+    wanderlistId: z.uuidv7('please provide a valid uuid'),
 
     content: z.string( 'please provide valid content')
         .min(1, 'please provide valid content')
         .max(1000, 'please provide valid content(max 1000 characters)')
         .trim(),
 
-    datetime_created:z.coerce.date('please provide a valid datetime created')
+    datetimeCreated:z.coerce.date('please provide a valid datetime created')
         .optional(),
 
-    datetime_modified:z.coerce.date('please provide a valid date time modified')
+    datetimeModified:z.coerce.date('please provide a valid date time modified')
         .optional(),
 
     title: z.string('please provide a valid title')
@@ -55,6 +55,11 @@ export async function getPostByWanderListId(wanderListId: string, authorization:
         return response.json()
     })
 
+    // Handle null data by returning empty array
+    if (!response.data) {
+        return []
+    }
+
     const result = PostSchema.array().parse(response.data)
 
     return result
@@ -71,6 +76,12 @@ export async function getPostByProfileId(profileId: string, authorization: strin
         }
         return res.json()
     })
+
+    // Handle null data by returning empty array
+    if (!response.data) {
+        return []
+    }
+
     const result = PostSchema.array().parse(response.data)
 
     return result
@@ -104,6 +115,11 @@ export async function getPostByWanderlistIdAndVisibility (wanderlistId: string, 
     return res.json()
 })
 
+    // Handle null data by returning empty array
+    if (!response.data) {
+        return []
+    }
+
     const result = PostSchema.array().parse(response.data)
 
     return result
@@ -120,6 +136,12 @@ export async function getAllVisiblePosts(authorization: string, cookie: string):
         }
         return res.json()
     })
+
+    // Handle null data by returning empty array
+    if (!response.data) {
+        return []
+    }
+
     const result = PostSchema.array().parse(response.data)
 
     return result
@@ -137,9 +159,14 @@ export async function getVisiblePostsByLoggedInProfileFollow(profileId: string, 
         return res.json()
     })
 
-        const result = PostSchema.array().parse(response.data)
+    // Handle null data by returning empty array
+    if (!response.data) {
+        return []
+    }
 
-        return result
+    const result = PostSchema.array().parse(response.data)
+
+    return result
 }
 
 /**

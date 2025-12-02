@@ -12,7 +12,7 @@ import WanderList from "~/routes/profile/wanderlist";
 import {useState, useEffect} from "react";
 import {useRemixForm, getValidatedFormData} from "remix-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Form, useActionData} from "react-router";
+import {Form, useActionData, useNavigate} from "react-router";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
 import {v7 as uuid} from 'uuid';
 
@@ -58,10 +58,12 @@ export async function action({ request }: Route.ActionArgs) {
     }
 
     // Add ID and timestamps to the post
+    const now = new Date().toISOString();
     const newPost = {
         ...data,
         id: uuid(),
-        datetime_created: new Date().toISOString(), // Send as ISO string
+        datetimeCreated: now,
+        datetimeModified: now, // Backend requires this field too
         milestone: data.milestone || false // Ensure milestone is a boolean
     };
 
@@ -69,13 +71,11 @@ export async function action({ request }: Route.ActionArgs) {
     try {
         const result = await createPost(newPost, authorization, cookie);
         console.log("Backend response after creating post:", result);
+        return { success: true, message: "Post created successfully!" };
     } catch (error) {
         console.error("Error creating post:", error);
         return { success: false, error: "Failed to create post" };
     }
-
-    // Redirect back to dashboard to show the new post
-    return redirect("/dashboard");
 }
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
@@ -95,14 +95,14 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
         ?.sort((a, b) => {
             // Get the most recent date for post A (created OR modified)
             const dateA = Math.max(
-                new Date(a.datetime_created).getTime(),
-                new Date(a.datetime_modified || a.datetime_created).getTime()
+                new Date(a.datetimeCreated).getTime(),
+                new Date(a.datetimeModified || a.datetimeCreated).getTime()
             )
 
             // Get the most recent date for post B (created OR modified)
             const dateB = Math.max(
-                new Date(b.datetime_created).getTime(),
-                new Date(b.datetime_modified || b.datetime_modified).getTime()
+                new Date(b.datetimeCreated).getTime(),
+                new Date(b.datetimeModified || b.datetimeModified).getTime()
             )
 
             // Sort: newer dates first (descending)
@@ -138,12 +138,15 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
 
     // Get action data to detect successful submission
     const actionData = useActionData();
+    const navigate = useNavigate();
 
-    // Close modal and reset form after successful submission
+    // Close modal and refresh data after successful submission
     useEffect(() => {
-        // If there's no action data or if there are errors, don't close
-        if (actionData && !actionData.errors) {
+        // If there's action data and it's successful (no errors)
+        if (actionData && actionData.success) {
             closePostModal();
+            // Force a page reload to show the new post
+            window.location.reload();
         }
     }, [actionData]);
 
@@ -234,10 +237,10 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                                 {post.content || "No content"}
                                             </p>
                                             <div className="flex items-center justify-between text-xs text-gray-500">
-                                                <span>
+                                                <span suppressHydrationWarning>
                                                     {(() => {
                                                         // Use modified date if available, otherwise created date
-                                                        const dateStr = post.datetime_modified || post.datetime_created;
+                                                        const dateStr = post.datetimeModified || post.datetimeCreated;
 
                                                         if (!dateStr) return 'Just now';
                                                         const date = new Date(dateStr);
@@ -281,7 +284,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                             <div className="flex flex-wrap justify-start lg:grid lg:grid-cols-2 gap-4 p-2">
                                 {/* Example friend cards */}
                                 {followingProfiles.map(profile => (
-                                    <FriendCard name={profile.userName} img={profilePicture} />
+                                    <FriendCard key={profile.id} name={profile.userName} img={profilePicture} />
                                 ))
                                 }
 
@@ -402,7 +405,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                     Link to Wanderlist Item <span className="text-red-500">*</span>
                                 </span>
                                 <select
-                                    {...register('wanderlist_id')}
+                                    {...register('wanderlistId')}
                                     className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                                 >
                                     <option value="">-- Select a wanderlist item --</option>
@@ -412,8 +415,8 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                         </option>
                                     ))}
                                 </select>
-                                {errors.wanderlist_id && (
-                                    <p className="mt-1 text-sm text-red-500">{errors.wanderlist_id.message}</p>
+                                {errors.wanderlistId && (
+                                    <p className="mt-1 text-sm text-red-500">{errors.wanderlistId.message}</p>
                                 )}
                             </label>
 
