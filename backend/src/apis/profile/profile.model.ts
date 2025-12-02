@@ -224,7 +224,7 @@ try {
     const rowList = await sql `SELECT p.id, p.bio, p.email, p.user_name,p.profile_picture,p.visibility FROM profile p
                                WHERE p.id NOT IN (
                                                   SELECT f.followed_profile_id FROM follow f WHERE f.follower_profile_id = ${id}
-                                             ) AND p.id != ${id} `
+                                             ) AND p.id != ${id} AND p.visibility='public'`
 console.log(rowList)
     const result = PublicProfileSchema.array().parse(rowList)
 
