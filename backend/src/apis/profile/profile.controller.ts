@@ -197,13 +197,13 @@ export async function getFollowersByProfileIdController(request:Request, respons
             zodErrorResponse(response, validationResult.error)
             return
         }
-
+console.log(validationResult)
         // grab the id off of the validated request parameters
         const {id} = validationResult.data
 
         // grab the followers by id
         const data = await selectPublicFollowersByProfileId(id)
-
+console.log("data",data)
         // if the profile does not exist, return a preformatted response to the client
         if (data === null) {
             response.json({status: 400, message: "profile does not exist", data: null})
@@ -259,16 +259,28 @@ export async function getFollowingByProfileIdController(request:Request, respons
  */
 export async function getPublicProfiles(request:Request, response: Response) : Promise<void>  {
     try{
+        // validate the id coming from the request parameters
+        const validationResult = PublicProfileSchema.pick({id: true}).safeParse(request.params)
+
+        // if the validation is unsuccessful, return a preformatted response to the client
+        if (!validationResult.success) {
+            zodErrorResponse(response, validationResult.error)
+            return
+        }
+
+        // grab the id off of the validated request parameters
+        const {id} = validationResult.data
+
 
         // grab the followers by id
-        const data = await selectPublicProfile()
+        const data = await selectPublicProfile(id)
 
         // if the profile does not exist, return a preformatted response to the client
         if (data === null) {
             response.json({status: 400, message: "profile does not exist", data: null})
             return
         }
-
+        console.log("data", data)
         response.json({status: 200, data: data, message: null})
 
     }catch(error:any){

@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { Button, Card } from "flowbite-react";
-import { FaCameraRetro, FaHeartbeat, FaBookOpen, FaUsers, FaTimes, FaShareAlt, FaTrash } from "react-icons/fa";
+import { FaCameraRetro, FaTimes, FaShareAlt, FaTrash } from "react-icons/fa";
 import { DivSlider } from "~/components/div_slider";
 import PhotoCard from "~/components/photo-card";
-import {
-    groupGoalPhotos,
-    healthPhotos,
-    learningPhotos,
-    type PhotoData
-} from "../scrapbook/photoData";
+import type { PhotoData } from "../scrapbook/ScrapbookTypes";
 import { getSession } from "~/utils/session.server";
 import { redirect } from "react-router";
 import type { Route } from "../../.react-router/types/app/routes/scrapbook/+types/scrapbook";
@@ -27,40 +22,90 @@ export async function loader({ request }: Route.LoaderArgs) {
         return redirect("/login");
     }
 
-    return { profile, authorization, cookie };
+    try {
+        // Get or create the scrapbook wanderlist
+        console.log("Fetching scrapbook wanderlist for profile:", profile.id);
+        const scrapbookResponse = await fetch(
+            `http://localhost:4200/apis/wanderlist/scrapbook/${profile.id}`,
+            {
+                method: "GET",
+                headers: {
+                    "Cookie": cookie,
+                    "Authorization": authorization,
+                },
+            }
+        );
+
+        console.log("Scrapbook response status:", scrapbookResponse.status);
+        const scrapbookData = await scrapbookResponse.json();
+        console.log("Scrapbook data:", scrapbookData);
+        const scrapbookWanderlist = scrapbookData?.data;
+        const scrapbookWanderlistId = scrapbookWanderlist?.id;
+        console.log("Scrapbook wanderlist ID:", scrapbookWanderlistId);
+
+        // Fetch all albums (posts) for the scrapbook wanderlist
+        let albums = [];
+        if (scrapbookWanderlistId) {
+            const albumsResponse = await fetch(
+                `http://localhost:4200/apis/post/wanderlist/${scrapbookWanderlistId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Cookie": cookie,
+                        "Authorization": authorization,
+                    },
+                }
+            );
+
+            const albumsData = await albumsResponse.json();
+            const posts = albumsData?.data || [];
+
+            // For each post (album), fetch its media (photos)
+            const albumsWithMedia = await Promise.all(
+                posts.map(async (post: any) => {
+                    const mediaResponse = await fetch(
+                        `http://localhost:4200/apis/media/post/${post.id}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                "Cookie": cookie,
+                                "Authorization": authorization,
+                            },
+                        }
+                    );
+
+                    const mediaData = await mediaResponse.json();
+                    const mediaItems = mediaData?.data || [];
+
+                    return {
+                        id: post.id,
+                        title: post.title,
+                        description: post.content,
+                        createdAt: post.datetime_created,
+                        visibility: post.visibility,
+                        photos: mediaItems.map((media: any) => ({
+                            id: media.id,
+                            title: post.title,
+                            description: post.content,
+                            imageSrc: media.url,
+                            postId: post.id,
+                        })),
+                        photoCount: mediaItems.length,
+                    };
+                })
+            );
+
+            albums = albumsWithMedia;
+        }
+
+        return { profile, authorization, cookie, scrapbookWanderlistId, albums };
+    } catch (error) {
+        console.error("Error loading scrapbook data:", error);
+        // Return empty albums if fetch fails, user can still create new ones
+        return { profile, authorization, cookie, scrapbookWanderlistId: "", albums: [] };
+    }
 }
 
-const travelPhotos: PhotoData[] = [
-    { title: "Balloon Fiesta", description: "hot air balloon view.", imageSrc: "/scrapbook/img_4.png" },
-    { title: "Sandia Mountain hike", description: "Hiking open trails up the mountain.", imageSrc: "/scrapbook/img_5.png" },
-    { title: "Road trip on route 66", description: "Driving west for 10 days on route 66.", imageSrc: "/scrapbook/img_6.png" },
-    { title: "Backpacking Europe", description: "much more scenery while hiking.", imageSrc: "/scrapbook/img_16.png" },
-    { title: "Hawaii Beaches", description: "Relaxing on the sandy shores.", imageSrc: "/scrapbook/img_17.png" },
-    { title: "San Francisco", description: "hilltop views of Alcatraz", imageSrc: "/scrapbook/img_18.png" },
-    { title: "South Lake Tahoe", description: "snow mountains and lake views", imageSrc: "/scrapbook/img_19.png" },
-];
-
-export const timelinePhotos: PhotoData[] = [
-    { title: "Month 1 — Start of the journey", description: "First week exploring new places.", imageSrc: "/timeline/img.png" },
-    { title: "Month 1 — Sandia Peak", description: "Breathtaking hikes early on.", imageSrc: "/timeline/img_1.png" },
-    { title: "Month 2 — Community project", description: "Joined the neighborhood cleanup.", imageSrc: "/timeline/img_2.png" },
-    { title: "Month 2 — Bootcamp progress", description: "Building the Wanderlist app.", imageSrc: "/timeline/img_3.png" },
-    { title: "Month 2 — New friendships", description: "Met amazing people along the way.", imageSrc: "/timeline/img_4.png" },
-    { title: "Month 3 - Foodie experience", description: "Red or Green options ", imageSrc: "/timeline/img_5.png"},
-    { title: "Month 3 — First album creation", description: "Organizing memories into albums.", imageSrc: "/timeline/img_6.png" },
-    { title: "Month 3 — Sharing moments", description: "Sharing photos with friends and family.", imageSrc: "/timeline/img_7.png" },
-    { title: "Month 4 — Reflecting on the journey", description: "Looking back at all the memories made.", imageSrc: "/timeline/img_8.png" },
-    { title: "Month 4 — New adventures", description: "Planning the next chapter of the journey.", imageSrc: "/timeline/img_9.png" },
-    { title: "Month 5 - Soda rock trip", description: "see running river and wilderness ", imageSrc: "/timeline/img_10.png"},
-    { title: "Month 5 — Celebrating milestones", description: "Celebrating the progress and growth.", imageSrc: "/timeline/img_11.png" },
-    { title: "Month 5 — Looking forward", description: "Excited for the next adventures ahead.", imageSrc: "/timeline/img_12.png" },
-    { title: "Month 5 — Sharing the story", description: "Sharing the journey with the world.", imageSrc: "/timeline/img_13.png" },
-    { title: "Month 6 — Tent Rocks", description: "Setting new goals for the next phase.", imageSrc: "/timeline/img_14.png" },
-    { title: "Month 6 — Autumn Santa Fe", description: "Reflecting on an incredible year of Wanderlist.", imageSrc: "/timeline/img_15.png" },
-    { title: "Month 6 — Volcano hike", description: "Excited for the next chapter of the journey.", imageSrc: "/timeline/img_16.png" },
-    { title: "Month 6 — Sharing the chile", description: "Sharing the aroma with friends and family.", imageSrc: "/timeline/img_17.png" },
-    { title: "Month 6 — Final reflections", description: "Grateful for the incredible journey and memories made.", imageSrc: "/timeline/img_18.png" },
-];
 
 type AlbumData = {
     id: string;
@@ -88,29 +133,19 @@ export default function Scrapbook() {
     const [viewingAlbum, setViewingAlbum] = useState<AlbumData | null>(null);
 
 
-    // Get auth from loader
-    const { authorization, cookie } = useLoaderData<typeof loader>();
+    // Get auth and albums from loader
+    const { authorization, cookie, scrapbookWanderlistId, albums: initialAlbums } = useLoaderData<typeof loader>();
 
-    // Load albums from localStorage on mount
+    // Initialize albums from loader
     React.useEffect(() => {
-        const savedAlbums = localStorage.getItem('wanderlist_albums');
-        if (savedAlbums) {
-            try {
-                setAlbums(JSON.parse(savedAlbums));
-            } catch (err) {
-                console.error('Failed to parse saved albums:', err);
-            }
+        if (initialAlbums && initialAlbums.length > 0) {
+            setAlbums(initialAlbums);
         }
-    }, []);
-
-    // Save albums to localStorage whenever they change
-    React.useEffect(() => {
-        localStorage.setItem('wanderlist_albums', JSON.stringify(albums));
-    }, [albums]);
+    }, [initialAlbums]);
 
     const handleSubmitChanges = async () => {
-        if (!activeCard?.id || !activeCard?.wanderlistId) {
-            setError("Missing post ID or wanderlist ID");
+        if (!activeCard?.id || !activeCard?.postId) {
+            setError("Missing photo ID");
             return;
         }
 
@@ -118,12 +153,12 @@ export default function Scrapbook() {
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:8080/apis/post/`, {
+            const response = await fetch(`http://localhost:4200/apis/post/`, {
                 method: "PUT",
                 headers: addHeaders(authorization, cookie),
                 body: JSON.stringify({
-                    id: activeCard.id,
-                    wanderlistId: activeCard.wanderlistId,
+                    id: activeCard.postId,
+                    wanderlistId: scrapbookWanderlistId,
                     title: activeCard.title,
                     content: activeCard.description,
                     visibility: activeCard.visibility || "public",
@@ -150,13 +185,13 @@ export default function Scrapbook() {
     };
 
     const handleDeletePhoto = async () => {
-        if (!activeCard?.id) {
+        if (!activeCard?.postId) {
             setError("No post ID available");
             return;
         }
 
         // Double confirmation for destructive action
-        if (!confirm("Are you sure? This will permanently delete this photo. This action cannot be undone.")) {
+        if (!confirm("Are you sure? This will permanently delete this album. This action cannot be undone.")) {
             return;
         }
 
@@ -165,7 +200,7 @@ export default function Scrapbook() {
 
         try {
             const response = await fetch(
-                `http://localhost:8080/apis/post/${activeCard.id}`,
+                `http://localhost:4200/apis/post/${activeCard.postId}`,
                 {
                     method: "DELETE",
                     headers: addHeaders(authorization, cookie),
@@ -173,17 +208,18 @@ export default function Scrapbook() {
             );
 
             if (!response.ok) {
-                throw new Error("Failed to delete photo");
+                throw new Error("Failed to delete album");
             }
 
             const data = await response.json();
 
             if (data.status === 200) {
-                alert("Photo deleted successfully!");
+                alert("Album deleted successfully!");
                 setActiveCard(null); // Close modal
-                // TODO: Remove photo from state array to update UI
+                // Remove album from albums state
+                setAlbums(albums.filter(a => a.id !== activeCard.postId));
             } else {
-                setError(data.message || "Failed to delete photo");
+                setError(data.message || "Failed to delete album");
             }
         } catch (err: any) {
             setError(err.message || "An error occurred while deleting");
@@ -267,34 +303,95 @@ export default function Scrapbook() {
         }
     };
 
-    const handleCreateNewAlbumWithPhotos = () => {
+    const handleCreateNewAlbumWithPhotos = async () => {
         if (!newAlbumTitle.trim()) return;  // basic validation
 
-        // Use uploaded photo as cover image, or first selected photo from collections
-        const coverImage = uploadedPhotoUrl
-            || (selectedPhotosForAlbum.length > 0 ? selectedPhotosForAlbum[0].imageSrc : "/placeholder.jpg");
+        setIsLoading(true);
+        setError(null);
 
-        const newAlbum: AlbumData = {
-            id: crypto.randomUUID(),
-            title: newAlbumTitle.trim(),
-            createdAt: new Date(),
-            coverImage,
-            description: newAlbumDescription.trim(),
-            photoCount: selectedPhotosForAlbum.length,
-            photos: selectedPhotosForAlbum
-        };
+        try {
+            // Debug: log the scrapbookWanderlistId
+            console.log("scrapbookWanderlistId:", scrapbookWanderlistId);
 
-        setAlbums([newAlbum, ...albums]);
+            if (!scrapbookWanderlistId) {
+                throw new Error("Scrapbook wanderlist ID not available. Please refresh the page.");
+            }
 
-        // Reset form and selections
-        setNewAlbumTitle("");
-        setNewAlbumDescription("");
-        setSelectedPhotosForAlbum([]);
-        setUploadedPhotoUrl(null);
-        setShowPhotoGalleryModal(false);
+            // Collect all photo URLs (uploaded + selected from collections)
+            const mediaUrls = [];
 
-        // Optional: Show success message
-        alert(`Album "${newAlbum.title}" created with ${selectedPhotosForAlbum.length} photos!`);
+            if (uploadedPhotoUrl) {
+                mediaUrls.push(uploadedPhotoUrl);
+            }
+
+            // Also include URLs from selected photos if they have imageSrc
+            for (const photo of selectedPhotosForAlbum) {
+                if (photo.imageSrc && !mediaUrls.includes(photo.imageSrc)) {
+                    mediaUrls.push(photo.imageSrc);
+                }
+            }
+
+            console.log("Creating album with mediaUrls:", mediaUrls);
+
+            // Create the album (post) in the backend
+            const createAlbumResponse = await fetch(`http://localhost:4200/apis/post/`, {
+                method: "POST",
+                headers: addHeaders(authorization, cookie),
+                body: JSON.stringify({
+                    id: crypto.randomUUID(),
+                    wanderlistId: scrapbookWanderlistId,
+                    title: newAlbumTitle.trim(),
+                    content: newAlbumDescription.trim(),
+                    visibility: "public",
+                    mediaUrls: mediaUrls,
+                }),
+            });
+
+            if (!createAlbumResponse.ok) {
+                throw new Error("Failed to create album");
+            }
+
+            const albumData = await createAlbumResponse.json();
+
+            if (albumData.status === 200) {
+                // Fetch the created album with its media
+                const newAlbumId = albumData.data?.id || crypto.randomUUID();
+                const newAlbum: AlbumData = {
+                    id: newAlbumId,
+                    title: newAlbumTitle.trim(),
+                    createdAt: new Date(),
+                    description: newAlbumDescription.trim(),
+                    visibility: "public",
+                    photos: mediaUrls.map((url, index) => ({
+                        id: crypto.randomUUID(),
+                        title: newAlbumTitle.trim(),
+                        description: newAlbumDescription.trim(),
+                        imageSrc: url,
+                        postId: newAlbumId,
+                    })),
+                    photoCount: mediaUrls.length,
+                };
+
+                // Update state
+                setAlbums([newAlbum, ...albums]);
+
+                // Reset form and selections
+                setNewAlbumTitle("");
+                setNewAlbumDescription("");
+                setSelectedPhotosForAlbum([]);
+                setUploadedPhotoUrl(null);
+                setShowPhotoGalleryModal(false);
+
+                // Show success message
+                alert(`Album "${newAlbum.title}" created with ${mediaUrls.length} photo${mediaUrls.length !== 1 ? 's' : ''}!`);
+            } else {
+                setError(albumData.message || "Failed to create album");
+            }
+        } catch (err: any) {
+            setError(err.message || "An error occurred while creating the album");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const [showTimelineModal, setShowTimelineModal] = useState(false);
@@ -452,67 +549,70 @@ export default function Scrapbook() {
                         )}
                     </Card>
 
-                    {/* — Travel — */}
-                    <Card className="shadow-md hover:shadow-lg transition p-6">
-                        <div className="flex items-center gap-3 mb-6">
-                            <FaCameraRetro className="text-indigo-600 text-3xl" />
-                            <h2 className="text-3xl font-extrabold">Travel Memories</h2>
-                        </div>
-                        <DivSlider photo={travelPhotos} wanderListProp={[]} onPhotoClick={setActiveCard} />
-                    </Card>
-
-                    {/* — Health — */}
-                    <Card className="shadow-md hover:shadow-lg transition p-6">
-                        <div className="flex items-center gap-3 mb-6">
-                            <FaHeartbeat className="text-red-500 text-3xl" />
-                            <h2 className="text-3xl font-extrabold">Health & Fitness</h2>
-                        </div>
-                        <DivSlider photo={healthPhotos} wanderListProp={[]} onPhotoClick={setActiveCard} />
-                    </Card>
-
-                    {/* — Learning — */}
-                    <Card className="shadow-md hover:shadow-lg transition p-6">
-                        <div className="flex items-center gap-3 mb-6">
-                            <FaBookOpen className="text-yellow-500 text-3xl" />
-                            <h2 className="text-3xl font-extrabold">Learning</h2>
-                        </div>
-                        <DivSlider photo={learningPhotos} wanderListProp={[]} onPhotoClick={setActiveCard} />
-                    </Card>
-
-                    {/* — Groups — */}
-                    <Card className="shadow-md hover:shadow-lg transition p-6">
-                        <div className="flex items-center gap-3 mb-6">
-                            <FaUsers className="text-green-600 text-3xl" />
-                            <h2 className="text-3xl font-extrabold">Group Goals</h2>
-                        </div>
-                        <DivSlider photo={groupGoalPhotos} wanderListProp={[]} onPhotoClick={setActiveCard} />
-                    </Card>
+                    {/* USER'S REAL ALBUMS */}
+                    {albums && albums.length > 0 ? (
+                        albums.map((album) => (
+                            <Card key={album.id} className="shadow-md hover:shadow-lg transition p-6">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <FaCameraRetro className="text-indigo-600 text-3xl" />
+                                    <h2 className="text-3xl font-extrabold">{album.title}</h2>
+                                </div>
+                                {album.photos && album.photos.length > 0 ? (
+                                    <DivSlider photo={album.photos} wanderListProp={[]} onPhotoClick={setActiveCard} />
+                                ) : (
+                                    <p className="text-gray-600">No photos in this album</p>
+                                )}
+                            </Card>
+                        ))
+                    ) : (
+                        <Card className="shadow-md hover:shadow-lg transition p-6">
+                            <div className="text-center py-12">
+                                <FaCameraRetro className="text-gray-400 text-5xl mx-auto mb-4" />
+                                <h3 className="text-2xl font-bold text-gray-600 mb-2">No Albums Yet</h3>
+                                <p className="text-gray-500 mb-6">Create your first album above to get started!</p>
+                            </div>
+                        </Card>
+                    )}
 
                     {/* TIMELINE SECTION */}
                     <Card className="shadow-md hover:shadow-lg transition p-6">
                         <h2 className="text-3xl font-extrabold mb-4">Timeline</h2>
                         <p className="text-gray-600 text-sm mb-4">
-                            Every photo from your Wanderlist journey.
+                            Every photo from your albums.
                         </p>
 
-                        <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                            {timelinePhotos.slice(0, 12).map((photo) => (
-                                <img
-                                    key={photo.imageSrc}
-                                    src={photo.imageSrc}
-                                    alt={photo.title}
-                                    className="w-full h-20 object-cover rounded-md cursor-pointer hover:opacity-80 transition"
-                                    onClick={() => onPhotoClick(photo)}
-                                    title={photo.title}
-                                />
-                            ))}
-                        </div>
+                        {(() => {
+                            // Flatten all photos from all albums
+                            const allPhotos = albums.flatMap(album => album.photos || []);
+                            const timelinePhotosDisplay = allPhotos.slice(0, 12);
 
-                        <Button
-                            className="mt-6 bg-blue-600 w-full text-white"
-                            onClick={() => setShowTimelineModal(true)}>
-                            View Full Timeline
-                        </Button>
+                            return timelinePhotosDisplay.length > 0 ? (
+                                <>
+                                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+                                        {timelinePhotosDisplay.map((photo) => (
+                                            <img
+                                                key={photo.id}
+                                                src={photo.imageSrc}
+                                                alt={photo.title}
+                                                className="w-full h-20 object-cover rounded-md cursor-pointer hover:opacity-80 transition"
+                                                onClick={() => setActiveCard(photo)}
+                                                title={photo.title}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    {allPhotos.length > 12 && (
+                                        <Button
+                                            className="mt-6 bg-blue-600 w-full text-white"
+                                            onClick={() => setShowTimelineModal(true)}>
+                                            View Full Timeline
+                                        </Button>
+                                    )}
+                                </>
+                            ) : (
+                                <p className="text-gray-600 py-8 text-center">No photos yet. Create an album to see your timeline!</p>
+                            );
+                        })()}
                     </Card>
                 </div>
 
@@ -534,7 +634,17 @@ export default function Scrapbook() {
 
                     <div className="w-full max-w-5xl">
                         <h2 className="text-white text-4xl mb-6 text-center font-bold">Timeline</h2>
-                        <DivSlider photo={timelinePhotos} wanderListProp={[]} onPhotoClick={() => {}} />
+                        {(() => {
+                            const allPhotos = albums.flatMap(album => album.photos || []);
+                            return allPhotos.length > 0 ? (
+                                <DivSlider photo={allPhotos} wanderListProp={[]} onPhotoClick={(photo) => {
+                                    setActiveCard(photo);
+                                    setShowTimelineModal(false);
+                                }} />
+                            ) : (
+                                <p className="text-white text-center py-12">No photos in timeline</p>
+                            );
+                        })()}
                     </div>
                 </div>
             )}
@@ -653,143 +763,89 @@ export default function Scrapbook() {
                             </div>
                         )}
 
-                        {/* Gallery Tabs/Sections */}
+                        {/* Gallery Sections - Real Albums + Newly Uploaded Photo */}
                         <div className="space-y-8">
-                            {/* Travel Photos Section */}
-                            <div>
-                                <h3 className="text-2xl font-bold mb-4 text-indigo-600 flex items-center gap-2">
-                                    <FaCameraRetro /> Travel Memories
-                                </h3>
-                                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                                    {travelPhotos.map((photo) => {
-                                        const isSelected = selectedPhotosForAlbum.some(p => p.id === photo.id);
-                                        return (
-                                            <div
-                                                key={photo.id}
-                                                className={`relative cursor-pointer rounded-lg overflow-hidden transition transform hover:scale-105 ${
-                                                    isSelected ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 hover:ring-blue-300'
-                                                }`}
-                                                onClick={() => togglePhotoSelection(photo)}>
-                                                <img
-                                                    src={photo.imageSrc}
-                                                    alt={photo.title}
-                                                    className="w-full h-20 object-cover"
-                                                />
-                                                {isSelected && (
-                                                    <div className="absolute inset-0 bg-blue-500 bg-opacity-30 flex items-center justify-center">
-                                                        <span className="text-white text-2xl font-bold">✓</span>
-                                                    </div>
-                                                )}
-                                                <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                                                    {photo.title}
-                                                </p>
-                                            </div>
-                                        );
-                                    })}
+                            {/* Show newly uploaded photo */}
+                            {uploadedPhotoUrl && (
+                                <div>
+                                    <h3 className="text-2xl font-bold mb-4 text-indigo-600 flex items-center gap-2">
+                                        <FaCameraRetro /> Newly Uploaded
+                                    </h3>
+                                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                                        <div
+                                            className={`relative cursor-pointer rounded-lg overflow-hidden transition transform hover:scale-105 ${
+                                                selectedPhotosForAlbum.some(p => p.imageSrc === uploadedPhotoUrl) ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 hover:ring-blue-300'
+                                            }`}
+                                            onClick={() => {
+                                                const newUploadedPhoto: PhotoData = {
+                                                    id: crypto.randomUUID(),
+                                                    title: "Recently Uploaded",
+                                                    description: "",
+                                                    imageSrc: uploadedPhotoUrl,
+                                                };
+                                                togglePhotoSelection(newUploadedPhoto);
+                                            }}>
+                                            <img
+                                                src={uploadedPhotoUrl}
+                                                alt="Recently uploaded"
+                                                className="w-full h-20 object-cover"
+                                            />
+                                            {selectedPhotosForAlbum.some(p => p.imageSrc === uploadedPhotoUrl) && (
+                                                <div className="absolute inset-0 bg-blue-500 bg-opacity-30 flex items-center justify-center">
+                                                    <span className="text-white text-2xl font-bold">✓</span>
+                                                </div>
+                                            )}
+                                            <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
+                                                Recently Uploaded
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
-                            {/* Health Photos Section */}
-                            <div>
-                                <h3 className="text-2xl font-bold mb-4 text-red-600 flex items-center gap-2">
-                                    <FaHeartbeat /> Health & Fitness
-                                </h3>
-                                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                                    {healthPhotos.map((photo) => {
-                                        const isSelected = selectedPhotosForAlbum.some(p => p.id === photo.id);
-                                        return (
-                                            <div
-                                                key={photo.id}
-                                                className={`relative cursor-pointer rounded-lg overflow-hidden transition transform hover:scale-105 ${
-                                                    isSelected ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 hover:ring-blue-300'
-                                                }`}
-                                                onClick={() => togglePhotoSelection(photo)}>
-                                                <img
-                                                    src={photo.imageSrc}
-                                                    alt={photo.title}
-                                                    className="w-full h-20 object-cover"
-                                                />
-                                                {isSelected && (
-                                                    <div className="absolute inset-0 bg-blue-500 bg-opacity-30 flex items-center justify-center">
-                                                        <span className="text-white text-2xl font-bold">✓</span>
-                                                    </div>
-                                                )}
-                                                <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                                                    {photo.title}
-                                                </p>
+                            {/* Show existing albums */}
+                            {albums && albums.length > 0 ? (
+                                albums.map((album) => (
+                                    <div key={album.id}>
+                                        <h3 className="text-2xl font-bold mb-4 text-indigo-600 flex items-center gap-2">
+                                            <FaCameraRetro /> {album.title}
+                                        </h3>
+                                        {album.photos && album.photos.length > 0 ? (
+                                            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                                                {album.photos.map((photo) => {
+                                                    const isSelected = selectedPhotosForAlbum.some(p => p.id === photo.id);
+                                                    return (
+                                                        <div
+                                                            key={photo.id}
+                                                            className={`relative cursor-pointer rounded-lg overflow-hidden transition transform hover:scale-105 ${
+                                                                isSelected ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 hover:ring-blue-300'
+                                                            }`}
+                                                            onClick={() => togglePhotoSelection(photo)}>
+                                                            <img
+                                                                src={photo.imageSrc}
+                                                                alt={photo.title}
+                                                                className="w-full h-20 object-cover"
+                                                            />
+                                                            {isSelected && (
+                                                                <div className="absolute inset-0 bg-blue-500 bg-opacity-30 flex items-center justify-center">
+                                                                    <span className="text-white text-2xl font-bold">✓</span>
+                                                                </div>
+                                                            )}
+                                                            <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
+                                                                {photo.title}
+                                                            </p>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            {/* Learning Photos Section */}
-                            <div>
-                                <h3 className="text-2xl font-bold mb-4 text-yellow-600 flex items-center gap-2">
-                                    <FaBookOpen /> Learning
-                                </h3>
-                                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                                    {learningPhotos.map((photo) => {
-                                        const isSelected = selectedPhotosForAlbum.some(p => p.id === photo.id);
-                                        return (
-                                            <div
-                                                key={photo.id}
-                                                className={`relative cursor-pointer rounded-lg overflow-hidden transition transform hover:scale-105 ${
-                                                    isSelected ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 hover:ring-blue-300'
-                                                }`}
-                                                onClick={() => togglePhotoSelection(photo)}>
-                                                <img
-                                                    src={photo.imageSrc}
-                                                    alt={photo.title}
-                                                    className="w-full h-20 object-cover"
-                                                />
-                                                {isSelected && (
-                                                    <div className="absolute inset-0 bg-blue-500 bg-opacity-30 flex items-center justify-center">
-                                                        <span className="text-white text-2xl font-bold">✓</span>
-                                                    </div>
-                                                )}
-                                                <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                                                    {photo.title}
-                                                </p>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-
-                            {/* Group Goal Photos Section */}
-                            <div>
-                                <h3 className="text-2xl font-bold mb-4 text-green-600 flex items-center gap-2">
-                                    <FaUsers /> Group Goals
-                                </h3>
-                                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                                    {groupGoalPhotos.map((photo) => {
-                                        const isSelected = selectedPhotosForAlbum.some(p => p.id === photo.id);
-                                        return (
-                                            <div
-                                                key={photo.id}
-                                                className={`relative cursor-pointer rounded-lg overflow-hidden transition transform hover:scale-105 ${
-                                                    isSelected ? 'ring-4 ring-blue-500' : 'ring-2 ring-gray-300 hover:ring-blue-300'
-                                                }`}
-                                                onClick={() => togglePhotoSelection(photo)}>
-                                                <img
-                                                    src={photo.imageSrc}
-                                                    alt={photo.title}
-                                                    className="w-full h-20 object-cover"
-                                                />
-                                                {isSelected && (
-                                                    <div className="absolute inset-0 bg-blue-500 bg-opacity-30 flex items-center justify-center">
-                                                        <span className="text-white text-2xl font-bold">✓</span>
-                                                    </div>
-                                                )}
-                                                <p className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
-                                                    {photo.title}
-                                                </p>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                                        ) : (
+                                            <p className="text-gray-600 text-center py-4">No photos in this album</p>
+                                        )}
+                                    </div>
+                                ))
+                            ) : !uploadedPhotoUrl ? (
+                                <p className="text-center text-gray-600 py-8">No albums yet. Upload a photo above to get started!</p>
+                            ) : null}
                         </div>
 
                         {/* Action Buttons */}

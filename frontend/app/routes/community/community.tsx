@@ -17,6 +17,8 @@ import { getSession } from "~/utils/session.server";
 import { PostCreationForm } from "~/components/post-creation-form";
 import { CommentSection } from "~/components/comment-section";
 import { FollowButton } from "~/components/follow-button";
+import {FriendCard} from "~/routes/profile/friendcard";
+import {getPublicProfiles} from "~/utils/models/profile.model";
 
 const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
 
@@ -93,8 +95,9 @@ export async function loader({ request }: Route.LoaderArgs) {
     } catch (error) {
         console.error('Failed to load wanderlists:', error);
     }
+    const publicProfiles = await getPublicProfiles(profile.id,authorization, cookie)
 
-    return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists };
+    return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists,publicProfiles };
 }
 
 //
@@ -234,7 +237,7 @@ export default function Community() {
     const [inspiration, setInspiration] = useState<InspirationItem[]>([]);
 
     // Load auth data and posts from loader
-    const { authorization, cookie, posts: loaderPosts, profileId, featuredWanderlists } = useLoaderData<typeof loader>();
+    const { authorization, cookie, posts: loaderPosts, profileId, featuredWanderlists,publicProfiles } = useLoaderData<typeof loader>();
 
     const stories: SharedStory[] = [];
 
@@ -514,19 +517,15 @@ export default function Community() {
                     {/* Follow Suggestions */}
                     <Card>
                         <h2 className="text-xl font-bold mb-4">Suggested for You</h2>
-                        <div className="flex flex-col gap-4">
-                            {suggestions.map((u) => (
-                                <div key={u.id} className="flex items-center justify-between gap-3">
-                                    <Avatar img={u.avatarUrl} rounded />
-                                    <p className="font-semibold flex-1">{u.name}</p>
-                                    <FollowButton
-                                        profileId={u.id.toString()}
-                                        authorization={authorization}
-                                        cookie={cookie}
-                                        initialFollowing={false}
-                                    />
-                                </div>
-                            ))}
+                        <div className="flex flex-col gap-4  max-h-96 overflow-y-auto pr-">
+
+                                    {publicProfiles?.map((profile) => (
+
+
+                                        <FriendCard profile={profile} isFriend={false} />
+
+                                    ))}
+
                         </div>
                     </Card>
 

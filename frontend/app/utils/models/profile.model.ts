@@ -39,7 +39,7 @@ export type Profile = z.infer<typeof ProfileSchema>
 
 //2
 export const SignUpSchema = ProfileSchema
-    .omit({ id: true,bio:true, profilePicture: true})
+    .omit({ id: true,bio:true, profilePicture: true, visibility: true})
     .extend({
         passwordConfirm: z.string('password confirmation is required')
             .min(8, 'Password confirm cannot be less than 8 characters')
@@ -94,9 +94,27 @@ export async function profileUpdate(data: Profile): Promise<Status> {
     return result
 }
 
-export async function getFollwersByProfileId(profileId: string, authorization: string, cookie: string): Promise<Profile[]> {
+export async function getFollwersByProfileId(profileId: string, authorization: string, cookie: string): Promise<Profile[] | null> {
 
-    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/following/${profileId}`, {
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/followers/${profileId}`, {
+        method: 'GET',
+        headers: addHeaders(authorization,cookie),
+    })  .then(res => {
+        if(!res.ok) {
+            throw new Error('failed to fetch followers by profile id')
+        }
+        return res.json()
+    })
+    const result =
+    response.data ?
+         ProfileSchema.array().parse(response.data) : null
+    console.log(result)
+    return result
+}
+
+export async function getPublicProfiles(id:string,authorization: string, cookie: string): Promise<Profile[]> {
+
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/publicProfile/${id}`, {
         method: 'GET',
         headers: addHeaders(authorization,cookie),
     })  .then(res => {
@@ -109,9 +127,10 @@ export async function getFollwersByProfileId(profileId: string, authorization: s
     return result
 }
 
-export async function getPublicProfiles(authorization: string, cookie: string): Promise<Profile[]> {
 
-    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/`, {
+export async function getFollwingsByProfileId(profileId: string, authorization: string, cookie: string): Promise<Profile[] | null> {
+
+    const response = await fetch(`${process.env.REST_API_URL}${profileBasePath}/following/${profileId}`, {
         method: 'GET',
         headers: addHeaders(authorization,cookie),
     })  .then(res => {
@@ -120,7 +139,8 @@ export async function getPublicProfiles(authorization: string, cookie: string): 
         }
         return res.json()
     })
-    console.log("response signup",response)
-    const result = ProfileSchema.array().parse(response.data)
+    const result =
+        response.data ?
+            ProfileSchema.array().parse(response.data) : null
     return result
 }

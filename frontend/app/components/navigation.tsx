@@ -21,6 +21,7 @@ const UNAUTHENTICATED_LINKS = [
 const AUTHENTICATED_LINKS = [
     { href: "/dashboard", label: "Dashboard" },
     { href: "/community", label: "Community" },
+    { href: "/groups",    label: "Groups" },
     { href: "/scrapbook", label: "Scrapbook" },
 ];
 // Helper function to check if route is active
@@ -172,3 +173,13 @@ export function Navigation(props: ProfileProps) {
         </Navbar>
     );
 }
+
+
+
+
+
+
+
+
+
+

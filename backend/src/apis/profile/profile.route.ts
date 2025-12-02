@@ -14,7 +14,7 @@ const basePath = '/apis/profile' as const
 //instantiate a new router object
 const router = Router()
 
-router.route('/')
+router.route('/publicProfile/:id')
     .get(getPublicProfiles)
 //define signup route for this router
 router.route('/:id').get(profileController)
