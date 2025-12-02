@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, TextInput, Textarea, Select, Spinner } from 'flowbite-react';
 import { FaCloudUploadAlt, FaImage } from 'react-icons/fa';
 import { addHeaders } from '~/utils/utility';
+import { v7 as uuidv7 } from 'uuid';
 
 interface Wanderlist {
     id: string;
@@ -49,10 +50,9 @@ export function PostCreationForm({
                     return;
                 }
 
-                const response = await fetch(`http://localhost:8080/apis/wanderlist/profile/${profileId}`, {
+                const response = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/${profileId}`, {
                     method: 'GET',
                     headers: addHeaders(authorization, cookie),
-                    credentials: 'include',
                 });
 
                 if (!response.ok) {
@@ -178,12 +178,11 @@ export function PostCreationForm({
         setErrorMessage('');
 
         try {
-            const response = await fetch('http://localhost:8080/apis/post', {
+            const response = await fetch(`${process.env.REST_API_URL}/post`, {
                 method: 'POST',
                 headers: addHeaders(authorization, cookie),
-                credentials: 'include',
                 body: JSON.stringify({
-                    id: crypto.randomUUID(),
+                    id: uuidv7(),
                     wanderlistId: selectedWanderlist,
                     title,
                     content,
