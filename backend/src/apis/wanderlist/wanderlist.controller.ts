@@ -8,6 +8,7 @@ import {
 } from "./wanderlist.model.ts";
 import {zodErrorResponse} from "../../utils/response.utils.ts";
 import type {Request, Response} from "express";
+import { v7 as uuidv7 } from 'uuid';
 
 export async function postWanderListItemController(request:Request, response:Response): Promise<void> {
     try{
@@ -291,6 +292,64 @@ export async function getWanderlistByVisibilityController(request:Request, respo
             status: 200,
             message: null,
             data: wanderlist
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+/**
+ * Get or create the "My Scrapbook" wanderlist for a user
+ * Used for storing user's photo albums
+ * @param request
+ * @param response
+ */
+export async function getOrCreateScrapbookWanderlistController(request:Request, response:Response): Promise<void> {
+    try{
+        const validationResult = WanderListSchema.pick({
+            profileId: true,
+        }).safeParse(request.params);
+
+        if(!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+        const {profileId} = validationResult.data
+
+        // Get all wanderlists for the user
+        const wanderlists:WanderList[] | null= await selectWanderlistByProfileId(profileId)
+
+        // Check if scrapbook wanderlist already exists
+        let scrapbookWanderlist = wanderlists?.find(w => w.title === "My Scrapbook")
+
+        if (!scrapbookWanderlist) {
+            // Create a new scrapbook wanderlist
+            const newScrapbook: WanderList = {
+                id: uuidv7(),
+                profileId,
+                title: "My Scrapbook",
+                description: "Photo albums and memories",
+                wanderlistStatus: "active",
+                pinned: false,
+                targetDate: null,
+                visibility: "public"
+            }
+
+            await insertWanderList(newScrapbook)
+            scrapbookWanderlist = newScrapbook
+        }
+
+        const status: Status = {
+            status: 200,
+            message: "Scrapbook wanderlist retrieved or created",
+            data: scrapbookWanderlist
         }
         response.status(200).json(status)
 

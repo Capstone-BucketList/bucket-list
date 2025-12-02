@@ -271,7 +271,7 @@ export async function getPublicProfiles(request:Request, response: Response) : P
         // grab the id off of the validated request parameters
         const {id} = validationResult.data
 
-
+console.log(id)
         // grab the followers by id
         const data = await selectPublicProfile(id)
 
