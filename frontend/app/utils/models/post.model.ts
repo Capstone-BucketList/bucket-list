@@ -10,29 +10,34 @@ import {addHeaders, postBasePath} from "~/utils/utility";
  *@shape dateTimeModified: timestamptz for modifying your post
  *@shape title: string for providing title to post
  *@shape visibility: string for showing post public or private
+ *@shape milestone: boolean for marking post as a milestone for timeline
  **/
 
 export const PostSchema = z.object ({
     id: z.uuidv7('please provide a valid uuid').optional(),
 
-    wanderlistId: z.uuidv7('please provide a valid uuid'),
+    wanderlist_id: z.uuidv7('please provide a valid uuid'),
 
     content: z.string( 'please provide valid content')
+        .min(1, 'please provide valid content')
         .max(1000, 'please provide valid content(max 1000 characters)')
-        .trim()
-        .nullable(),
+        .trim(),
 
-    datetimeCreated:z.coerce.date('please provide a valid datetime created')
+    datetime_created:z.coerce.date('please provide a valid datetime created')
         .optional(),
 
-    datetimeModified:z.coerce.date('please provide a valid date time modified')
+    datetime_modified:z.coerce.date('please provide a valid date time modified')
         .optional(),
 
     title: z.string('please provide a valid title')
+        .min(1, 'please provide a valid title')
         .max(64, 'please provide a valid title (max 64 characters)'),
 
     visibility: z.string('please provide a valid visibility')
-        .max(32, 'please provide a valid visibility (max 32 characters)')
+        .max(32, 'please provide a valid visibility (max 32 characters)'),
+
+    milestone: z.boolean('please provide a valid milestone value')
+        .optional()
 })
 
 export type Post = z.infer<typeof PostSchema>
@@ -137,6 +142,27 @@ export async function getVisiblePostsByLoggedInProfileFollow(profileId: string, 
         return result
 }
 
+/**
+ * Create a new post
+ * @param data - Post data from the form
+ * @param authorization - Auth token
+ * @param cookie - Session cookie
+ */
+export async function createPost(data: Post, authorization: string, cookie: string): Promise<any> {
+    const response = await fetch(`${process.env.REST_API_URL}${postBasePath}`, {
+        method: 'POST',
+        headers: addHeaders(authorization, cookie),
+        body: JSON.stringify(data)
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to create post')
+    }
+
+    const result = await response.json()
+    return result
+}
+
 export async function postPost(PostId: string, authorization: string, cookie: string) : Promise<Post> {
 
     return await fetch(`${process.env.REST_API_URL}${postBasePath}/${PostId}`, {
@@ -148,7 +174,8 @@ export async function postPost(PostId: string, authorization: string, cookie: st
          throw new Error(res.statusText)
     }
     return res.json()
-})
+    })
+}
 
 export async function deletePost(postId: string, authorization: string, cookie: string): Promise<Post> {
 
@@ -176,4 +203,4 @@ export async function putPost(post: Post, authorization: string, cookie: string)
         }
         return res.json()
     })
-} }
+}
