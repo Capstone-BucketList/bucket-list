@@ -13,7 +13,8 @@ import {wanderlistRoute} from "./apis/wanderlist/wanderlist.route.ts";
 import {mediaRoute} from "./apis/media/media.route.ts";
 import {postRoute} from "./apis/post/post.route.ts";
 import {commentRoute} from "./apis/comment/comment.route.ts";
-//import helmet from "helmet";
+import {uploadRoute} from "./apis/upload/upload.route.ts";
+import helmet from "helmet";
 
 
 export class App {
@@ -25,7 +26,7 @@ export class App {
 	) {
 		this.redisStore = new RedisStore({client: redisClient})
 		this.app = express()
-       // this.app.use(helmet())
+        this.app.use(helmet())
 		this.settings()
 		this.middlewares()
 		this.routes()
@@ -57,6 +58,7 @@ export class App {
         this.app.use(mediaRoute.basePath, mediaRoute.router)
         this.app.use(postRoute.basePath, postRoute.router)
         this.app.use(commentRoute.basePath, commentRoute.router)
+        this.app.use(uploadRoute.basePath, uploadRoute.router)
     }
 
 	// starts the server and tells the terminal to post a message that the server is running and on what port

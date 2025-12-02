@@ -252,3 +252,38 @@ export async function getFollowingByProfileIdController(request:Request, respons
     }
 }
 
+/**
+ * get all public profiles that are not followed by logged-in user
+ * @param request
+ * @param response
+ */
+export async function getPublicProfiles(request:Request, response: Response) : Promise<void>  {
+    try{
+        // validate the id coming from the request parameters
+        const validationResult = PublicProfileSchema.pick({id: true}).safeParse(request.params)
+
+        // if the validation is unsuccessful, return a preformatted response to the client
+        if (!validationResult.success) {
+            zodErrorResponse(response,validationResult.error)
+            return
+        }
+
+        // grab the id off of the validated request parameters
+        const {id} = validationResult.data
+
+        console.log(id)
+        // grab the public profiles by id
+        const data = await selectPublicProfile(id)
+
+        // if the profile does not exist, return a preformatted response to the client
+        if (data === null) {
+            response.json({status: 400, message: "profile does not exist", data: null})
+            return
+        }
+        console.log("data", data)
+        response.json({status: 200, data: data, message: null})
+
+    }catch(error:any){
+        response.json({status: 500, data:null, message: error})
+    }
+}

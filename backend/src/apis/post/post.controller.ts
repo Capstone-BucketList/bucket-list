@@ -23,14 +23,20 @@ import {
 
 export async function postPostController(request:Request, response:Response) : Promise<void> {
     try {
+        console.log("postPostController received body:", JSON.stringify(request.body, null, 2));
 
         const validationResult = PostSchema
             .safeParse(request.body)
 
         if (!validationResult.success) {
+            console.log("PostSchema validation failed:");
+            console.log("Full error object:", JSON.stringify(validationResult.error, null, 2));
+            console.log("Error issues:", validationResult.error.issues);
             zodErrorResponse(response, validationResult.error)
             return
         }
+
+        console.log("PostSchema validation passed");
 
         const {id, wanderlistId, content, title, visibility} = validationResult.data
 
