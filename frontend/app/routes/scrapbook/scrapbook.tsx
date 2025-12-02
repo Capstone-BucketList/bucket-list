@@ -5,10 +5,13 @@ import { DivSlider } from "~/components/div_slider";
 import PhotoCard from "~/components/photo-card";
 import type { PhotoData } from "../scrapbook/ScrapbookTypes";
 import { getSession } from "~/utils/session.server";
-import { redirect } from "react-router";
+import { redirect, useFetcher } from "react-router";
 import type { Route } from "../../.react-router/types/app/routes/scrapbook/+types/scrapbook";
 import { useLoaderData } from "react-router";
 import { addHeaders } from "~/utils/utility";
+import { getWanderListByProfileId, type WanderList } from "~/utils/models/wanderlist.model";
+import { createAlbumAction } from "./scrapbook-album-action";
+import { v7 as uuidv7 } from "uuid";
 
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -23,37 +26,17 @@ export async function loader({ request }: Route.LoaderArgs) {
     }
 
     try {
-        // Get or create the scrapbook wanderlist
-        console.log("Fetching scrapbook wanderlist for profile:", profile.id);
-        const scrapbookResponse = await fetch(
-            `http://localhost:4200/apis/wanderlist/scrapbook/${profile.id}`,
-            {
-                method: "GET",
-                headers: {
-                    "Cookie": cookie,
-                    "Authorization": authorization,
-                },
-            }
-        );
+        // Fetch user's wanderlists
+        const wanderlists = await getWanderListByProfileId(profile.id, authorization, cookie);
 
-        console.log("Scrapbook response status:", scrapbookResponse.status);
-        const scrapbookData = await scrapbookResponse.json();
-        console.log("Scrapbook data:", scrapbookData);
-        const scrapbookWanderlist = scrapbookData?.data;
-        const scrapbookWanderlistId = scrapbookWanderlist?.id;
-        console.log("Scrapbook wanderlist ID:", scrapbookWanderlistId);
-
-        // Fetch all albums (posts) for the scrapbook wanderlist
+        // Fetch all albums (posts) from all wanderlists
         let albums = [];
-        if (scrapbookWanderlistId) {
+        for (const wanderlist of wanderlists) {
             const albumsResponse = await fetch(
-                `http://localhost:4200/apis/post/wanderlist/${scrapbookWanderlistId}`,
+                `${process.env.REST_API_URL}/post/wanderlist/${wanderlist.id}`,
                 {
                     method: "GET",
-                    headers: {
-                        "Cookie": cookie,
-                        "Authorization": authorization,
-                    },
+                    headers: addHeaders(authorization, cookie),
                 }
             );
 
@@ -64,13 +47,10 @@ export async function loader({ request }: Route.LoaderArgs) {
             const albumsWithMedia = await Promise.all(
                 posts.map(async (post: any) => {
                     const mediaResponse = await fetch(
-                        `http://localhost:4200/apis/media/post/${post.id}`,
+                        `${process.env.REST_API_URL}/media/post/${post.id}`,
                         {
                             method: "GET",
-                            headers: {
-                                "Cookie": cookie,
-                                "Authorization": authorization,
-                            },
+                            headers: addHeaders(authorization, cookie),
                         }
                     );
 
@@ -83,6 +63,7 @@ export async function loader({ request }: Route.LoaderArgs) {
                         description: post.content,
                         createdAt: post.datetime_created,
                         visibility: post.visibility,
+                        wanderlistId: wanderlist.id,
                         photos: mediaItems.map((media: any) => ({
                             id: media.id,
                             title: post.title,
@@ -95,17 +76,23 @@ export async function loader({ request }: Route.LoaderArgs) {
                 })
             );
 
-            albums = albumsWithMedia;
+            albums = [...albums, ...albumsWithMedia];
         }
 
-        return { profile, authorization, cookie, scrapbookWanderlistId, albums };
+        return { profile, authorization, cookie, wanderlists, albums };
     } catch (error) {
         console.error("Error loading scrapbook data:", error);
         // Return empty albums if fetch fails, user can still create new ones
-        return { profile, authorization, cookie, scrapbookWanderlistId: "", albums: [] };
+        return { profile, authorization, cookie, wanderlists: [], albums: [] };
     }
 }
 
+export async function action({ request }: Route.ActionArgs) {
+    if (request.method === "POST") {
+        return await createAlbumAction(request);
+    }
+    return { error: "Method not allowed", status: 405 };
+}
 
 type AlbumData = {
     id: string;
@@ -115,6 +102,8 @@ type AlbumData = {
     description?: string;
     photoCount?: number;
     photos?: PhotoData[];
+    wanderlistId?: string;
+    visibility?: string;
 };
 
 export default function Scrapbook() {
@@ -131,17 +120,67 @@ export default function Scrapbook() {
     const [uploadedPhotoUrl, setUploadedPhotoUrl] = useState<string | null>(null);
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
     const [viewingAlbum, setViewingAlbum] = useState<AlbumData | null>(null);
+    const [selectedWanderlistId, setSelectedWanderlistId] = useState<string>("");
 
 
-    // Get auth and albums from loader
-    const { authorization, cookie, scrapbookWanderlistId, albums: initialAlbums } = useLoaderData<typeof loader>();
+    // Get auth, wanderlists and albums from loader
+    const { authorization, cookie, wanderlists, albums: initialAlbums } = useLoaderData<typeof loader>();
 
-    // Initialize albums from loader
+    // Setup fetcher for server action
+    const fetcher = useFetcher();
+
+    // Initialize state from loader
     React.useEffect(() => {
         if (initialAlbums && initialAlbums.length > 0) {
             setAlbums(initialAlbums);
         }
-    }, [initialAlbums]);
+        // Set first wanderlist as default
+        if (wanderlists && wanderlists.length > 0) {
+            setSelectedWanderlistId(wanderlists[0].id || "");
+        }
+    }, [initialAlbums, wanderlists]);
+
+    // Handle fetcher response for album creation
+    React.useEffect(() => {
+        if (fetcher.state === "idle" && fetcher.data) {
+            const response = fetcher.data as any;
+            if (response.status === 200) {
+                // Album created successfully
+                const newAlbum: AlbumData = {
+                    id: response.data?.id || uuidv7(),
+                    title: newAlbumTitle,
+                    createdAt: new Date(),
+                    description: newAlbumDescription,
+                    visibility: "public",
+                    wanderlistId: selectedWanderlistId,
+                    photos: (response.data?.mediaUrls || []).map((url: string) => ({
+                        id: uuidv7(),
+                        title: newAlbumTitle,
+                        description: newAlbumDescription,
+                        imageSrc: url,
+                        postId: response.data?.id,
+                    })),
+                    photoCount: response.data?.mediaUrls?.length || 0,
+                };
+
+                setAlbums([newAlbum, ...albums]);
+
+                // Reset form
+                setNewAlbumTitle("");
+                setNewAlbumDescription("");
+                setSelectedPhotosForAlbum([]);
+                setUploadedPhotoUrl(null);
+                setShowPhotoGalleryModal(false);
+                setError(null);
+                setIsLoading(false);
+
+                alert(`Album "${newAlbum.title}" created successfully!`);
+            } else {
+                setError(response.error || "Failed to create album");
+                setIsLoading(false);
+            }
+        }
+    }, [fetcher.state]);
 
     const handleSubmitChanges = async () => {
         if (!activeCard?.id || !activeCard?.postId) {
@@ -153,12 +192,12 @@ export default function Scrapbook() {
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:4200/apis/post/`, {
+            const response = await fetch(`${process.env.REST_API_URL}/post/`, {
                 method: "PUT",
                 headers: addHeaders(authorization, cookie),
                 body: JSON.stringify({
                     id: activeCard.postId,
-                    wanderlistId: scrapbookWanderlistId,
+                    wanderlistId: activeCard.wanderlistId || selectedWanderlistId,
                     title: activeCard.title,
                     content: activeCard.description,
                     visibility: activeCard.visibility || "public",
@@ -200,7 +239,7 @@ export default function Scrapbook() {
 
         try {
             const response = await fetch(
-                `http://localhost:4200/apis/post/${activeCard.postId}`,
+                `${process.env.REST_API_URL}/post/${activeCard.postId}`,
                 {
                     method: "DELETE",
                     headers: addHeaders(authorization, cookie),
@@ -303,95 +342,45 @@ export default function Scrapbook() {
         }
     };
 
-    const handleCreateNewAlbumWithPhotos = async () => {
+    const handleCreateNewAlbumWithPhotos = () => {
         if (!newAlbumTitle.trim()) return;  // basic validation
+
+        if (!selectedWanderlistId) {
+            setError("Please select a wanderlist before creating an album.");
+            return;
+        }
 
         setIsLoading(true);
         setError(null);
 
-        try {
-            // Debug: log the scrapbookWanderlistId
-            console.log("scrapbookWanderlistId:", scrapbookWanderlistId);
+        // Collect all photo URLs (uploaded + selected from collections)
+        const mediaUrls = [];
 
-            if (!scrapbookWanderlistId) {
-                throw new Error("Scrapbook wanderlist ID not available. Please refresh the page.");
-            }
-
-            // Collect all photo URLs (uploaded + selected from collections)
-            const mediaUrls = [];
-
-            if (uploadedPhotoUrl) {
-                mediaUrls.push(uploadedPhotoUrl);
-            }
-
-            // Also include URLs from selected photos if they have imageSrc
-            for (const photo of selectedPhotosForAlbum) {
-                if (photo.imageSrc && !mediaUrls.includes(photo.imageSrc)) {
-                    mediaUrls.push(photo.imageSrc);
-                }
-            }
-
-            console.log("Creating album with mediaUrls:", mediaUrls);
-
-            // Create the album (post) in the backend
-            const createAlbumResponse = await fetch(`http://localhost:4200/apis/post/`, {
-                method: "POST",
-                headers: addHeaders(authorization, cookie),
-                body: JSON.stringify({
-                    id: crypto.randomUUID(),
-                    wanderlistId: scrapbookWanderlistId,
-                    title: newAlbumTitle.trim(),
-                    content: newAlbumDescription.trim(),
-                    visibility: "public",
-                    mediaUrls: mediaUrls,
-                }),
-            });
-
-            if (!createAlbumResponse.ok) {
-                throw new Error("Failed to create album");
-            }
-
-            const albumData = await createAlbumResponse.json();
-
-            if (albumData.status === 200) {
-                // Fetch the created album with its media
-                const newAlbumId = albumData.data?.id || crypto.randomUUID();
-                const newAlbum: AlbumData = {
-                    id: newAlbumId,
-                    title: newAlbumTitle.trim(),
-                    createdAt: new Date(),
-                    description: newAlbumDescription.trim(),
-                    visibility: "public",
-                    photos: mediaUrls.map((url, index) => ({
-                        id: crypto.randomUUID(),
-                        title: newAlbumTitle.trim(),
-                        description: newAlbumDescription.trim(),
-                        imageSrc: url,
-                        postId: newAlbumId,
-                    })),
-                    photoCount: mediaUrls.length,
-                };
-
-                // Update state
-                setAlbums([newAlbum, ...albums]);
-
-                // Reset form and selections
-                setNewAlbumTitle("");
-                setNewAlbumDescription("");
-                setSelectedPhotosForAlbum([]);
-                setUploadedPhotoUrl(null);
-                setShowPhotoGalleryModal(false);
-
-                // Show success message
-                alert(`Album "${newAlbum.title}" created with ${mediaUrls.length} photo${mediaUrls.length !== 1 ? 's' : ''}!`);
-            } else {
-                setError(albumData.message || "Failed to create album");
-            }
-        } catch (err: any) {
-            setError(err.message || "An error occurred while creating the album");
-        } finally {
-            setIsLoading(false);
+        if (uploadedPhotoUrl) {
+            mediaUrls.push(uploadedPhotoUrl);
         }
+
+        // Also include URLs from selected photos if they have imageSrc
+        for (const photo of selectedPhotosForAlbum) {
+            if (photo.imageSrc && !mediaUrls.includes(photo.imageSrc)) {
+                mediaUrls.push(photo.imageSrc);
+            }
+        }
+
+        console.log("Creating album with mediaUrls:", mediaUrls);
+
+        // Call the server action via fetcher
+        fetcher.submit(
+            {
+                id: uuidv7(),
+                wanderlistId: selectedWanderlistId,
+                title: newAlbumTitle.trim(),
+                description: newAlbumDescription.trim(),
+                visibility: "public",
+                mediaUrls: JSON.stringify(mediaUrls),
+            },
+            { method: "POST" }
+        );
     };
 
     const [showTimelineModal, setShowTimelineModal] = useState(false);
@@ -490,6 +479,25 @@ export default function Scrapbook() {
                                 onChange={e => setNewAlbumDescription(e.target.value)}
                                 className="w-full p-2 border rounded mb-2"
                                 rows={3}/>
+                        </div>
+
+                        {/* Wanderlist Selection Dropdown */}
+                        <div className="mb-4">
+                            <label className="block text-sm font-semibold mb-2">Save Album to Wanderlist</label>
+                            <select
+                                value={selectedWanderlistId}
+                                onChange={e => setSelectedWanderlistId(e.target.value)}
+                                className="w-full p-2 border rounded mb-2">
+                                <option value="">Select a wanderlist...</option>
+                                {wanderlists && wanderlists.map((wanderlist) => (
+                                    <option key={wanderlist.id} value={wanderlist.id || ""}>
+                                        {wanderlist.title}
+                                    </option>
+                                ))}
+                            </select>
+                            {!selectedWanderlistId && (
+                                <p className="text-sm text-red-600 mt-1">Please select a wanderlist to save your album</p>
+                            )}
                         </div>
 
                         {/* Photo Selection Button */}
