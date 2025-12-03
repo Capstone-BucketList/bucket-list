@@ -19,7 +19,7 @@ type Props = {
 export default function Posts(props : Props) {
     const {posts, wanderlistItem} = props;
     // Debug: Log posts to see what data we're getting
-    console.log("Posts from backend:", props);
+  //  console.log("Posts from backend:", props);
 
     // Get 4 most recent posts (based on created OR modified date, whichever is newer)
     const recentPosts = posts

@@ -57,7 +57,7 @@ export async function loader({request}: Route.LoaderArgs) {
 }
 
 export async function action({ request }: Route.ActionArgs) {
-
+console.log("action called")
     const cookie = request.headers.get("Cookie");
     const session = await getSession(cookie);
     const profile = session.get("profile");
@@ -111,7 +111,7 @@ const statusOptions = [
     "Completed",
 ];
 
-const resolver =  zodResolver(WanderListSchema)
+const resolver =  zodResolver(WanderListSchema.omit({id:true}))
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
     const { profile, wanderList,followingProfiles,progressBars,posts } = loaderData ?? {};
@@ -123,6 +123,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
     const { userName, email, bio, profilePicture } = profile ?? {};
 
     const {handleSubmit, formState: {errors}, register, reset} = useRemixForm<WanderList>({mode: 'onSubmit', resolver})
+    console.log(errors)
     const actionData = useActionData<typeof action>();
 
     const revalidator = useRevalidator();
@@ -398,7 +399,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                                         <input {...register('visibility')}
                                                                type="radio"
                                                                name="visibility"
-                                                             //  value={option.id}
+                                                               value={option.id}
                                                                defaultChecked={editingItem?.visibility === option.id}
                                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                                                         />
