@@ -16,6 +16,7 @@ export default [
         route("/settings", "routes/setting/my-profile.tsx"),
         route('/community/follow', 'routes/community/followprofile.tsx'),
         route('/dashboard/unfollow', 'routes/profile/unfollowprofile.tsx'),
+        route('/dashboard/createpost', 'routes/profile/createpost.tsx'),
     ]),
 ] satisfies RouteConfig;
 

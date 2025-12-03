@@ -5,7 +5,7 @@ import {deleteFollowedProfileId, postFollow} from "~/utils/models/follow.model";
 
 export async function action({ request }: Route.ActionArgs) {
 
-    console.log("action called")
+
     const formData = await request.formData();
     const followedProfileId = formData.get("followedProfileId");
 

@@ -137,18 +137,20 @@ export async function getVisiblePostsByLoggedInProfileFollow(profileId: string, 
         return result
 }
 
-export async function postPost(PostId: string, authorization: string, cookie: string) : Promise<Post> {
+export async function postPost(post: Post, authorization: string, cookie: string) : Promise<Post> {
 
-    return await fetch(`${process.env.REST_API_URL}${postBasePath}/${PostId}`, {
+    return await fetch(`${process.env.REST_API_URL}${postBasePath}`, {
         method: 'POST',
-        headers: addHeaders(authorization,cookie),
+        headers: addHeaders(authorization, cookie),
+        body: JSON.stringify(post)
 
-    }) .then(res => {
-    if(!res.ok) {
-         throw new Error(res.statusText)
-    }
-    return res.json()
-})
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error(res.statusText)
+        }
+        return res.json()
+    })
+}
 
 export async function deletePost(postId: string, authorization: string, cookie: string): Promise<Post> {
 
@@ -176,4 +178,4 @@ export async function putPost(post: Post, authorization: string, cookie: string)
         }
         return res.json()
     })
-} }
+}

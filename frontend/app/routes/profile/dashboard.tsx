@@ -27,6 +27,8 @@ import {FaWindowClose} from "react-icons/fa";
 import {FriendCard} from "~/routes/profile/friendcard";
 import WanderListItems from "~/routes/profile/wanderlist";
 import {Card} from "flowbite-react";
+import Posts from "~/routes/profile/posts";
+import {getPostByProfileId} from "~/utils/models/post.model";
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
@@ -46,9 +48,11 @@ export async function loader({request}: Route.LoaderArgs) {
     const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
 
     //  const publicProfiles = await getPublicProfiles(profile.id, authorization, cookie)
+    // get posts by profileId
+    const posts = await getPostByProfileId(profile.id, authorization, cookie)
 
     const progressBars = await getWanderListByProfileId(profile.id, authorization, cookie)
-    return {profile, wanderList,followingProfiles,progressBars}
+    return {profile, wanderList,followingProfiles,progressBars,posts}
 
 }
 
@@ -110,7 +114,7 @@ const statusOptions = [
 const resolver =  zodResolver(WanderListSchema)
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
-    const { profile, wanderList,followingProfiles,progressBars } = loaderData ?? {};
+    const { profile, wanderList,followingProfiles,progressBars,posts } = loaderData ?? {};
 
     if (!profile) {
         redirect("/");
@@ -217,7 +221,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
             {/* Profile header - Vibrant gradient */}
             <header style={{ backgroundImage: "url('/img_4.png')" }}
                     //className="relative p-10 flex flex-col sm:flex-row items-center gap-8 w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 shadow-xl overflow-hidden"
-                    className="p-25 flex flex-col sm:flex-row items-center gap-6 w-full bg-cover bg-center bg-no-repeat" >
+                    className="p-20 flex flex-col sm:flex-row items-center gap-6 w-full bg-cover bg-center bg-no-repeat" >
                 {/* Animated background elements */}
                {/* <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-2 left-10 w-20 h-20 bg-white rounded-full blur-2xl animate-pulse"></div>
@@ -232,12 +236,12 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                 />
 
                 {/* Profile Info */}
-                <div className="flex-1 min-w-0 max-w-70 relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+               {/* <div className="flex-1 min-w-0 max-w-70 relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-lg">
                     <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                       <span className="text-transparent [-webkit-text-stroke:2px_black]">  {userName}</span>                    </h1>
                     <p className="text-base md:text-lg text-black/95 mt-2 font-medium drop-shadow">{email}</p>
                     <p className="mt-3 text-black/90 max-w-prose text-sm md:text-base leading-relaxed drop-shadow">{bio || "No bio yet — tell people about your journey!"}</p>
-                </div>
+                </div>*/}
             </header>
 
             <div className="px-4 sm:px-6 md:px-10 lg:px-16 py-12 w-full">
@@ -427,6 +431,8 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                 </div>
                             )}
                         </section>
+
+                        <Posts posts={posts} wanderlistItem={wanderList}/>
                         {/* Timeline */}
                         <section className="bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                             <h3 className="text-2xl font-extrabold mb-6">📅 <span className="bg-gradient-to-r from-violet-600 to-purple-600 text-transparent  bg-clip-text "> Journey Timeline </span></h3>
@@ -438,7 +444,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                         {/* Friends */}
                         <div className="bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                             <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent mb-4">👥 Friends</h2>
-                            <div className="flex flex-col gap-4 max-h-80 overflow-y-auto pr-2">
+                            <div className="flex flex-col gap-4 max-h-100 overflow-y-auto pr-2">
                                 {followingProfiles?.map((profile, idx) => (
                                     <FriendCard key={idx} profile={profile} isFriend={true} />
                                 ))}
@@ -446,7 +452,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                         </div>
 
                         {/* Progress Bars */}
-                        <section className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                      {/*  <section className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                             <h3 className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-2">🚀 My Journey</h3>
                             <p className="text-gray-600 mb-6 text-sm">
                                 Track your progress on amazing wanderlists and milestones.
@@ -454,7 +460,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                             <div className="space-y-5  max-h-80 overflow-y-auto pr-2">
                                 <ProgressBars items={progressBars} />
                             </div>
-                        </section>
+                        </section>*/}
 
 
                     </aside>
