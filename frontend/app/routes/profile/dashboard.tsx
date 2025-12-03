@@ -387,7 +387,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                                         <input {...register('visibility')}
                                                                type="radio"
                                                                name="visibility"
-                                                             //  value={option.id}
+                                                               value={option.id}
                                                                defaultChecked={editingItem?.visibility === option.id}
                                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                                                         />
