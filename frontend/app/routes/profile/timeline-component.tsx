@@ -47,7 +47,8 @@ export function TimelineComponent({ items }: TimelineComponentProps) {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="h-[800px] overflow-y-auto pr-2 md:pr-4">
+            <div className="space-y-3 sm:space-y-4 md:space-y-6">
             {sortedItems.length === 0 ? (
                 <div className="text-center py-8">
                     <p className="text-gray-500 text-sm">No wanderlist items yet. Create one to get started! 🚀</p>
@@ -61,11 +62,11 @@ export function TimelineComponent({ items }: TimelineComponentProps) {
                     return (
                         <div
                             key={item.id}
-                            className={`relative flex gap-4 pb-6 ${idx !== sortedItems.length - 1 ? "border-b-2 border-violet-200" : ""}`}
+                            className={`relative flex gap-2 sm:gap-3 md:gap-4 pb-3 sm:pb-4 md:pb-6 ${idx !== sortedItems.length - 1 ? "border-b-2 border-violet-200" : ""}`}
                         >
                             {/* Timeline dot with animation */}
                             <div className="flex flex-col items-center flex-shrink-0">
-                                <div className={`relative w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg ${statusColor.bg} ${statusColor.text} ring-4 ring-white shadow-lg transform transition-transform hover:scale-110`}>
+                                <div className={`relative w-10 sm:w-11 md:w-12 h-10 sm:h-11 md:h-12 rounded-full flex items-center justify-center font-bold text-sm sm:text-base md:text-lg ${statusColor.bg} ${statusColor.text} ring-4 ring-white shadow-lg transform transition-transform hover:scale-110`}>
                                     {statusColor.icon}
                                     {isPinned && (
                                         <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full w-5 h-5 flex items-center justify-center text-xs">
@@ -76,40 +77,41 @@ export function TimelineComponent({ items }: TimelineComponentProps) {
                             </div>
 
                             {/* Content card */}
-                            <div className="flex-1 pt-1">
-                                <div className={`${statusColor.bg} ${statusColor.border} border-2 rounded-2xl p-4 hover:shadow-lg transition-shadow duration-300`}>
+                            <div className="flex-1 pt-0 sm:pt-1">
+                                <div className={`${statusColor.bg} ${statusColor.border} border-2 rounded-xl sm:rounded-2xl p-2 sm:p-3 md:p-4 hover:shadow-lg transition-shadow duration-300`}>
                                     {/* Header */}
-                                    <div className="flex items-start justify-between mb-3">
-                                        <div className="flex-1">
-                                            <h4 className={`text-lg font-bold ${statusColor.text} truncate`}>
+                                    <div className="flex items-start justify-between mb-2 sm:mb-3 gap-1 sm:gap-2">
+                                        <div className="flex-1 min-w-0">
+                                            <h4 className={`text-xs sm:text-sm md:text-lg font-bold ${statusColor.text} truncate`}>
                                                 {item.title}
                                             </h4>
-                                            <p className="text-gray-600 text-xs mt-1 flex items-center gap-1">
-                                                <Calendar size={14} />
+                                            <p className="text-gray-600 text-[10px] sm:text-xs mt-1 flex items-center gap-1">
+                                                <Calendar size={12} className="hidden sm:block" />
+                                                <Calendar size={10} className="sm:hidden" />
                                                 {formatDate(item.targetDate)}
                                             </p>
                                         </div>
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${statusColor.bg} ${statusColor.text} whitespace-nowrap ml-2`}>
+                                        <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold ${statusColor.bg} ${statusColor.text} whitespace-nowrap ml-1`}>
                                             {item.wanderlistStatus}
                                         </span>
                                     </div>
 
                                     {/* Description */}
                                     {item.description && (
-                                        <p className="text-gray-700 text-sm mb-4 line-clamp-2">
+                                        <p className="text-gray-700 text-[10px] sm:text-xs md:text-sm mb-2 sm:mb-3 md:mb-4 line-clamp-1 sm:line-clamp-2">
                                             {item.description}
                                         </p>
                                     )}
 
                                     {/* Progress bar */}
-                                    <div className="mb-3">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-xs font-semibold text-gray-600">Progress</span>
-                                            <span className={`text-xs font-bold ${statusColor.text}`}>{progress}%</span>
+                                    <div className="mb-2 sm:mb-3">
+                                        <div className="flex items-center justify-between mb-1 sm:mb-2">
+                                            <span className="text-[9px] sm:text-xs font-semibold text-gray-600">Progress</span>
+                                            <span className={`text-[9px] sm:text-xs font-bold ${statusColor.text}`}>{progress}%</span>
                                         </div>
-                                        <div className="w-full bg-gray-200 rounded-full h-2">
+                                        <div className="w-full bg-gray-200 rounded-full h-1 sm:h-2">
                                             <div
-                                                className={`h-2 rounded-full transition-all duration-500 ${
+                                                className={`h-1 sm:h-2 rounded-full transition-all duration-500 ${
                                                     item.wanderlistStatus === "Completed"
                                                         ? "bg-gradient-to-r from-green-400 to-green-600"
                                                         : item.wanderlistStatus === "In Progress"
@@ -124,14 +126,14 @@ export function TimelineComponent({ items }: TimelineComponentProps) {
                                     </div>
 
                                     {/* Metadata */}
-                                    <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                                    <div className="flex flex-wrap gap-1 sm:gap-2 text-[9px] sm:text-xs text-gray-600">
                                         {item.visibility && (
-                                            <span className="px-2 py-1 bg-white bg-opacity-50 rounded-full">
+                                            <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-white bg-opacity-50 rounded-full">
                                                 🔒 {item.visibility.toUpperCase()}
                                             </span>
                                         )}
                                         {isPinned && (
-                                            <span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold">
+                                            <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold">
                                                 📌 Pinned
                                             </span>
                                         )}
@@ -142,6 +144,7 @@ export function TimelineComponent({ items }: TimelineComponentProps) {
                     );
                 })
             )}
+            </div>
         </div>
     );
 }
