@@ -5,7 +5,8 @@ import {
     getWanderlistByWanderListIdController,
     postWanderListItemController,
     putWanderListItemController,
-    getOrCreateScrapbookWanderlistController
+    getOrCreateScrapbookWanderlistController,
+    getOrCreateSharedStoriesWanderlistController
 } from "./wanderlist.controller.ts";
 import {isLoggedInController} from "../../utils/controller/is-logged-in-controller.ts";
 
@@ -30,5 +31,8 @@ router.route('/visibility/:visibility')
 
 router.route('/scrapbook/:profileId')
     .get(isLoggedInController,getOrCreateScrapbookWanderlistController)
+
+router.route('/shared-stories')
+    .get(isLoggedInController,getOrCreateSharedStoriesWanderlistController)
 
 export const  wanderlistRoute = {basePath, router}

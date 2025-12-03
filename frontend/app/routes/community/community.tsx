@@ -33,6 +33,16 @@ export async function loader({ request }: Route.LoaderArgs) {
     if (!profile || !authorization || !cookie) {
         return redirect('/login');
     }
+
+    // Ensure shared stories wanderlist exists
+    try {
+        await fetch(`${process.env.REST_API_URL}/wanderlist/shared-stories`, {
+            headers: addHeaders(authorization, cookie),
+        });
+    } catch (error) {
+        console.error('Error ensuring shared stories wanderlist exists:', error);
+    }
+
     const publicProfiles = await getPublicProfiles(profile.id,authorization, cookie)
     // Fetch all visible posts with media
     let posts = [];

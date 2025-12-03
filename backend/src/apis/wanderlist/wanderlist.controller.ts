@@ -362,3 +362,48 @@ export async function getOrCreateScrapbookWanderlistController(request:Request, 
         response.status(200).json(status)
     }
 }
+
+export async function getOrCreateSharedStoriesWanderlistController(request:Request, response:Response): Promise<void> {
+    try{
+        // Shared Stories is a global wanderlist, not tied to a specific user profile
+        // We'll use a fixed ID for it
+        const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
+
+        // Check if the shared stories wanderlist exists
+        let sharedStoriesWanderlist = await selectWanderlistByPrimaryKey(SHARED_STORIES_WANDERLIST_ID);
+
+        if (!sharedStoriesWanderlist) {
+            // Create the shared stories wanderlist with a system user
+            // For now, we'll use a hardcoded profile ID or create a system account
+            // Using the first profile as a placeholder - in production this should be a system account
+            const newSharedStories: WanderList = {
+                id: SHARED_STORIES_WANDERLIST_ID,
+                profileId: "019a3191-a7f4-735d-af0a-1042ea194335", // System or default profile
+                title: "Shared Stories",
+                description: "Community shared travel experiences and stories",
+                wanderlistStatus: "active",
+                pinned: false,
+                targetDate: null,
+                visibility: "public"
+            }
+
+            await insertWanderList(newSharedStories)
+            sharedStoriesWanderlist = newSharedStories
+        }
+
+        const status: Status = {
+            status: 200,
+            message: "Shared Stories wanderlist retrieved or created",
+            data: sharedStoriesWanderlist
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
