@@ -148,7 +148,7 @@ export async function selectVisiblePostsByLoggedInProfileFollow(id: string): Pro
  */
 export async function selectAllVisiblePosts():Promise<Post[]> {
     const rowlist = await sql
-        `SELECT id,wanderlist_id,content, title,visibility FROM POST WHERE visibility='public' `
+        `SELECT id,wanderlist_id,content, title,visibility, datetime_created,datetime_modified FROM POST WHERE visibility='public' `
 
     return PostSchema.array().parse(rowlist)
 }
