@@ -29,6 +29,7 @@ import WanderListItems from "~/routes/profile/wanderlist";
 import {Card} from "flowbite-react";
 import Posts from "~/routes/profile/posts";
 import {getPostByProfileId} from "~/utils/models/post.model";
+import WanderListGrid from "~/routes/profile/wanderlist-grid";
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
@@ -280,7 +281,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
 
 
                             {/* WanderList Section */}
-                            <WanderListItems wonderlistItems={wanderList} openEditModal={openEditModal} />
+                            <WanderListGrid wonderlistItems={wanderList} openEditModal={openEditModal} />
 
 
                             {/* MODAL */}
@@ -461,7 +462,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                         </div>
 
                         {/* Progress Bars */}
-                      {/*  <section className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                     {/*  <section className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                             <h3 className="text-2xl font-extrabold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-2">🚀 My Journey</h3>
                             <p className="text-gray-600 mb-6 text-sm">
                                 Track your progress on amazing wanderlists and milestones.
@@ -469,7 +470,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                             <div className="space-y-5  max-h-80 overflow-y-auto pr-2">
                                 <ProgressBars items={progressBars} />
                             </div>
-                        </section>*/}
+                        </section> */}
 
 
                     </aside>

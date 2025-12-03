@@ -129,7 +129,7 @@ function UserProfileDropdown({ profile }: { profile: Profile | null }) {
 export function Navigation(props: ProfileProps) {
     const location = useLocation();
     const { profile } = props;
-    const isAuthenticated = location.pathname !== "/" && location.pathname !== "/login" && location.pathname !== "/signup";
+    const isAuthenticated = !!profile // location.pathname !== "/" && location.pathname !== "/login" && location.pathname !== "/signup";
     const links = isAuthenticated ? AUTHENTICATED_LINKS : UNAUTHENTICATED_LINKS;
     return (
         <Navbar

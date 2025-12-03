@@ -46,7 +46,7 @@ export function WanderListFooter(){
                             </li>
                             <li className="flex items-center gap-2 text-gray-400">
                                 <Phone size={16} className="text-blue-400" />
-                                <a href="tel:+1234567890" className="hover:text-blue-400 transition">+1 (234) 567-890</a>
+                                <a href="tel:+1234567890" className="hover:text-blue-400 transition">+1 (234) 567-8901</a>
                             </li>
                             <li className="flex items-center gap-2 text-gray-400">
                                 <MapPin size={16} className="text-blue-400" />

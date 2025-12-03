@@ -159,7 +159,7 @@ export default function SignUp(){
                     </div>
                 </div>
                 <div className="w-1/2">
-                    <img src ="/adventures6.jpg" alt="adventuer"  className="min-w-full h-full"/>
+                    <img src ="/bucketlist.png" alt="adventuer"  className="min-w-full h-full"/>
                 </div>
             </section>
         </>
