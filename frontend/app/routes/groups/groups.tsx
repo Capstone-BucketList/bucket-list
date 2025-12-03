@@ -5,6 +5,7 @@ import { useLoaderData, redirect } from 'react-router';
 import type { Route } from "../../.react-router/types/app/routes/+types/groups";
 import { getSession } from "~/utils/session.server";
 import { addHeaders } from '~/utils/utility';
+import {getFollwersByProfileId} from "~/utils/models/profile.model";
 
 export async function loader({ request }: Route.LoaderArgs) {
     const cookie = request.headers.get('Cookie');
@@ -15,8 +16,10 @@ export async function loader({ request }: Route.LoaderArgs) {
     if (!profile || !authorization || !cookie) {
         return redirect('/login');
     }
+    // followers profiles
+    const followingProfiles = await getFollwersByProfileId(profile.id, authorization, cookie)
 
-    return { profile, authorization, cookie };
+    return { profile, authorization, cookie,followingProfiles };
 }
 
 interface GroupGoal {
@@ -37,8 +40,8 @@ interface Connection {
     email: string;
 }
 
-export default function Groups() {
-    const { profile, authorization, cookie } = useLoaderData<typeof loader>();
+export default function Groups({ loaderData }: Route.ComponentProps) {
+    const { profile, authorization, cookie,followingProfiles } = useLoaderData<typeof loader>();
 
     const [activeTab, setActiveTab] = useState<'groups' | 'network'>('groups');
     const [showCreateForm, setShowCreateForm] = useState(false);
@@ -402,13 +405,13 @@ export default function Groups() {
                                         {/* Followers */}
                                         <Card className="bg-violet-50 border-2 border-violet-200">
                                             <h3 className="text-xl font-bold text-violet-800 mb-4">
-                                                Followers ({followers.length})
+                                                Followers ({followingProfiles?.length})
                                             </h3>
                                             <div className="space-y-3 max-h-96 overflow-y-auto">
-                                                {followers.length === 0 ? (
+                                                {followingProfiles?.length === 0 ? (
                                                     <p className="text-gray-600 text-sm">No followers yet.</p>
                                                 ) : (
-                                                    followers.map((follower) => (
+                                                    followingProfiles?.map((follower) => (
                                                         <div key={follower.id} className="flex items-center justify-between p-3 bg-white rounded-lg">
                                                             <div className="flex items-center gap-3">
                                                                 <Avatar
