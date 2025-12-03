@@ -84,13 +84,13 @@ export default function Posts(props : Props) {
         {/* My Posts Section */}
         <section className="bg-white border border-gray-200 rounded-3xl p-8 shadow-lg">
             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">My Posts</h2>
+                <h2 className="text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">My Posts</h2>
                 <div className="flex items-center gap-3">
                     <div className="text-sm text-gray-500">{posts?.length || 0} posts</div>
                     <button
                         type="button"
                         onClick={openCreatePostModal}
-                        className="inline-flex items-center gap-2 rounded-md px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-medium shadow transition"
+                        className="inline-flex items-center gap-2 rounded-xl px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl transition transform hover:scale-105"
                     >
                         <FaPencil/>
                         Create Post
