@@ -137,9 +137,9 @@ export function Navigation(props: ProfileProps) {
             className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 sticky top-0 z-50 shadow-lg border-b border-purple-800"
         >
             {/* Logo/Brand */}
-            <NavbarBrand href="/">
-                <span className="self-center whitespace-nowrap text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent tracking-wide">
-                    Wander<span className="text-yellow-300">List</span>
+            <NavbarBrand href="/" >
+                <span className="self-center whitespace-nowrap text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent tracking-wide flex flex-inline">
+                  <img src="/wanderlistlogo.png" className="h-10 w-10"/>  Wander<span className="text-yellow-300">List</span>
                 </span>
             </NavbarBrand>
             {/* Right side: Navigation Links + User profile dropdown + toggle */}
