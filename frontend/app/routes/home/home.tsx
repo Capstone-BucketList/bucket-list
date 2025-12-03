@@ -17,7 +17,6 @@ import {
 import type {Route} from "../../../.react-router/types/app/routes/home/+types/home";
 import {DivSlider} from "~/components/div_slider";
 import type { ReactNode } from "react";
-import {HeroSection, SidebarChat} from "~/components/additional-features";
 import {BucketListExamplesSection} from "~/components/Example-trips";
 import {
     StatisticsSection,
@@ -254,7 +253,7 @@ export default function Home() {
             {/*        <div className="absolute inset-0 bg-black/50"></div>*/}
 
             {/*    </div>*/}
-            <HeroSection/>
+            <EnhancedHeroSection/>
             {/*   /!* <div className="absolute inset-0 w-full top-0 m-5">*/}
             {/*        <h2 className="text-blue-500 text-center text-5xl font-extrabold">Wander List App</h2>*/}
             {/*    </div>*!/*/}
@@ -291,7 +290,6 @@ export default function Home() {
                         }
                     </div>
                 </section>
-                <SidebarChat/>
 
               {/* Example group goal trips*/}
               <BucketListExamplesSection/>
