@@ -328,7 +328,7 @@ export default function Community() {
                 id: 4,
                 title: "Vision Boards",
                 icon: <FaLightbulb className="text-amber-400 text-3xl" />,
-                description: "Post-its, digital cards, goals by category—organize and visualize what you want to achieve.",
+                description: "Posts-its, digital cards, goals by category—organize and visualize what you want to achieve.",
             },
         ]);
     }, []);
@@ -438,7 +438,7 @@ export default function Community() {
                     profileId={profileId}
                     onSuccess={() => {
                         // Optional: Refresh posts or show success message
-                        console.log('Post created successfully');
+                        console.log('Posts created successfully');
                     }}
                 />
             </section>

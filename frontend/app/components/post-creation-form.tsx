@@ -197,7 +197,7 @@ export function PostCreationForm({
                 throw new Error(errorData.message || 'Failed to create post');
             }
 
-            setSuccessMessage('Post created successfully!');
+            setSuccessMessage('Posts created successfully!');
 
             // Clear form
             setTitle('');
@@ -219,7 +219,7 @@ export function PostCreationForm({
                 setTimeout(onSuccess, 500);
             }
         } catch (error) {
-            console.error('Post creation error:', error);
+            console.error('Posts creation error:', error);
             setErrorMessage(error instanceof Error ? error.message : 'Failed to create post');
         } finally {
             setIsSubmitting(false);
@@ -388,7 +388,7 @@ export function PostCreationForm({
                                 Creating Post...
                             </>
                         ) : (
-                            'Create Post'
+                            'Create Posts'
                         )}
                     </Button>
                     <Button
