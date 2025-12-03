@@ -38,8 +38,7 @@ export default function Posts(props : Props) {
 
             // Sort: newer dates first (descending)
             return dateB - dateA
-        })
-        .slice(0, 4) || [];
+        }) || [];
 
     // State for post modal
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -110,7 +109,7 @@ export default function Posts(props : Props) {
                     </p>
                 </div>
             ) : (
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 md:grid-cols-2 max-h-100 overflow-y-auto pr-2">
                     {recentPosts.map((post) => (
                         <div
                             key={post.id}
@@ -143,7 +142,7 @@ export default function Posts(props : Props) {
             )}
 
             {/* All Posts Button */}
-            {posts && posts.length > 4 && (
+            {/*{posts && posts.length > 4 && (
                 <div className="mt-6 text-center">
                     <button
                         type="button"
@@ -152,7 +151,7 @@ export default function Posts(props : Props) {
                         View All Posts
                     </button>
                 </div>
-            )}
+            )}*/}
         </section>
 
         {/* CREATE POST MODAL */}

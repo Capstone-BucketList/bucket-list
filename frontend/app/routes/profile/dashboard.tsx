@@ -221,19 +221,26 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
             {/* Profile header - Vibrant gradient */}
             <header style={{ backgroundImage: "url('/img_4.png')" }}
                     //className="relative p-10 flex flex-col sm:flex-row items-center gap-8 w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 shadow-xl overflow-hidden"
-                    className="p-20 flex flex-col sm:flex-row items-center gap-6 w-full bg-cover bg-center bg-no-repeat" >
+                    className="pr-5 pl-18 pt-5 flex flex-col sm:flex-row items-center gap-6 w-full bg-cover bg-center bg-no-repeat" >
                 {/* Animated background elements */}
                {/* <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-2 left-10 w-20 h-20 bg-white rounded-full blur-2xl animate-pulse"></div>
                     <div className="absolute bottom-2 right-20 w-32 h-32 bg-yellow-300 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
                 </div>*/}
 
-                {/* Profile Image with animation */}
-                <img
-                    src={profilePicture || "/images/avatar-placeholder.png"}
-                    alt={`${userName ?? "User"} avatar`}
-                    className="relative w-50 h-50 rounded-full object-cover ring-4 ring-white shadow-lg transform hover:scale-110 transition-transform duration-300"
-                />
+                {/* Profile Image and Name Column */}
+                <div className="flex flex-col items-center">
+                    {/* Profile Image with animation */}
+                    <img
+                        src={profilePicture || "/images/avatar-placeholder.png"}
+                        alt={`${userName ?? "User"} avatar`}
+                        className="relative w-50 h-50 rounded-full object-cover ring-4 ring-white shadow-lg transform hover:scale-110 transition-transform duration-300 mb-4"
+                    />
+                    {/* Name Below Image */}
+                    <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent text-center">
+                        <span className="text-transparent [-webkit-text-stroke:2px_black]">{userName}</span>
+                    </h1>
+                </div>
 
                 {/* Profile Info */}
                {/* <div className="flex-1 min-w-0 max-w-70 relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-lg">
