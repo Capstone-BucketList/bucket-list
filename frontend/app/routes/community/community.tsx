@@ -19,6 +19,8 @@ import { CommentSection } from "~/components/comment-section";
 import { FollowButton } from "~/components/follow-button";
 import {FriendCard} from "~/routes/profile/friendcard";
 import {getPublicProfiles} from "~/utils/models/profile.model";
+import { addHeaders } from "~/utils/utility";
+import { createPostAction } from "./create-post-action";
 
 const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
 
@@ -31,16 +33,22 @@ export async function loader({ request }: Route.LoaderArgs) {
     if (!profile || !authorization || !cookie) {
         return redirect('/login');
     }
+
+    // Ensure shared stories wanderlist exists
+    try {
+        await fetch(`${process.env.REST_API_URL}/wanderlist/shared-stories`, {
+            headers: addHeaders(authorization, cookie),
+        });
+    } catch (error) {
+        console.error('Error ensuring shared stories wanderlist exists:', error);
+    }
+
     const publicProfiles = await getPublicProfiles(profile.id,authorization, cookie)
     // Fetch all visible posts with media
     let posts = [];
     try {
-        const postsResponse = await fetch('http://localhost:8080/apis/post/visible/posts', {
-            headers: {
-                'Authorization': `Bearer ${authorization}`,
-                'Cookie': cookie,
-            },
-            credentials: 'include',
+        const postsResponse = await fetch(`${process.env.REST_API_URL}/post/visible/posts`, {
+            headers: addHeaders(authorization, cookie),
         });
 
         if (postsResponse.ok) {
@@ -50,12 +58,8 @@ export async function loader({ request }: Route.LoaderArgs) {
             // Fetch media for each post
             for (const post of postsArray) {
                 try {
-                    const mediaResponse = await fetch(`http://localhost:8080/apis/media/post/${post.id}`, {
-                        headers: {
-                            'Authorization': `Bearer ${authorization}`,
-                            'Cookie': cookie,
-                        },
-                        credentials: 'include',
+                    const mediaResponse = await fetch(`${process.env.REST_API_URL}/media/post/${post.id}`, {
+                        headers: addHeaders(authorization, cookie),
                     });
 
                     if (mediaResponse.ok) {
@@ -76,104 +80,34 @@ export async function loader({ request }: Route.LoaderArgs) {
         console.error('Failed to load posts:', error);
     }
 
-    // Fetch user's wanderlists for Featured Wanderlist section
+    // Fetch user's wanderlists
+    let allWanderlists = [];
     let featuredWanderlists = [];
     try {
-        const wanderlistsResponse = await fetch(`http://localhost:8080/apis/wanderlist/profile/${profile.id}`, {
-            headers: {
-                'Authorization': `Bearer ${authorization}`,
-                'Cookie': cookie,
-            },
-            credentials: 'include',
+        const wanderlistsResponse = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/${profile.id}`, {
+            headers: addHeaders(authorization, cookie),
         });
 
         if (wanderlistsResponse.ok) {
             const wanderlistsData = await wanderlistsResponse.json();
+            allWanderlists = wanderlistsData.data || [];
             // Get up to 3 wanderlists for featured section
-            featuredWanderlists = (wanderlistsData.data || []).slice(0, 3);
+            featuredWanderlists = allWanderlists.slice(0, 3);
         }
     } catch (error) {
         console.error('Failed to load wanderlists:', error);
     }
 
 
-    return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists,publicProfiles };
+    return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists, allWanderlists, publicProfiles };
 }
 
-//
-// export async function loader() {
-//     try {
-//         const response = await fetch("http://localhost:5500/apis/post/visible/posts", {
-//             credentials: "include",
-//         });
-//
-//         if (!response.ok) {
-//             throw new Response("Failed to load posts", { status: response.status });
-//         }
-//
-//         const data = await response.json();
-//
-//         const filtered = (data ?? []).filter(
-//             (p: any) => p.wanderlistId === SHARED_STORIES_WANDERLIST_ID
-//         );
-//
-//         return filtered.map((p: any) => ({
-//             id: p.id,
-//             title: p.title,
-//             content: p.content,
-//             userName: "User", // Replace if you have actual user info
-//             dateCreated: p.datetimeCreated,
-//         }));
-//     } catch (error) {
-//         // Optionally return an error object here or throw
-//         throw new Response("Failed to fetch shared stories", { status: 500 });
-//     }
-// }
-//
-// function validateFormData(title: any, content: any) {
-//     const errors: Record<string, string> = {};
-//     if (!title || typeof title !== "string" || title.trim() === "") {
-//         errors.title = "Title is required";
-//     }
-//     if (!content || typeof content !== "string" || content.trim() === "") {
-//         errors.content = "Content is required";
-//     }
-//     return errors;
-// }
-
-// export async function action({ request }: { request: Request }) {
-//     const formData = await request.formData();
-//     const title = formData.get("title");
-//     const content = formData.get("content");
-//
-//     const errors = validateFormData(title, content);
-//
-//     if (Object.keys(errors).length > 0) {
-//         // Return errors and form values so UI can display validation messages and keep inputs
-//         return { errors, defaultValues: { title, content } };
-//     }
-//
-//     const response = await fetch("http://localhost:5500/apis/post", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         credentials: "include",
-//         body: JSON.stringify({
-//             id: crypto.randomUUID(),
-//             wanderlistId: SHARED_STORIES_WANDERLIST_ID,
-//             title,
-//             content,
-//             visibility: "public",
-//         }),
-//     });
-//
-//     if (!response.ok) {
-//         throw new Response("Failed to post story", { status: 500 });
-//     }
-//
-//     // Redirect to reload the page and run the loader again to get fresh data
-//     return redirect("/community");
-// }
-
+export async function action({ request }: Route.ActionArgs) {
+    if (request.method === "POST") {
+        return await createPostAction(request);
+    }
+    return { error: "Method not allowed", status: 405 };
+}
 
 interface Profile {
     id: number;
@@ -229,20 +163,44 @@ interface SharedStory {
     dateCreated: string;
 }
 
+const INSPIRATION_ITEMS: InspirationItem[] = [
+    {
+        id: 1,
+        title: "Friends & Family",
+        icon: <FaLayerGroup className="text-indigo-600 text-3xl" />,
+        description:
+            "Your biggest supporters and cheerleaders. Share goals, celebrate wins, and stay accountable together.",
+    },
+    {
+        id: 2,
+        title: "Share Your Wins",
+        icon: <FaStar className="text-yellow-500 text-3xl" />,
+        description: "Accomplishments motivate progress. Capture your moments and inspire others with your journey!",
+    },
+    {
+        id: 3,
+        title: "Document Your Journey",
+        icon: <FaPhotoVideo className="text-pink-500 text-3xl" />,
+        description: "Photos and videos help track your memories. WanderList lets you save everything in one place.",
+    },
+    {
+        id: 4,
+        title: "Vision Boards",
+        icon: <FaLightbulb className="text-amber-400 text-3xl" />,
+        description: "Post-its, digital cards, goals by category—organize and visualize what you want to achieve.",
+    },
+];
+
 export default function Community() {
-    // Static data states
+    // Dynamic data states
     const [posts, setPosts] = useState<Post[]>([]);
     const [wanderlist, setWanderlist] = useState<Wanderlist[]>([]);
-    const [suggestions, setSuggestions] = useState<FollowSuggestion[]>([]);
-    const [inspiration, setInspiration] = useState<InspirationItem[]>([]);
 
     // Load auth data and posts from loader
-    const { authorization, cookie, posts: loaderPosts, profileId, featuredWanderlists,publicProfiles } = useLoaderData<typeof loader>();
-
-    const stories: SharedStory[] = [];
+    const { authorization, cookie, posts: loaderPosts, profileId, featuredWanderlists, allWanderlists, publicProfiles } = useLoaderData<typeof loader>();
 
     useEffect(() => {
-        // Use real posts from loader if available, otherwise use static data
+        // Use real posts from loader
         if (loaderPosts && loaderPosts.length > 0) {
             // Map backend posts to frontend format
             setPosts(loaderPosts.map((post: any) => ({
@@ -254,84 +212,17 @@ export default function Community() {
                 datetimeCreated: post.datetime_created,
                 media: post.media || [],
             })));
-        } else {
-            // Fallback to static demo data
-            setPosts([
-                {
-                    id: "1",
-                    title: "Exploring the mountains",
-                    content: "Exploring the mountains this weekend! 🏔️✨",
-                    visibility: "public",
-                    datetimeCreated: "2025-02-01",
-                    media: [{ url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470" }],
-                    user: { id: 101, name: "Ava Carter", avatarUrl: "https://i.pravatar.cc/150?img=32" },
-                    commentsCount: 12,
-                    likes: 87,
-                },
-                {
-                    id: "2",
-                    title: "Learning to cook",
-                    content: "Learning to cook new recipes! 🍜🔥",
-                    visibility: "public",
-                    datetimeCreated: "2025-02-02",
-                    media: [{ url: "https://images.unsplash.com/photo-1504674900247-0877df9cc836" }],
-                    user: { id: 102, name: "Daniel Kim", avatarUrl: "https://i.pravatar.cc/150?img=58" },
-                    commentsCount: 5,
-                    likes: 32,
-                },
-            ]);
         }
 
-        // Use real wanderlists from loader if available
+        // Use real wanderlists from loader
         if (featuredWanderlists && featuredWanderlists.length > 0) {
             setWanderlist(featuredWanderlists.map((wl: any) => ({
                 id: wl.id,
                 title: wl.title,
                 image: wl.coverImage || "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee"
             })));
-        } else {
-            // Fallback to static data
-            setWanderlist([
-                { id: 1, title: "Visit Iceland", image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee" },
-                { id: 2, title: "Build Fitness Routine", image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b" },
-                { id: 3, title: "Learn Guitar", image: "https://images.unsplash.com/photo-1511376777868-611b54f68947" },
-            ]);
         }
-
-        setSuggestions([
-            { id: 201, name: "Mia Thompson", avatarUrl: "https://i.pravatar.cc/150?img=21" },
-            { id: 202, name: "Lucas Rivera", avatarUrl: "https://i.pravatar.cc/150?img=12" },
-            { id: 203, name: "Ella Johnson", avatarUrl: "https://i.pravatar.cc/150?img=65" },
-        ]);
-
-        setInspiration([
-            {
-                id: 1,
-                title: "Friends & Family",
-                icon: <FaLayerGroup className="text-indigo-600 text-3xl" />,
-                description:
-                    "Your biggest supporters and cheerleaders. Share goals, celebrate wins, and stay accountable together.",
-            },
-            {
-                id: 2,
-                title: "Share Your Wins",
-                icon: <FaStar className="text-yellow-500 text-3xl" />,
-                description: "Accomplishments motivate progress. Capture your moments and inspire others with your journey!",
-            },
-            {
-                id: 3,
-                title: "Document Your Journey",
-                icon: <FaPhotoVideo className="text-pink-500 text-3xl" />,
-                description: "Photos and videos help track your memories. WanderList lets you save everything in one place.",
-            },
-            {
-                id: 4,
-                title: "Vision Boards",
-                icon: <FaLightbulb className="text-amber-400 text-3xl" />,
-                description: "Post-its, digital cards, goals by category—organize and visualize what you want to achieve.",
-            },
-        ]);
-    }, []);
+    }, [loaderPosts, featuredWanderlists]);
 
     return (
         <div className="w-full min-h-screen bg-gray-100 pb-20">
@@ -350,7 +241,7 @@ export default function Community() {
                 <h2 className="text-4xl font-extrabold text-center text-indigo-700 mb-10">Inspiration</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {inspiration.map((item) => (
+                    {INSPIRATION_ITEMS.map((item) => (
                         <Card key={item.id} className="p-6 shadow-md hover:shadow-xl transition">
                             <div className="flex flex-col items-center text-center gap-4">
                                 {item.icon}
@@ -436,6 +327,7 @@ export default function Community() {
                     authorization={authorization}
                     cookie={cookie}
                     profileId={profileId}
+                    wanderlists={allWanderlists}
                     onSuccess={() => {
                         // Optional: Refresh posts or show success message
                         console.log('Post created successfully');
@@ -517,15 +409,10 @@ export default function Community() {
                     {/* Follow Suggestions */}
                     <Card>
                         <h2 className="text-xl font-bold mb-4">Suggested for You</h2>
-                        <div className="flex flex-col gap-4  max-h-96 overflow-y-auto pr-">
-
-                                    {publicProfiles?.map((profile) => (
-
-
-                                        <FriendCard profile={profile} isFriend={false} />
-
-                                    ))}
-
+                        <div className="flex flex-col gap-4 max-h-96 overflow-y-auto">
+                            {publicProfiles?.map((profile) => (
+                                <FriendCard key={profile.id} profile={profile} isFriend={false} />
+                            ))}
                         </div>
                     </Card>
 

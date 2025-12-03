@@ -9,6 +9,8 @@ import {
 import {zodErrorResponse} from "../../utils/response.utils.ts";
 import type {Request, Response} from "express";
 import { v7 as uuidv7 } from 'uuid';
+import { selectPrivateProfileByProfileId } from "../profile/profile.model.ts";
+import { sql } from "../../utils/database.utils.ts";
 
 export async function postWanderListItemController(request:Request, response:Response): Promise<void> {
     try{
@@ -350,6 +352,71 @@ export async function getOrCreateScrapbookWanderlistController(request:Request, 
             status: 200,
             message: "Scrapbook wanderlist retrieved or created",
             data: scrapbookWanderlist
+        }
+        response.status(200).json(status)
+
+    }catch (error: any){
+        const status: Status = {
+            status:500,
+            message: error.message,
+            data: null
+        }
+        response.status(200).json(status)
+    }
+}
+
+export async function getOrCreateSharedStoriesWanderlistController(request:Request, response:Response): Promise<void> {
+    try{
+        // Shared Stories is a global wanderlist, not tied to a specific user profile
+        // We'll use a fixed ID for it
+        const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
+
+        console.log("Checking for shared stories wanderlist with ID:", SHARED_STORIES_WANDERLIST_ID);
+
+        // Check if the shared stories wanderlist exists
+        let sharedStoriesWanderlist = await selectWanderlistByPrimaryKey(SHARED_STORIES_WANDERLIST_ID);
+
+        console.log("Existing wanderlist result:", sharedStoriesWanderlist);
+
+        if (!sharedStoriesWanderlist) {
+            console.log("Shared stories wanderlist doesn't exist, creating it...");
+
+            // Get any valid profile to own this wanderlist (we'll query for the first profile)
+            const firstProfileResult = await sql`SELECT id FROM profile LIMIT 1`;
+            const firstProfile = firstProfileResult[0];
+
+            if (!firstProfile) {
+                throw new Error("No profiles exist in the system. Cannot create shared stories wanderlist.");
+            }
+
+            const profileId = firstProfile.id;
+            console.log("Using profile ID:", profileId);
+
+            // Insert directly into the database
+            await sql`
+                INSERT INTO wanderlist (id, profile_id, date_created, description, pinned, wanderlist_status, target_date, title, visibility)
+                VALUES(${SHARED_STORIES_WANDERLIST_ID}, ${profileId}, now(), 'Community shared travel experiences and stories', false, 'active', null, 'Shared Stories', 'public')
+            `;
+
+            console.log("Successfully created shared stories wanderlist");
+            sharedStoriesWanderlist = {
+                id: SHARED_STORIES_WANDERLIST_ID,
+                profileId: profileId,
+                title: "Shared Stories",
+                description: "Community shared travel experiences and stories",
+                wanderlistStatus: "active",
+                pinned: false,
+                targetDate: null,
+                visibility: "public"
+            };
+        } else {
+            console.log("Shared stories wanderlist already exists");
+        }
+
+        const status: Status = {
+            status: 200,
+            message: "Shared Stories wanderlist retrieved or created",
+            data: sharedStoriesWanderlist
         }
         response.status(200).json(status)
 

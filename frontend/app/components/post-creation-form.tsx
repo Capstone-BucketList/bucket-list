@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button, TextInput, Textarea, Select, Spinner } from 'flowbite-react';
 import { FaCloudUploadAlt, FaImage } from 'react-icons/fa';
 import { addHeaders } from '~/utils/utility';
+import { v7 as uuidv7 } from 'uuid';
+import { useFetcher } from 'react-router';
 
 interface Wanderlist {
     id: string;
@@ -15,6 +17,7 @@ interface PostCreationFormProps {
     onSuccess?: () => void;
     defaultWanderlistId?: string;
     hideWanderlistSelector?: boolean;
+    wanderlists?: Wanderlist[];
 }
 
 export function PostCreationForm({
@@ -23,82 +26,29 @@ export function PostCreationForm({
     profileId,
     onSuccess,
     defaultWanderlistId,
-    hideWanderlistSelector = false
+    hideWanderlistSelector = false,
+    wanderlists = []
 }: PostCreationFormProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [visibility, setVisibility] = useState('public');
     const [selectedWanderlist, setSelectedWanderlist] = useState(defaultWanderlistId || '');
-    const [wanderlists, setWanderlists] = useState<Wanderlist[]>([]);
     const [uploadedPhotoUrls, setUploadedPhotoUrls] = useState<string[]>([]);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const fetcher = useFetcher();
 
     // Cloudinary configuration
     const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dgkckqptm';
     const uploadPreset = 'wanderlist_scrapbook';
 
-    // Load user's wanderlists on mount
+    // Auto-select first wanderlist when wanderlists prop is loaded
     useEffect(() => {
-        const loadWanderlists = async () => {
-            try {
-                if (!profileId) {
-                    setErrorMessage('Profile ID not found');
-                    return;
-                }
-
-                const response = await fetch(`http://localhost:8080/apis/wanderlist/profile/${profileId}`, {
-                    method: 'GET',
-                    headers: addHeaders(authorization, cookie),
-                    credentials: 'include',
-                });
-
-                if (!response.ok) {
-                    console.error('Failed to load wanderlists:', response.status, response.statusText);
-                    setErrorMessage('Failed to load wanderlists');
-                    return;
-                }
-
-                const result = await response.json();
-                console.log('Wanderlists response:', result);
-                console.log('Response type:', typeof result);
-                console.log('Is array:', Array.isArray(result));
-
-                // Handle both array and {data: array} response formats
-                let wanderlistArray = [];
-                if (Array.isArray(result)) {
-                    wanderlistArray = result;
-                } else if (result && result.data && Array.isArray(result.data)) {
-                    wanderlistArray = result.data;
-                } else {
-                    console.warn('Unexpected response format:', result);
-                }
-
-                console.log('Wanderlist array:', wanderlistArray);
-
-                if (wanderlistArray.length > 0) {
-                    console.log('Setting wanderlists:', wanderlistArray);
-                    setWanderlists(wanderlistArray);
-                    // Auto-select first wanderlist if available
-                    setSelectedWanderlist(wanderlistArray[0].id);
-                    // Clear error if wanderlists loaded successfully
-                    setErrorMessage('');
-                } else {
-                    console.warn('No wanderlists in array');
-                    setErrorMessage('No wanderlists found. Create one in your profile first.');
-                }
-            } catch (error) {
-                console.error('Error loading wanderlists:', error);
-                setErrorMessage('Failed to load wanderlists');
-            }
-        };
-
-        if (authorization && cookie && profileId) {
-            loadWanderlists();
+        if (wanderlists && wanderlists.length > 0 && !selectedWanderlist && !hideWanderlistSelector) {
+            setSelectedWanderlist(wanderlists[0].id);
         }
-    }, [authorization, cookie, profileId]);
+    }, [wanderlists, hideWanderlistSelector, selectedWanderlist]);
 
     const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -156,7 +106,40 @@ export function PostCreationForm({
         setUploadedPhotoUrls(uploadedPhotoUrls.filter((_, i) => i !== index));
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // Monitor fetcher response for post creation
+    useEffect(() => {
+        if (fetcher.state === 'idle' && fetcher.data) {
+            const response = fetcher.data as any;
+            if (response.status === 200) {
+                // Post created successfully
+                setSuccessMessage('Post created successfully!');
+
+                // Clear form
+                setTitle('');
+                setContent('');
+                setVisibility('public');
+                setUploadedPhotoUrls([]);
+
+                // Reset file input
+                const fileInput = document.getElementById('photoInput') as HTMLInputElement;
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+
+                // Clear success message after 3 seconds
+                setTimeout(() => setSuccessMessage(''), 3000);
+
+                // Call onSuccess callback if provided
+                if (onSuccess) {
+                    setTimeout(onSuccess, 500);
+                }
+            } else {
+                setErrorMessage(response.error || 'Failed to create post');
+            }
+        }
+    }, [fetcher.state, fetcher.data, onSuccess]);
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!title.trim()) {
@@ -174,56 +157,20 @@ export function PostCreationForm({
             return;
         }
 
-        setIsSubmitting(true);
         setErrorMessage('');
 
-        try {
-            const response = await fetch('http://localhost:8080/apis/post', {
-                method: 'POST',
-                headers: addHeaders(authorization, cookie),
-                credentials: 'include',
-                body: JSON.stringify({
-                    id: crypto.randomUUID(),
-                    wanderlistId: selectedWanderlist,
-                    title,
-                    content,
-                    visibility,
-                    mediaUrls: uploadedPhotoUrls,
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.message || 'Failed to create post');
-            }
-
-            setSuccessMessage('Post created successfully!');
-
-            // Clear form
-            setTitle('');
-            setContent('');
-            setVisibility('public');
-            setUploadedPhotoUrls([]);
-
-            // Reset file input
-            const fileInput = document.getElementById('photoInput') as HTMLInputElement;
-            if (fileInput) {
-                fileInput.value = '';
-            }
-
-            // Clear success message after 3 seconds
-            setTimeout(() => setSuccessMessage(''), 3000);
-
-            // Call onSuccess callback if provided
-            if (onSuccess) {
-                setTimeout(onSuccess, 500);
-            }
-        } catch (error) {
-            console.error('Post creation error:', error);
-            setErrorMessage(error instanceof Error ? error.message : 'Failed to create post');
-        } finally {
-            setIsSubmitting(false);
-        }
+        // Submit via fetcher to server-side action
+        fetcher.submit(
+            {
+                id: uuidv7(),
+                wanderlistId: selectedWanderlist,
+                title: title.trim(),
+                content: content.trim(),
+                visibility,
+                mediaUrls: JSON.stringify(uploadedPhotoUrls),
+            },
+            { method: 'POST' }
+        );
     };
 
     return (
@@ -379,10 +326,10 @@ export function PostCreationForm({
                 <div className="flex gap-4">
                     <Button
                         type="submit"
-                        disabled={isSubmitting || isUploading}
+                        disabled={fetcher.state !== 'idle' || isUploading}
                         className="flex-1"
                     >
-                        {isSubmitting ? (
+                        {fetcher.state !== 'idle' ? (
                             <>
                                 <Spinner size="sm" className="mr-2" />
                                 Creating Post...
