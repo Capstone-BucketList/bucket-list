@@ -111,7 +111,7 @@ const statusOptions = [
     "Completed",
 ];
 
-const resolver =  zodResolver(WanderListSchema.omit({id:true}))
+const resolver =  zodResolver(WanderListSchema)
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
     const { profile, wanderList,followingProfiles,progressBars,posts } = loaderData ?? {};
@@ -311,6 +311,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                                               className="space-y-4 md:space-y-6" >
                                             {/* if editing - ID will be populated by form reset */}
                                             <input {...register('id')} type="hidden" id="id" />
+                                            <input type="hidden" name="id" value={editingItem?.id} />
                                             {/* Title */}
                                             <label className="block mb-4">
                                                 <span className="text-gray-700 font-semibold block mb-2">🎯 Title</span>

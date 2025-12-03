@@ -65,13 +65,13 @@ export async function postSignUp(data: SignUp): Promise<Status> {
         },
         body: JSON.stringify(modifiedSignUp)
     })
-console.log("response signup",response)
+
     if( !response.ok) {
         throw new Error('Failed to sign up')
     }
 
     const result = await response.json()
-console.log("result form post signup",result)
+
     return result
 }
 
@@ -84,13 +84,13 @@ export async function profileUpdate(data: Profile): Promise<Status> {
         },
         body: JSON.stringify(data)
     })
-    console.log("response signup",response)
+
     if( !response.ok) {
         throw new Error('Failed to sign up')
     }
 
     const result = await response.json()
-    console.log("result form post signup",result)
+
     return result
 }
 
@@ -108,7 +108,7 @@ export async function getFollwersByProfileId(profileId: string, authorization: s
     const result =
     response.data ?
          ProfileSchema.array().parse(response.data) : null
-    console.log(result)
+
     return result
 }
 

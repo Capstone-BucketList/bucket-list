@@ -50,7 +50,6 @@ export async function loader({ request }: Route.LoaderArgs) {
         const postsResponse = await fetch(`${process.env.REST_API_URL}/post/visible/posts`, {
             headers: addHeaders(authorization, cookie),
         });
-
         if (postsResponse.ok) {
             const postsData = await postsResponse.json();
             const postsArray = postsData.data || [];
@@ -79,7 +78,7 @@ export async function loader({ request }: Route.LoaderArgs) {
     } catch (error) {
         console.error('Failed to load posts:', error);
     }
-
+console.log("posts", posts);
     // Fetch user's wanderlists
     let allWanderlists = [];
     let featuredWanderlists = [];

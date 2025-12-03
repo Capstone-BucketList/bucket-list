@@ -16,7 +16,7 @@ import {addHeaders, wanderlistBasepath} from "~/utils/utility";
 */
 export const WanderListSchema =  z.object({
 
-    id: z.uuidv7('Please provide a valid uuid for id').optional(),
+    id: z.string().optional().transform(val => val === '' ? undefined : val).pipe(z.union([z.uuidv7('Please provide a valid uuid for id'), z.undefined()])),
     profileId: z.uuidv7('Please provide a valid uuid for profile id').optional(),
 
     description: z.string('Please provide a valid description')
@@ -78,19 +78,17 @@ export  async function getWanderListByProfileId(profileId: string, authorization
 export async function postWanderList(data: WanderList,authorization: string, cookie: string, profileId:string): Promise<Status> {
     const modifiedWanderList = {id: uuid(), profileId:profileId, ...data }
 
-    console.log("modifiedWanderList", modifiedWanderList)
     const response = await fetch(`${process.env.REST_API_URL}${wanderlistBasepath}`, {
         method: 'POST',
         headers:  addHeaders(authorization,cookie),
         body: JSON.stringify(modifiedWanderList)
     })
-    console.log(response)
     if( !response.ok) {
         throw new Error('Failed to insert wanderlist')
     }
 
     const result = await response.json()
-console.log("result",result)
+
     return result
 }
 
@@ -114,7 +112,7 @@ export async function updateWanderList(data: WanderList,authorization: string, c
     }
 
     const result = await response.json()
-    console.log("result",result)
+
     return result
 }
 /**
