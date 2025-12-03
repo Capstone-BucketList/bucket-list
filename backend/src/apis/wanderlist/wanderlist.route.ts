@@ -19,10 +19,7 @@ router.route('/')
         .put(isLoggedInController,putWanderListItemController)
         .get(isLoggedInController,getWanderlistByProfileIdAndVisibilityController)
 
-router.route('/:id')
-    .delete(isLoggedInController,deleteWanderListItemController)
-    .get(isLoggedInController,getWanderlistByWanderListIdController)
-
+// Specific routes must come BEFORE generic :id route
 router.route('/profile/:profileId')
     .get(isLoggedInController,getWanderlistByProfileIdController)
 
@@ -34,5 +31,10 @@ router.route('/scrapbook/:profileId')
 
 router.route('/shared-stories')
     .get(isLoggedInController,getOrCreateSharedStoriesWanderlistController)
+
+// Generic :id route must come AFTER specific routes
+router.route('/:id')
+    .delete(isLoggedInController,deleteWanderListItemController)
+    .get(isLoggedInController,getWanderlistByWanderListIdController)
 
 export const  wanderlistRoute = {basePath, router}

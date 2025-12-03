@@ -9,6 +9,8 @@ import {
 import {zodErrorResponse} from "../../utils/response.utils.ts";
 import type {Request, Response} from "express";
 import { v7 as uuidv7 } from 'uuid';
+import { selectPrivateProfileByProfileId } from "../profile/profile.model.ts";
+import { sql } from "../../utils/database.utils.ts";
 
 export async function postWanderListItemController(request:Request, response:Response): Promise<void> {
     try{
@@ -369,26 +371,46 @@ export async function getOrCreateSharedStoriesWanderlistController(request:Reque
         // We'll use a fixed ID for it
         const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
 
+        console.log("Checking for shared stories wanderlist with ID:", SHARED_STORIES_WANDERLIST_ID);
+
         // Check if the shared stories wanderlist exists
         let sharedStoriesWanderlist = await selectWanderlistByPrimaryKey(SHARED_STORIES_WANDERLIST_ID);
 
+        console.log("Existing wanderlist result:", sharedStoriesWanderlist);
+
         if (!sharedStoriesWanderlist) {
-            // Create the shared stories wanderlist with a system user
-            // For now, we'll use a hardcoded profile ID or create a system account
-            // Using the first profile as a placeholder - in production this should be a system account
-            const newSharedStories: WanderList = {
+            console.log("Shared stories wanderlist doesn't exist, creating it...");
+
+            // Get any valid profile to own this wanderlist (we'll query for the first profile)
+            const firstProfileResult = await sql`SELECT id FROM profile LIMIT 1`;
+            const firstProfile = firstProfileResult[0];
+
+            if (!firstProfile) {
+                throw new Error("No profiles exist in the system. Cannot create shared stories wanderlist.");
+            }
+
+            const profileId = firstProfile.id;
+            console.log("Using profile ID:", profileId);
+
+            // Insert directly into the database
+            await sql`
+                INSERT INTO wanderlist (id, profile_id, date_created, description, pinned, wanderlist_status, target_date, title, visibility)
+                VALUES(${SHARED_STORIES_WANDERLIST_ID}, ${profileId}, now(), 'Community shared travel experiences and stories', false, 'active', null, 'Shared Stories', 'public')
+            `;
+
+            console.log("Successfully created shared stories wanderlist");
+            sharedStoriesWanderlist = {
                 id: SHARED_STORIES_WANDERLIST_ID,
-                profileId: "019a3191-a7f4-735d-af0a-1042ea194335", // System or default profile
+                profileId: profileId,
                 title: "Shared Stories",
                 description: "Community shared travel experiences and stories",
                 wanderlistStatus: "active",
                 pinned: false,
                 targetDate: null,
                 visibility: "public"
-            }
-
-            await insertWanderList(newSharedStories)
-            sharedStoriesWanderlist = newSharedStories
+            };
+        } else {
+            console.log("Shared stories wanderlist already exists");
         }
 
         const status: Status = {
