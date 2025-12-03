@@ -353,25 +353,7 @@ export default function Home() {
                   </div>
               </section>
 
-                <section id="community" className="py-16 bg-blue-600 text-center">
-                    <h2 className="text-3xl font-bold mb-4">Join Our Global Dreamers</h2>
-                    <p className="text-white max-w-xl mx-auto mb-8">
-                        Thousands of people worldwide are ticking off their dreams one goal at a time.
-                        Be part of a community that celebrates life's adventures.
-                    </p>
 
-                    <div className="flex justify-center gap-4 mb-8">
-                        <FaUsers className="w-8 h-8 text-white" />
-                        <FaMountain className="w-8 h-8 text-white" />
-                        <FaCameraRetro className="w-8 h-8 text-white" />
-                        <FaGlobeAmericas className="w-8 h-8 text-white" />
-
-                    </div>
-                    <Button href="/signup"  className="mx-auto bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 rounded-lg text-white font-semibold w-50 ">
-                        Join the Community
-                    </Button>
-
-                </section>
 
 
             </div>
@@ -403,6 +385,26 @@ export default function Home() {
 
             {/* CTA Cards */}
             <CTACards />
+
+            <section id="community" className="py-16 bg-blue-600 text-center">
+                <h2 className="text-3xl font-bold mb-4">Join Our Global Dreamers</h2>
+                <p className="text-white max-w-xl mx-auto mb-8">
+                    Thousands of people worldwide are ticking off their dreams one goal at a time.
+                    Be part of a community that celebrates life's adventures.
+                </p>
+
+                <div className="flex justify-center gap-4 mb-8">
+                    <FaUsers className="w-8 h-8 text-white" />
+                    <FaMountain className="w-8 h-8 text-white" />
+                    <FaCameraRetro className="w-8 h-8 text-white" />
+                    <FaGlobeAmericas className="w-8 h-8 text-white" />
+
+                </div>
+                <Button href="/signup"  className="mx-auto bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 rounded-lg text-white font-semibold w-50 ">
+                    Join the Community
+                </Button>
+
+            </section>
 
         </>
     )

@@ -215,9 +215,9 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
             {/* Profile header - Vibrant gradient */}
-            <header style={{ backgroundImage: "url('/adventures3.jpg')" }}
+            <header style={{ backgroundImage: "url('/img_4.png')" }}
                     //className="relative p-10 flex flex-col sm:flex-row items-center gap-8 w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 shadow-xl overflow-hidden"
-                    className="p-10 flex flex-col sm:flex-row items-center gap-6 w-full bg-cover bg-center bg-no-repeat" >
+                    className="p-25 flex flex-col sm:flex-row items-center gap-6 w-full bg-cover bg-center bg-no-repeat" >
                 {/* Animated background elements */}
                {/* <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-2 left-10 w-20 h-20 bg-white rounded-full blur-2xl animate-pulse"></div>
@@ -228,14 +228,15 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                 <img
                     src={profilePicture || "/images/avatar-placeholder.png"}
                     alt={`${userName ?? "User"} avatar`}
-                    className="relative w-32 h-32 rounded-full object-cover ring-4 ring-white shadow-lg transform hover:scale-110 transition-transform duration-300"
+                    className="relative w-50 h-50 rounded-full object-cover ring-4 ring-white shadow-lg transform hover:scale-110 transition-transform duration-300"
                 />
 
                 {/* Profile Info */}
-                <div className="flex-1 min-w-0 relative z-10">
-                    <h1 className="text-5xl font-extrabold text-white drop-shadow-lg">{userName || "Anonymous"}</h1>
-                    <p className="text-lg text-white/90 mt-2">{email}</p>
-                    <p className="mt-4 text-white/80 max-w-prose text-sm md:text-base">{bio || "No bio yet — tell people about your journey!"}</p>
+                <div className="flex-1 min-w-0 max-w-70 relative z-10 bg-white/10 backdrop-blur-md rounded-2xl p-6 shadow-lg">
+                    <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                      <span className="text-transparent [-webkit-text-stroke:2px_black]">  {userName}</span>                    </h1>
+                    <p className="text-base md:text-lg text-black/95 mt-2 font-medium drop-shadow">{email}</p>
+                    <p className="mt-3 text-black/90 max-w-prose text-sm md:text-base leading-relaxed drop-shadow">{bio || "No bio yet — tell people about your journey!"}</p>
                 </div>
             </header>
 

@@ -3,7 +3,15 @@
 import { Button } from "flowbite-react";
 import { useState, useRef, useEffect } from "react";
 import { FaComments, FaTimes } from "react-icons/fa";
+import TypewriterText from "~/components/typewriter";
 
+const roles =[
+    'Every Dream Begins With a List',
+    'Dream It. Plan It. Live It.',
+    'Turn your Dreams Into Adventures',
+    'Make Your Bucket List Breathe'
+
+]
 //Hero section component //
 
 export function HeroSection() {
@@ -23,10 +31,10 @@ export function HeroSection() {
 
             {/* Text Content */}
             <div className="relative z-40 flex flex-col justify-center items-center text-center h-full px-4 sm:px-6 md:px-10">
-
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
+                <TypewriterText roles={roles} style="text-3xl sm:text-4xl md:text-5xl font-extrabold text-amber-500 mb-4 leading-tight" />
+               {/* <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-4 leading-tight">
                     Turn <span className="text-amber-500">your Dreams</span> Into Adventures
-                </h2>
+                </h2>*/}
 
                 <p className="text-base sm:text-lg md:text-xl text-gray-100 font-medium mb-8 max-w-2xl">
                     Create your Wander list, share with friends, and start checking off your dreams today!

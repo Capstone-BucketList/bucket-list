@@ -26,15 +26,16 @@ export const links: Route.LinksFunction = () => [
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body className="bg-custom-powder-blue">
+    <head>
+        <meta charSet="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link rel="icon" href="/wanderlistlogo.png" type="image/png"/>
+        <Meta/>
+        <Links/>
+    </head>
+    <body className="bg-custom-powder-blue">
 
-        {children}
+    {children}
         <ScrollRestoration />
         <Scripts />
       </body>
