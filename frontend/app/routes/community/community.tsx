@@ -20,6 +20,7 @@ import { FollowButton } from "~/components/follow-button";
 import {FriendCard} from "~/routes/profile/friendcard";
 import {getPublicProfiles} from "~/utils/models/profile.model";
 import { addHeaders } from "~/utils/utility";
+import { createPostAction } from "./create-post-action";
 
 const SHARED_STORIES_WANDERLIST_ID = "019abba2-6835-709a-bf6a-777a4b24da68";
 
@@ -89,6 +90,12 @@ export async function loader({ request }: Route.LoaderArgs) {
     return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists,publicProfiles };
 }
 
+export async function action({ request }: Route.ActionArgs) {
+    if (request.method === "POST") {
+        return await createPostAction(request);
+    }
+    return { error: "Method not allowed", status: 405 };
+}
 
 interface Profile {
     id: number;

@@ -3,6 +3,7 @@ import { Button, TextInput, Textarea, Select, Spinner } from 'flowbite-react';
 import { FaCloudUploadAlt, FaImage } from 'react-icons/fa';
 import { addHeaders } from '~/utils/utility';
 import { v7 as uuidv7 } from 'uuid';
+import { useFetcher } from 'react-router';
 
 interface Wanderlist {
     id: string;
@@ -32,10 +33,10 @@ export function PostCreationForm({
     const [selectedWanderlist, setSelectedWanderlist] = useState(defaultWanderlistId || '');
     const [wanderlists, setWanderlists] = useState<Wanderlist[]>([]);
     const [uploadedPhotoUrls, setUploadedPhotoUrls] = useState<string[]>([]);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
+    const fetcher = useFetcher();
 
     // Cloudinary configuration
     const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dgkckqptm';
@@ -156,7 +157,40 @@ export function PostCreationForm({
         setUploadedPhotoUrls(uploadedPhotoUrls.filter((_, i) => i !== index));
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // Monitor fetcher response for post creation
+    useEffect(() => {
+        if (fetcher.state === 'idle' && fetcher.data) {
+            const response = fetcher.data as any;
+            if (response.status === 200) {
+                // Post created successfully
+                setSuccessMessage('Post created successfully!');
+
+                // Clear form
+                setTitle('');
+                setContent('');
+                setVisibility('public');
+                setUploadedPhotoUrls([]);
+
+                // Reset file input
+                const fileInput = document.getElementById('photoInput') as HTMLInputElement;
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+
+                // Clear success message after 3 seconds
+                setTimeout(() => setSuccessMessage(''), 3000);
+
+                // Call onSuccess callback if provided
+                if (onSuccess) {
+                    setTimeout(onSuccess, 500);
+                }
+            } else {
+                setErrorMessage(response.error || 'Failed to create post');
+            }
+        }
+    }, [fetcher.state, fetcher.data, onSuccess]);
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!title.trim()) {
@@ -174,55 +208,20 @@ export function PostCreationForm({
             return;
         }
 
-        setIsSubmitting(true);
         setErrorMessage('');
 
-        try {
-            const response = await fetch(`${process.env.REST_API_URL}/post`, {
-                method: 'POST',
-                headers: addHeaders(authorization, cookie),
-                body: JSON.stringify({
-                    id: uuidv7(),
-                    wanderlistId: selectedWanderlist,
-                    title,
-                    content,
-                    visibility,
-                    mediaUrls: uploadedPhotoUrls,
-                }),
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.message || 'Failed to create post');
-            }
-
-            setSuccessMessage('Post created successfully!');
-
-            // Clear form
-            setTitle('');
-            setContent('');
-            setVisibility('public');
-            setUploadedPhotoUrls([]);
-
-            // Reset file input
-            const fileInput = document.getElementById('photoInput') as HTMLInputElement;
-            if (fileInput) {
-                fileInput.value = '';
-            }
-
-            // Clear success message after 3 seconds
-            setTimeout(() => setSuccessMessage(''), 3000);
-
-            // Call onSuccess callback if provided
-            if (onSuccess) {
-                setTimeout(onSuccess, 500);
-            }
-        } catch (error) {
-            console.error('Post creation error:', error);
-            setErrorMessage(error instanceof Error ? error.message : 'Failed to create post');
-        } finally {
-            setIsSubmitting(false);
-        }
+        // Submit via fetcher to server-side action
+        fetcher.submit(
+            {
+                id: uuidv7(),
+                wanderlistId: selectedWanderlist,
+                title: title.trim(),
+                content: content.trim(),
+                visibility,
+                mediaUrls: JSON.stringify(uploadedPhotoUrls),
+            },
+            { method: 'POST' }
+        );
     };
 
     return (
@@ -378,10 +377,10 @@ export function PostCreationForm({
                 <div className="flex gap-4">
                     <Button
                         type="submit"
-                        disabled={isSubmitting || isUploading}
+                        disabled={fetcher.state !== 'idle' || isUploading}
                         className="flex-1"
                     >
-                        {isSubmitting ? (
+                        {fetcher.state !== 'idle' ? (
                             <>
                                 <Spinner size="sm" className="mr-2" />
                                 Creating Post...
