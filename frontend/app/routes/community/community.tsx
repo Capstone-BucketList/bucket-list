@@ -80,7 +80,8 @@ export async function loader({ request }: Route.LoaderArgs) {
         console.error('Failed to load posts:', error);
     }
 
-    // Fetch user's wanderlists for Featured Wanderlist section
+    // Fetch user's wanderlists
+    let allWanderlists = [];
     let featuredWanderlists = [];
     try {
         const wanderlistsResponse = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/${profile.id}`, {
@@ -89,15 +90,16 @@ export async function loader({ request }: Route.LoaderArgs) {
 
         if (wanderlistsResponse.ok) {
             const wanderlistsData = await wanderlistsResponse.json();
+            allWanderlists = wanderlistsData.data || [];
             // Get up to 3 wanderlists for featured section
-            featuredWanderlists = (wanderlistsData.data || []).slice(0, 3);
+            featuredWanderlists = allWanderlists.slice(0, 3);
         }
     } catch (error) {
         console.error('Failed to load wanderlists:', error);
     }
 
 
-    return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists,publicProfiles };
+    return { profile, authorization, cookie, posts, profileId: profile?.id, featuredWanderlists, allWanderlists, publicProfiles };
 }
 
 export async function action({ request }: Route.ActionArgs) {
@@ -195,7 +197,7 @@ export default function Community() {
     const [wanderlist, setWanderlist] = useState<Wanderlist[]>([]);
 
     // Load auth data and posts from loader
-    const { authorization, cookie, posts: loaderPosts, profileId, featuredWanderlists, publicProfiles } = useLoaderData<typeof loader>();
+    const { authorization, cookie, posts: loaderPosts, profileId, featuredWanderlists, allWanderlists, publicProfiles } = useLoaderData<typeof loader>();
 
     useEffect(() => {
         // Use real posts from loader
@@ -325,6 +327,7 @@ export default function Community() {
                     authorization={authorization}
                     cookie={cookie}
                     profileId={profileId}
+                    wanderlists={allWanderlists}
                     onSuccess={() => {
                         // Optional: Refresh posts or show success message
                         console.log('Post created successfully');
@@ -406,15 +409,10 @@ export default function Community() {
                     {/* Follow Suggestions */}
                     <Card>
                         <h2 className="text-xl font-bold mb-4">Suggested for You</h2>
-                        <div className="flex flex-col gap-4  max-h-96 overflow-y-auto pr-">
-
-                                    {publicProfiles?.map((profile) => (
-
-
-                                        <FriendCard profile={profile} isFriend={false} />
-
-                                    ))}
-
+                        <div className="flex flex-col gap-4 max-h-96 overflow-y-auto">
+                            {publicProfiles?.map((profile) => (
+                                <FriendCard key={profile.id} profile={profile} isFriend={false} />
+                            ))}
                         </div>
                     </Card>
 

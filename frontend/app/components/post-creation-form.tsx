@@ -17,6 +17,7 @@ interface PostCreationFormProps {
     onSuccess?: () => void;
     defaultWanderlistId?: string;
     hideWanderlistSelector?: boolean;
+    wanderlists?: Wanderlist[];
 }
 
 export function PostCreationForm({
@@ -25,13 +26,13 @@ export function PostCreationForm({
     profileId,
     onSuccess,
     defaultWanderlistId,
-    hideWanderlistSelector = false
+    hideWanderlistSelector = false,
+    wanderlists = []
 }: PostCreationFormProps) {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [visibility, setVisibility] = useState('public');
     const [selectedWanderlist, setSelectedWanderlist] = useState(defaultWanderlistId || '');
-    const [wanderlists, setWanderlists] = useState<Wanderlist[]>([]);
     const [uploadedPhotoUrls, setUploadedPhotoUrls] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -42,64 +43,12 @@ export function PostCreationForm({
     const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dgkckqptm';
     const uploadPreset = 'wanderlist_scrapbook';
 
-    // Load user's wanderlists on mount
+    // Auto-select first wanderlist when wanderlists prop is loaded
     useEffect(() => {
-        const loadWanderlists = async () => {
-            try {
-                if (!profileId) {
-                    setErrorMessage('Profile ID not found');
-                    return;
-                }
-
-                const response = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/${profileId}`, {
-                    method: 'GET',
-                    headers: addHeaders(authorization, cookie),
-                });
-
-                if (!response.ok) {
-                    console.error('Failed to load wanderlists:', response.status, response.statusText);
-                    setErrorMessage('Failed to load wanderlists');
-                    return;
-                }
-
-                const result = await response.json();
-                console.log('Wanderlists response:', result);
-                console.log('Response type:', typeof result);
-                console.log('Is array:', Array.isArray(result));
-
-                // Handle both array and {data: array} response formats
-                let wanderlistArray = [];
-                if (Array.isArray(result)) {
-                    wanderlistArray = result;
-                } else if (result && result.data && Array.isArray(result.data)) {
-                    wanderlistArray = result.data;
-                } else {
-                    console.warn('Unexpected response format:', result);
-                }
-
-                console.log('Wanderlist array:', wanderlistArray);
-
-                if (wanderlistArray.length > 0) {
-                    console.log('Setting wanderlists:', wanderlistArray);
-                    setWanderlists(wanderlistArray);
-                    // Auto-select first wanderlist if available
-                    setSelectedWanderlist(wanderlistArray[0].id);
-                    // Clear error if wanderlists loaded successfully
-                    setErrorMessage('');
-                } else {
-                    console.warn('No wanderlists in array');
-                    setErrorMessage('No wanderlists found. Create one in your profile first.');
-                }
-            } catch (error) {
-                console.error('Error loading wanderlists:', error);
-                setErrorMessage('Failed to load wanderlists');
-            }
-        };
-
-        if (authorization && cookie && profileId) {
-            loadWanderlists();
+        if (wanderlists && wanderlists.length > 0 && !selectedWanderlist && !hideWanderlistSelector) {
+            setSelectedWanderlist(wanderlists[0].id);
         }
-    }, [authorization, cookie, profileId]);
+    }, [wanderlists, hideWanderlistSelector, selectedWanderlist]);
 
     const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
