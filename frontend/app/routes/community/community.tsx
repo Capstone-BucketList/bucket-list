@@ -83,12 +83,13 @@ console.log("posts", posts);
     let allWanderlists = [];
     let featuredWanderlists = [];
     try {
-        const wanderlistsResponse = await fetch(`${process.env.REST_API_URL}/wanderlist/profile/${profile.id}`, {
+        const wanderlistsResponse = await fetch(`${process.env.REST_API_URL}/wanderlist/visibility/public`, {
             headers: addHeaders(authorization, cookie),
         });
 
         if (wanderlistsResponse.ok) {
             const wanderlistsData = await wanderlistsResponse.json();
+            console.log(wanderlistsData)
             allWanderlists = wanderlistsData.data || [];
             // Get up to 3 wanderlists for featured section
             featuredWanderlists = allWanderlists.slice(0, 3);

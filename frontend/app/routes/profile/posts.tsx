@@ -1,27 +1,55 @@
 
-import { useActionData, Form, useRevalidator} from "react-router";
+import { useActionData, Form, useRevalidator, useFetcher} from "react-router";
 import type {WanderList} from "~/utils/models/wanderlist.model";
 import {type Post,  PostSchema} from "~/utils/models/post.model";
 import React, {useEffect, useState} from "react";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {useRemixForm} from "remix-hook-form";
-import {FaPencil} from "react-icons/fa6";
+import {FaPencil, FaImage} from "react-icons/fa6";
 import {VisibilityOptions} from "~/utils/interfaces/VisibilityType";
-import {FaWindowClose} from "react-icons/fa";
+import {FaCloudUploadAlt, FaWindowClose} from "react-icons/fa";
+import {type Media} from "~/utils/models/media.model";
+import {Spinner} from "flowbite-react";
+import {v7 as uuidv7} from 'uuid';
+
+type PostWithMedia = Post & {
+    media?: Media[];
+};
 
 type Props = {
-    posts: Post[];
+    posts: PostWithMedia[];
     wanderlistItem: WanderList[];
+    authorization?: string;
+    cookie?: string;
 };
 
 
 
 export default function Posts(props : Props) {
-    const {posts, wanderlistItem} = props;
-    // Debug: Log posts to see what data we're getting
-  //  console.log("Posts from backend:", props);
+    const {posts, wanderlistItem, authorization, cookie} = props;
+
+    // State for post modal
+    const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [editingPost, setEditingPost] = useState<PostWithMedia | null>(null);
+    const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
+
+    // Image upload states
+    const [uploadedPhotoUrls, setUploadedPhotoUrls] = useState<string[]>([]);
+    const [existingMedia, setExistingMedia] = useState<Media[]>([]);
+    const [deletedMediaIds, setDeletedMediaIds] = useState<string[]>([]);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadError, setUploadError] = useState('');
+
+    const fetcher = useFetcher();
+    const deleteFetcher = useFetcher();
+
+    // Cloudinary configuration
+    const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dgkckqptm';
+    const uploadPreset = 'wanderlist_scrapbook';
 
     // Get 4 most recent posts (based on created OR modified date, whichever is newer)
+    // Posts already have media from the loader
     const recentPosts = posts
         ?.sort((a, b) => {
             // Get the most recent date for post A (created OR modified)
@@ -40,12 +68,21 @@ export default function Posts(props : Props) {
             return dateB - dateA
         }) || [];
 
-    // State for post modal
-    const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
     // Function to open modal for creating new post
     const openCreatePostModal = () => {
+        setEditingPost(null);
+        setExistingMedia([]);
+        setDeletedMediaIds([]);
+        setUploadedPhotoUrls([]);
+        setIsPostModalOpen(true);
+    };
+
+    // Function to open modal for editing post
+    const openEditPostModal = (post: PostWithMedia) => {
+        setEditingPost(post);
+        setExistingMedia(post.media || []);
+        setDeletedMediaIds([]);
+        setUploadedPhotoUrls([]);
         setIsPostModalOpen(true);
     };
 
@@ -53,7 +90,83 @@ export default function Posts(props : Props) {
     const closePostModal = () => {
         setIsPostModalOpen(false);
         setIsSubmitting(false);
+        setEditingPost(null);
+        setExistingMedia([]);
+        setDeletedMediaIds([]);
+        setUploadedPhotoUrls([]);
+        setUploadError('');
         reset(); // Clear all form fields
+    };
+
+    // Function to handle delete
+    const handleDelete = (postId: string) => {
+        if (window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+            deleteFetcher.submit(
+                { postId, postAction: 'delete' },
+                { method: 'POST' }
+            );
+        }
+    };
+
+    // Remove existing media (mark for deletion)
+    const handleRemoveExistingMedia = (mediaId: string) => {
+        setDeletedMediaIds(prev => [...prev, mediaId]);
+        setExistingMedia(prev => prev.filter(m => m.id !== mediaId));
+    };
+
+    // Handle photo upload to Cloudinary
+    const handlePhotoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const files = event.target.files;
+        if (!files) return;
+
+        setUploadError('');
+
+        for (const file of Array.from(files)) {
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                setUploadError('Only image files are allowed');
+                return;
+            }
+
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                setUploadError('File must be smaller than 5MB');
+                return;
+            }
+
+            setIsUploading(true);
+
+            try {
+                // Upload directly to Cloudinary
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', uploadPreset);
+                formData.append('folder', 'wanderlist-scrapbook-v1');
+
+                const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+                const response = await fetch(cloudinaryUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to upload photo to Cloudinary');
+                }
+
+                const data = await response.json();
+                setUploadedPhotoUrls(prev => [...prev, data.secure_url]);
+            } catch (error) {
+                console.error('Upload error:', error);
+                setUploadError('Failed to upload photo. Please try again.');
+            } finally {
+                setIsUploading(false);
+            }
+        }
+    };
+
+    // Remove uploaded photo
+    const handleRemovePhoto = (index: number) => {
+        setUploadedPhotoUrls(uploadedPhotoUrls.filter((_, i) => i !== index));
     };
 
     // Form handling with validation
@@ -78,6 +191,74 @@ export default function Posts(props : Props) {
             revalidator.revalidate();
         }
     }, [actionData, revalidator]);
+
+    // Monitor fetcher response for post creation/edit
+    useEffect(() => {
+        if (fetcher.state === 'idle' && fetcher.data) {
+            const response = fetcher.data as any;
+            if (response.success !== false) {
+                // Post created/updated successfully
+                closePostModal();
+                revalidator.revalidate();
+            }
+        }
+    }, [fetcher.state, fetcher.data, revalidator]);
+
+    // Monitor delete fetcher response
+    useEffect(() => {
+        if (deleteFetcher.state === 'idle' && deleteFetcher.data) {
+            const response = deleteFetcher.data as any;
+            if (response.success !== false) {
+                // Post deleted successfully
+                revalidator.revalidate();
+            }
+        }
+    }, [deleteFetcher.state, deleteFetcher.data, revalidator]);
+
+    // Handle form submission with media
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+
+        // Determine if we're editing or creating
+        const isEditing = !!editingPost;
+
+        if (isEditing) {
+            // Add post ID for editing
+            formData.set('id', editingPost.id);
+            formData.set('postAction', 'edit');
+
+            // Add deleted media IDs
+            if (deletedMediaIds.length > 0) {
+                formData.set('deletedMediaIds', JSON.stringify(deletedMediaIds));
+            }
+
+            // Add new media URLs
+            if (uploadedPhotoUrls.length > 0) {
+                formData.set('mediaUrls', JSON.stringify(uploadedPhotoUrls));
+            }
+
+            // Submit to dashboard action
+            fetcher.submit(formData, {
+                method: 'POST'
+            });
+        } else {
+            // Add media URLs to form data for new post
+            if (uploadedPhotoUrls.length > 0) {
+                formData.set('mediaUrls', JSON.stringify(uploadedPhotoUrls));
+            }
+
+            // Add unique ID for the post
+            formData.set('id', uuidv7());
+
+            // Submit via fetcher to createpost action
+            fetcher.submit(formData, {
+                method: 'POST',
+                action: 'createpost'
+            });
+        }
+    };
 
     return (
         <>
@@ -113,14 +294,87 @@ export default function Posts(props : Props) {
                     {recentPosts.map((post) => (
                         <div
                             key={post.id}
-                            className="bg-gray-50 border border-gray-100 rounded-xl p-6 shadow-sm hover:shadow-md transition cursor-pointer"
+                            className="bg-gray-50 border border-gray-100 rounded-xl p-6 shadow-sm hover:shadow-md transition"
                         >
+                            {/* Action Buttons */}
+                            <div className="flex justify-end gap-2 mb-3">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        openEditPostModal(post);
+                                    }}
+                                    disabled={deleteFetcher.state !== 'idle'}
+                                    className="px-3 py-1 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition flex items-center gap-1 disabled:opacity-50"
+                                    title="Edit post"
+                                >
+                                    <FaPencil className="text-xs" />
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDelete(post.id);
+                                    }}
+                                    disabled={deleteFetcher.state !== 'idle'}
+                                    className="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded-lg transition flex items-center gap-1 disabled:opacity-50"
+                                    title="Delete post"
+                                >
+                                    {deleteFetcher.state !== 'idle' ? (
+                                        <>
+                                            <Spinner size="sm" className="w-3 h-3" />
+                                            Deleting...
+                                        </>
+                                    ) : (
+                                        <>
+                                            ×
+                                            Delete
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">
                                 {post.title}
                             </h3>
                             <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                                 {post.content || "No content"}
                             </p>
+
+                            {/* Display media images */}
+                            {post.media && post.media.length > 0 && (
+                                <div className="mb-4">
+                                    {post.media.length === 1 ? (
+                                        // Single image - full width
+                                        <img
+                                            src={post.media[0].url}
+                                            alt={post.title}
+                                            className="w-full h-48 object-cover rounded-lg"
+                                        />
+                                    ) : (
+                                        // Multiple images - grid
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {post.media.slice(0, 4).map((media, index) => (
+                                                <div key={media.id} className="relative">
+                                                    <img
+                                                        src={media.url}
+                                                        alt={`${post.title} - ${index + 1}`}
+                                                        className="w-full h-24 object-cover rounded-lg"
+                                                    />
+                                                    {/* Show +N overlay if more than 4 images */}
+                                                    {index === 3 && post.media && post.media.length > 4 && (
+                                                        <div className="absolute inset-0 bg-black bg-opacity-50 rounded-lg flex items-center justify-center">
+                                                            <span className="text-white text-xl font-bold">
+                                                                +{post.media.length - 4}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             <div className="flex items-center justify-between text-xs text-gray-500">
                                                 <span>
                                                     {(() => {
@@ -171,12 +425,12 @@ export default function Posts(props : Props) {
                             id="post-modal-title"
                             className="text-2xl font-semibold text-gray-900 mb-6"
                         >
-                            Create New Post
+                            {editingPost ? 'Edit Post' : 'Create New Post'}
                         </h3>
 
-                        <Form action="createpost"
-                           noValidate={true}
-                            method="POST"
+                        <form
+                            onSubmit={handleFormSubmit}
+                            noValidate={true}
                             className="space-y-6"
                         >
                             {/* Title Field (Required) */}
@@ -187,7 +441,9 @@ export default function Posts(props : Props) {
                                 <input
                                     {...register('title')}
                                     type="text"
+                                    name="title"
                                     placeholder="Enter post title"
+                                    defaultValue={editingPost?.title || ''}
                                     className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                                     autoFocus
                                 />
@@ -203,8 +459,10 @@ export default function Posts(props : Props) {
                                 </span>
                                 <textarea
                                     {...register('content')}
+                                    name="content"
                                     placeholder="Share your story..."
                                     rows={6}
+                                    defaultValue={editingPost?.content || ''}
                                     className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 resize-y"
                                 />
 
@@ -235,6 +493,8 @@ export default function Posts(props : Props) {
                                 </span>
                                 <select
                                     {...register('wanderlistId')}
+                                    name="wanderlistId"
+                                    defaultValue={editingPost?.wanderlistId || ''}
                                     className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
                                 >
                                     <option value="">-- Select a wanderlist item --</option>
@@ -263,7 +523,9 @@ export default function Posts(props : Props) {
                                             <input
                                                 {...register('visibility')}
                                                 type="radio"
+                                                name="visibility"
                                                 value={option.id}
+                                                defaultChecked={editingPost?.visibility === option.id || (!editingPost && option.id === 'public')}
                                                 className="h-4 w-4 text-amber-600 focus:ring-amber-500"
                                             />
                                             <span className="text-gray-800 font-medium">{option.name}</span>
@@ -290,58 +552,133 @@ export default function Posts(props : Props) {
                                 </span>
                             </label>*/}
 
-                            {/* File Upload Placeholder (Optional) */}
-                            <label className="block">
-                                <span className="text-gray-700 font-medium">
-                                    Add Images or Videos (optional)
-                                </span>
-                                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg hover:border-amber-400 transition">
-                                    <div className="space-y-1 text-center">
-                                        <svg
-                                            className="mx-auto h-12 w-12 text-gray-400"
-                                            stroke="currentColor"
-                                            fill="none"
-                                            viewBox="0 0 48 48"
-                                            aria-hidden="true"
-                                        >
-                                            <path
-                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                strokeWidth={2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                        <div className="text-sm text-gray-600">
-                                            <span className="font-medium text-amber-600 hover:text-amber-500">
-                                                Upload files
-                                            </span>
-                                            {' '}or drag and drop
-                                        </div>
-                                        <p className="text-xs text-gray-500">PNG, JPG, GIF, MP4 up to 10MB</p>
-                                        <p className="text-xs text-amber-600 font-medium mt-2">
-                                            (File upload coming soon)
-                                        </p>
+                            {/* Error/Success Messages for Upload */}
+                            {uploadError && (
+                                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                                    <p className="text-red-700">{uploadError}</p>
+                                </div>
+                            )}
+
+                            {/* Existing Media (Edit Mode) */}
+                            {editingPost && existingMedia.length > 0 && (
+                                <div>
+                                    <label className="block text-gray-700 font-semibold mb-2">
+                                        Existing Photos ({existingMedia.length})
+                                    </label>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        {existingMedia.map((media) => (
+                                            <div key={media.id} className="relative group">
+                                                <img
+                                                    src={media.url}
+                                                    alt="Existing"
+                                                    className="w-full h-32 object-cover rounded-lg"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveExistingMedia(media.id)}
+                                                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                                    title="Remove this photo"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                            </label>
+                            )}
+
+                            {/* Photo Upload */}
+                            <div>
+                                <label className="block text-gray-700 font-medium mb-2">
+                                    Add Photos (optional)
+                                </label>
+                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-indigo-500 transition">
+                                    <input
+                                        id="photoInput"
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handlePhotoUpload}
+                                        disabled={isUploading}
+                                        className="hidden"
+                                    />
+                                    <label
+                                        htmlFor="photoInput"
+                                        className="cursor-pointer flex flex-col items-center gap-2"
+                                    >
+                                        {isUploading ? (
+                                            <>
+                                                <Spinner size="md" />
+                                                <p className="text-gray-600">Uploading...</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaCloudUploadAlt className="text-3xl text-indigo-500" />
+                                                <p className="text-gray-700 font-semibold">
+                                                    Click to upload photos
+                                                </p>
+                                                <p className="text-sm text-gray-500">
+                                                    Max 5MB per file • PNG, JPG, GIF
+                                                </p>
+                                            </>
+                                        )}
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Uploaded Photos Preview */}
+                            {uploadedPhotoUrls.length > 0 && (
+                                <div>
+                                    <label className="block text-gray-700 font-semibold mb-2">
+                                        Uploaded Photos ({uploadedPhotoUrls.length})
+                                    </label>
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        {uploadedPhotoUrls.map((url, index) => (
+                                            <div key={index} className="relative group">
+                                                <img
+                                                    src={url}
+                                                    alt={`Uploaded ${index + 1}`}
+                                                    className="w-full h-32 object-cover rounded-lg"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemovePhoto(index)}
+                                                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
+                                                >
+                                                    ×
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Submit and Cancel Buttons */}
                             <div className="flex justify-end gap-4 pt-4">
                                 <button
                                     type="button"
                                     onClick={closePostModal}
-                                    className="rounded-lg px-5 py-3 bg-gray-300 hover:bg-gray-400 transition"
+                                    disabled={fetcher.state !== 'idle' || isUploading}
+                                    className="rounded-lg px-5 py-3 bg-gray-300 hover:bg-gray-400 transition disabled:opacity-50"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="rounded-lg px-5 py-3 bg-amber-500 text-white hover:bg-amber-600 transition"
+                                    disabled={fetcher.state !== 'idle' || isUploading}
+                                    className="rounded-lg px-5 py-3 bg-amber-500 text-white hover:bg-amber-600 transition disabled:opacity-50 flex items-center gap-2"
                                 >
-                                    Create Post
+                                    {fetcher.state !== 'idle' ? (
+                                        <>
+                                            <Spinner size="sm" />
+                                            {editingPost ? 'Updating Post...' : 'Creating Post...'}
+                                        </>
+                                    ) : (
+                                        editingPost ? 'Update Post' : 'Create Post'
+                                    )}
                                 </button>
                             </div>
-                        </Form>
+                        </form>
 
                         {/* Close button (X in top right) */}
                         <button

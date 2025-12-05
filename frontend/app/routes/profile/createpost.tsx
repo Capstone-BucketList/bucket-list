@@ -4,6 +4,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {getSession} from "~/utils/session.server";
 import {redirect} from "react-router";
 import {v7 as uuid} from 'uuid'
+import {type Media, postMedia} from "~/utils/models/media.model";
 
 export async function action({ request }: Route.ActionArgs) {
 
@@ -31,6 +32,28 @@ export async function action({ request }: Route.ActionArgs) {
     // Create the post
     try {
         await postPost(newPost, authorization, cookie);
+
+        // Handle media URLs if provided
+        const mediaUrlsJson = formData.get("mediaUrls");
+        if (mediaUrlsJson && typeof mediaUrlsJson === 'string') {
+            try {
+                const mediaUrls: string[] = JSON.parse(mediaUrlsJson);
+
+                // Save each media URL to the database
+                for (const url of mediaUrls) {
+                    const mediaRecord: Media = {
+                        id: uuid(),
+                        postId: newPost.id,
+                        url: url
+                    };
+                    await postMedia(mediaRecord, url, authorization, cookie);
+                }
+            } catch (mediaError) {
+                console.error('Failed to save media:', mediaError);
+                // Continue even if media fails - post is already created
+            }
+        }
+
       //  return { success: true, message: "Post created successfully" };
     } catch (error) {
         return { success: false, error: "Failed to create post" };

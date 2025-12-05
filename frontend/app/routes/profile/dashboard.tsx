@@ -28,8 +28,10 @@ import {FriendCard} from "~/routes/profile/friendcard";
 import WanderListItems from "~/routes/profile/wanderlist";
 import {Card} from "flowbite-react";
 import Posts from "~/routes/profile/posts";
-import {getPostByProfileId} from "~/utils/models/post.model";
+import {getPostByProfileId, putPost, deletePost} from "~/utils/models/post.model";
 import WanderListGrid from "~/routes/profile/wanderlist-grid";
+import {getMediaByPostId, postMedia, deleteMedia} from "~/utils/models/media.model";
+import {v7 as uuid} from 'uuid';
 
 export async function loader({request}: Route.LoaderArgs) {
     //Get existing session from cookie
@@ -52,8 +54,21 @@ export async function loader({request}: Route.LoaderArgs) {
     // get posts by profileId
     const posts = await getPostByProfileId(profile.id, authorization, cookie)
 
+    // Fetch media for each post
+    const postsWithMedia = await Promise.all(
+        posts.map(async (post) => {
+            try {
+                const media = await getMediaByPostId(post.id, authorization, cookie);
+                return { ...post, media };
+            } catch (error) {
+                console.error(`Failed to fetch media for post ${post.id}:`, error);
+                return { ...post, media: [] };
+            }
+        })
+    );
+
     const progressBars = await getWanderListByProfileId(profile.id, authorization, cookie)
-    return {profile, wanderList,followingProfiles,progressBars,posts}
+    return {profile, wanderList,followingProfiles,progressBars,posts: postsWithMedia, authorization, cookie}
 
 }
 
@@ -70,36 +85,120 @@ console.log("action called")
 
     const formData =   await request.formData()
     console.log("formData", formData)
-    const mode =   formData.get("mode")
 
-    if(mode && mode === 'delete') {
-        const id = formData.get("id");
-        response = await deleteWanderList(id, authorization, cookie);
+    // Check if this is a post operation
+    const postAction = formData.get("postAction");
+
+    if (postAction === 'delete') {
+        // DELETE POST
+        const postId = formData.get("postId") as string;
+
+        try {
+            // Delete all media associated with the post
+            const media = await getMediaByPostId(postId, authorization, cookie);
+            for (const mediaItem of media) {
+                await deleteMedia(mediaItem.id, authorization, cookie);
+            }
+
+            // Delete the post
+            await deletePost(postId, authorization, cookie);
+
+            return { success: true, message: "Post deleted successfully" };
+        } catch (error) {
+            console.error('Failed to delete post:', error);
+            return { success: false, error: "Failed to delete post" };
+        }
+    } else if (postAction === 'edit') {
+        // EDIT POST
+        const postId = formData.get("id");
+        const title = formData.get("title");
+        const content = formData.get("content");
+        const wanderlistId = formData.get("wanderlistId");
+        const visibility = formData.get("visibility");
+
+        // Validate required fields
+        if (!postId || !title || !wanderlistId || !visibility) {
+            return { success: false, error: "Missing required fields" };
+        }
+
+        const updatedPost = {
+            id: postId as string,
+            title: title as string,
+            content: (content as string) || null,
+            wanderlistId: wanderlistId as string,
+            visibility: visibility as string
+        };
+
+        console.log("=== EDIT POST ACTION ===");
+        console.log("Updating post with data:", updatedPost);
+        console.log("Authorization:", authorization);
+
+        try {
+            const result = await putPost(updatedPost, authorization, cookie);
+            console.log("Put post result:", result);
+            console.log("Result status:", result?.status);
+
+            // Handle deleted media
+            const deletedMediaIdsJson = formData.get("deletedMediaIds");
+            if (deletedMediaIdsJson && typeof deletedMediaIdsJson === 'string') {
+                const deletedMediaIds: string[] = JSON.parse(deletedMediaIdsJson);
+                for (const mediaId of deletedMediaIds) {
+                    await deleteMedia(mediaId, authorization, cookie);
+                }
+            }
+
+            // Handle new media uploads
+            const mediaUrlsJson = formData.get("mediaUrls");
+            if (mediaUrlsJson && typeof mediaUrlsJson === 'string') {
+                const mediaUrls: string[] = JSON.parse(mediaUrlsJson);
+                for (const url of mediaUrls) {
+                    const mediaRecord = {
+                        id: uuid(),
+                        postId: updatedPost.id,
+                        url: url
+                    };
+                    await postMedia(mediaRecord, url, authorization, cookie);
+                }
+            }
+
+            return { success: true, message: "Post updated successfully" };
+        } catch (error) {
+            console.error('Failed to update post:', error);
+            return { success: false, error: "Failed to update post" };
+        }
     } else {
+        // WANDERLIST OPERATIONS
+        const mode = formData.get("mode")
 
-        const {errors, data, receivedValues: defaultValues} = await getValidatedFormData<WanderList>(formData, resolver)
-
-        if (errors) {
-            return { errors, defaultValues}
-        }
-        console.log("action update: ", data)
-        if (data?.id) {
-            console.log("modify action")
-            /** EDIT MODE */
-            response = await updateWanderList(data, authorization, cookie, profile.id);
+        if(mode && mode === 'delete') {
+            const id = formData.get("id");
+            response = await deleteWanderList(id, authorization, cookie);
         } else {
-            console.log("add action")
-            /** ADD MODE */
-            response = await postWanderList(data, authorization, cookie, profile.id);
+
+            const {errors, data, receivedValues: defaultValues} = await getValidatedFormData<WanderList>(formData, resolver)
+
+            if (errors) {
+                return { errors, defaultValues}
+            }
+            console.log("action update: ", data)
+            if (data?.id) {
+                console.log("modify action")
+                /** EDIT MODE */
+                response = await updateWanderList(data, authorization, cookie, profile.id);
+            } else {
+                console.log("add action")
+                /** ADD MODE */
+                response = await postWanderList(data, authorization, cookie, profile.id);
+            }
         }
+        if (response.status !== 200) {
+            return { success: false, status: response };
+        }
+        return {
+            success: true,
+            status: response
+        };
     }
-    if (response.status !== 200) {
-        return { success: false, status: response };
-    }
-    return {
-        success: true,
-        status: response
-    };
 
     // ⬅️ redirect back to dashboard
     // return redirect('/dashboard');
@@ -115,7 +214,7 @@ const statusOptions = [
 const resolver =  zodResolver(WanderListSchema)
 
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
-    const { profile, wanderList,followingProfiles,progressBars,posts } = loaderData ?? {};
+    const { profile, wanderList,followingProfiles,progressBars,posts, authorization, cookie } = loaderData ?? {};
 
     if (!profile) {
         redirect("/");
@@ -442,7 +541,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                             )}
                         </section>
 
-                        <Posts posts={posts} wanderlistItem={wanderList}/>
+                        <Posts posts={posts} wanderlistItem={wanderList} authorization={authorization} cookie={cookie}/>
                         {/* Timeline */}
                         <section className="bg-gradient-to-br from-violet-50 to-purple-50 border-2 border-violet-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                             <h3 className="text-2xl font-extrabold mb-6">📅 <span className="bg-gradient-to-r from-violet-600 to-purple-600 text-transparent  bg-clip-text "> Journey Timeline </span></h3>
