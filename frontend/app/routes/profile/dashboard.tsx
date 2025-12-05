@@ -553,7 +553,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                         {/* Friends */}
                         <div className="bg-gradient-to-br from-emerald-50 to-green-50 border-2 border-emerald-200 rounded-3xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                             <h2 className="text-2xl font-extrabold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent mb-4">👥 Friends</h2>
-                            <div className="flex flex-col gap-4 max-h-100 overflow-y-auto pr-2">
+                            <div className="flex flex-col gap-4 max-h-200 overflow-y-auto pr-2">
                                 {followingProfiles?.map((profile, idx) => (
                                     <FriendCard key={idx} profile={profile} isFriend={true} />
                                 ))}
