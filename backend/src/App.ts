@@ -1,6 +1,5 @@
 import express, {type Application } from 'express'
 import morgan from 'morgan'
-import cors from 'cors'
 // Routes
 import session from 'express-session'
 import type {  RedisClientType } from 'redis'
@@ -41,16 +40,6 @@ export class App {
 
 		this.app.use(morgan('dev'))
 
-		// CORS configuration - allow requests for development
-		const isProduction = process.env.NODE_ENV === 'production';
-		this.app.use(cors({
-			origin: isProduction
-				? process.env.FRONTEND_URL || 'https://eric.ddfullstack.cloud'
-				: true, // Allow all origins in development
-			credentials: true,
-			methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-			allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-		}))
 
 		this.app.use(express.json())
 		this.app.use(session( {

@@ -16,7 +16,6 @@
   "dependencies": {
     "@swc/core": "^1.12.7",
     "@swc/helpers": "^0.5.17",
-    "@types/cors": "^2.8.19",
     "argon2": "^0.43.0",
     "axios": "^1.10.0",
     "cloudinary": "^2.7.0",
@@ -48,6 +47,7 @@
     "@types/node": "^24.0.8",
     "@types/uuid": "^10.0.0",
     "@types/validator": "^13.15.2",
+    "@types/cors": "^2.8.19",
     "ts-standard": "^12.0.2"
   }
 }

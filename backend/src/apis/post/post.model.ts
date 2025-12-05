@@ -105,13 +105,14 @@ export async function selectPostbyPrimaryKey(id: string): Promise<Post  | null>
 export async function  updatePost(post:Post): Promise<string> {
     PostSchema.parse(post);
 
-    const{id,  content,  title, visibility} = post;
+    const{id, wanderlistId, content, title, visibility} = post;
 
-    await sql `UPDATE post SET 
-                content=${content}, 
-                datetime_modified =now(), 
+    await sql `UPDATE post SET
+                wanderlist_id=${wanderlistId},
+                content=${content},
+                datetime_modified =now(),
                 title=${title},
-                visibility=${visibility} 
+                visibility=${visibility}
             WHERE id = ${id}`
     return "Successfully updated post"
 }
